@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻找X | 小径分叉的花园 - 视觉小说版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* 游戏容器 */
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1280px;
+            max-height: 720px;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        /* 场景背景 */
+        .scene-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1.5s ease;
+        }
+
+        /* 场景遮罩（用于过渡） */
+        .scene-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+            z-index: 5;
+        }
+        .scene-overlay.active { opacity: 1; }
+
+        /* 人物立绘层 */
+        .character-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .character {
+            position: absolute;
+            bottom: 0;
+            height: 90%;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+        }
+
+        .character.left { left: 5%; }
+        .character.center { left: 50%; transform: translateX(-50%); }
+        .character.right { right: 5%; }
+
+        .character:hover {
+            filter: drop-shadow(0 0 30px rgba(255,220,180,0.4)) brightness(1.1);
+        }
+
+        .character.speaking {
+            filter: drop-shadow(0 0 40px rgba(255,220,180,0.6)) brightness(1.15);
+        }
+
+        .character.hidden { opacity: 0; pointer-events: none; }
+
+        /* 可点击提示 */
+        .clickable-hint {
+            position: absolute;
+            bottom: 10px;
+            padding: 5px 15px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            color: #fff;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .character:hover .clickable-hint { opacity: 1; }
+
+        /* 对话框 */
+        .dialogue-box {
+            position: absolute;
+            bottom: 0;
+            left: 0; right: 0;
+            height: 35%;
+            background: linear-gradient(to top, rgba(10,15,12,0.98), rgba(10,14,11,0.93));
+            border-top: 2px solid rgba(212,197,181,0.3);
+            padding: 20px 40px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dialogue-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .speaker-name {
+            font-size: 1.1rem;
+            color: #e8dcc8;
+            letter-spacing: 0.1em;
+        }
+
+        .speaker-name.monk { color: #7aba98; }
+        .speaker-name.beauty { color: #d49090; }
+        .speaker-name.tiger { color: #e8c878; }
+        .speaker-name.x { color: #c47070; }
+        .speaker-name.narrator { color: #8a7f72; font-style: italic; }
+        /* 无限图书馆 */
+        .speaker-name.librarianMonk { color: #7aba98; }
+        .speaker-name.assassin { color: #c04040; }
+        .speaker-name.general { color: #b0a060; }
+        /* 卡夫卡迷宫 */
+        .speaker-name.bureaucrat { color: #9a9a9a; }
+        .speaker-name.gatekeeper { color: #c0a060; }
+        .speaker-name.watcher { color: #7a9aba; }
+        /* 银翼杀手 */
+        .speaker-name.replicant { color: #60a0c0; }
+        .speaker-name.bladeRunner { color: #c0a060; }
+        .speaker-name.executive { color: #a0a0c0; }
+        /* 爱丽丝梦游 */
+        .speaker-name.madhatter { color: #c0a040; }
+        .speaker-name.cheshire { color: #a060c0; }
+        .speaker-name.queen { color: #c04040; }
+
+        .dialogue-content {
+            flex: 1;
+            overflow-y: auto;
+            font-size: 1.15rem;
+            line-height: 2.0;
+            color: #f0e6d3;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .dialogue-content p { margin-bottom: 1em; text-indent: 2em; }
+        .dialogue-content p:first-child { text-indent: 0; }
+
+        /* 打字机光标 */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: #c47070;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* 选择按钮 */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .choices-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .choices-container::-webkit-scrollbar-track {
+            background: rgba(212,197,181,0.05);
+        }
+        .choices-container::-webkit-scrollbar-thumb {
+            background: rgba(212,197,181,0.2);
+            border-radius: 2px;
+        }
+
+        .choice-btn {
+            padding: 10px 16px;
+            background: rgba(212,197,181,0.1);
+            border: 1px solid rgba(212,197,181,0.25);
+            border-radius: 6px;
+            color: #c4b5a0;
+            font-family: inherit;
+            font-size: 0.9rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .choice-btn:hover {
+            background: rgba(212,197,181,0.2);
+            border-color: rgba(212,197,181,0.5);
+            color: #e8dcc8;
+            padding-left: 20px;
+        }
+
+        /* 选择后果标签 */
+        .choice-costs {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.72rem;
+        }
+        .cost-tag {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 3px;
+            margin-right: 4px;
+            font-size: 0.7rem;
+        }
+        .cost-sanity { background: rgba(196,112,112,0.15); color: #c47070; }
+        .cost-day { background: rgba(196,160,96,0.15); color: #c4a060; }
+        .cost-trait { background: rgba(122,186,152,0.15); color: #7aba98; }
+        .cost-clue { background: rgba(106,138,186,0.15); color: #6a8aba; }
+
+        /* 世界进度网格 */
+        .world-grid {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            z-index: 50;
+            background: rgba(13,13,13,0.7);
+            padding: 6px 10px;
+            border-radius: 8px;
+            max-width: 260px;
+        }
+        .world-dot {
+            font-size: 1rem;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+            cursor: default;
+        }
+        .world-dot.complete {
+            opacity: 1;
+            filter: none;
+        }
+
+        /* 路径可视化画布 */
+        .path-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 45;
+            pointer-events: none;
+            opacity: 0.85;
+            transition: opacity 0.8s ease;
+        }
+        .path-canvas.hidden { opacity: 0; }
+
+        /* 点击继续提示 —— 已禁用 */
+        .click-continue {
+            display: none !important;
+        }
+
+        /* 状态栏（简化版） */
+        .status-bar-mini {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 30;
+        }
+
+        .status-item {
+            padding: 8px 15px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #c4b5a0;
+            pointer-events: auto;
+        }
+
+        .status-item.clickable {
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .status-item.clickable:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        /* 菜单 */
+        .menu-btn {
+            padding: 8px 15px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            border-radius: 20px;
+            color: #c4b5a0;
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .menu-btn:hover { background: rgba(0,0,0,0.7); }
+
+        /* 存档/设置面板 */
+        .panel-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .panel-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .panel-content {
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            color: #e8dcc8;
+            margin-bottom: 25px;
+        }
+
+        .panel-close {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: transparent;
+            border: 1px solid rgba(212,197,181,0.3);
+            color: #c4b5a0;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        .panel-close:hover {
+            background: rgba(212,197,181,0.1);
+        }
+
+        /* 结局总结 */
+        .ending-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(5,8,6,0.95);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+        .ending-screen.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .ending-content {
+            max-width: 600px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .ending-title {
+            font-size: 1.8rem;
+            color: #c47070;
+            margin-bottom: 20px;
+        }
+
+        .ending-desc {
+            color: #c4b5a0;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .ending-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: #e8dcc8;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6a6058;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid rgba(212,197,181,0.3);
+            color: #c4b5a0;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        .restart-btn:hover {
+            background: rgba(212,197,181,0.1);
+        }
+
+        .hidden { display: none !important; }
+
+        /* ============================================
+           标题画面
+           ============================================ */
+        .title-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at center, #1a1a0a 0%, #0a0a05 60%, #000 100%);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s ease;
+        }
+        .title-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .title-particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .title-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        .title-game-name {
+            font-family: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+            font-size: 2.8rem;
+            color: #e8dcc8;
+            letter-spacing: 0.12em;
+            margin-bottom: 8px;
+            text-shadow: 0 0 60px rgba(196,160,96,0.3);
+        }
+        .title-subtitle {
+            font-size: 1.05rem;
+            color: #8a8072;
+            font-style: italic;
+            margin-bottom: 50px;
+            letter-spacing: 0.08em;
+        }
+        .title-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+        .title-btn {
+            padding: 14px 60px;
+            background: transparent;
+            border: 1px solid rgba(212,197,181,0.2);
+            color: #c4b5a0;
+            font-family: inherit;
+            font-size: 1.05rem;
+            cursor: pointer;
+            border-radius: 4px;
+            letter-spacing: 0.06em;
+            transition: all 0.3s ease;
+            min-width: 240px;
+        }
+        .title-btn:hover {
+            background: rgba(212,197,181,0.08);
+            border-color: rgba(212,197,181,0.5);
+            color: #e8dcc8;
+            transform: translateY(-1px);
+        }
+        .title-btn.primary {
+            border-color: rgba(196,112,112,0.4);
+            color: #c47070;
+        }
+        .title-btn.primary:hover {
+            background: rgba(196,112,112,0.1);
+            border-color: rgba(196,112,112,0.7);
+        }
+        .title-version {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.7rem;
+            color: #4a4038;
+            letter-spacing: 0.05em;
+        }
+
+        /* ============================================
+           成就 Toast
+           ============================================ */
+        .achievement-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(13,13,13,0.95);
+            border: 1px solid rgba(196,160,96,0.4);
+            border-radius: 8px;
+            padding: 14px 20px;
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            max-width: 320px;
+        }
+        .achievement-toast.show {
+            transform: translateX(0);
+        }
+        .achievement-icon {
+            font-size: 1.8rem;
+        }
+        .achievement-info {
+            flex: 1;
+        }
+        .achievement-name {
+            color: #e8dcc8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .achievement-desc {
+            color: #8a8072;
+            font-size: 0.72rem;
+        }
+
+        /* ============================================
+           设置面板
+           ============================================ */
+        .settings-row {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .settings-label {
+            color: #c4b5a0;
+            font-size: 0.9rem;
+            min-width: 80px;
+        }
+        .settings-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 4px;
+            background: rgba(212,197,181,0.15);
+            border-radius: 2px;
+            outline: none;
+        }
+        .settings-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #c4b5a0;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .settings-value {
+            color: #e8dcc8;
+            font-size: 0.8rem;
+            min-width: 36px;
+            text-align: right;
+        }
+        .settings-toggle {
+            padding: 6px 16px;
+            background: rgba(212,197,181,0.1);
+            border: 1px solid rgba(212,197,181,0.2);
+            color: #c4b5a0;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .settings-toggle.on {
+            background: rgba(122,186,152,0.2);
+            border-color: rgba(122,186,152,0.5);
+            color: #7aba98;
+        }
+
+        /* ============================================
+           片尾字幕
+           ============================================ */
+        .credits-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+        .credits-screen.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .credits-scroll {
+            text-align: center;
+            animation: creditsRoll 35s linear forwards;
+        }
+        @keyframes creditsRoll {
+            0% { transform: translateY(100vh); opacity: 0; }
+            8% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { transform: translateY(-200%); opacity: 0; }
+        }
+        .credits-title {
+            font-family: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+            font-size: 1.6rem;
+            color: #e8dcc8;
+            margin-bottom: 30px;
+            letter-spacing: 0.1em;
+        }
+        .credits-section {
+            margin-bottom: 24px;
+        }
+        .credits-heading {
+            font-size: 0.78rem;
+            color: #c47070;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+        }
+        .credits-item {
+            color: #8a8072;
+            font-size: 0.85rem;
+            line-height: 2;
+            transition: color 0.3s;
+        }
+        .credits-thanks {
+            font-size: 1.2rem;
+            color: #e8dcc8;
+            margin-top: 40px;
+            letter-spacing: 0.08em;
+        }
+        .credits-skip {
+            position: absolute;
+            bottom: 40px;
+            color: #4a4038;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .credits-skip:hover { color: #8a8072; }
+
+        /* ============================================
+           角色表情系统
+           ============================================ */
+        .character.mood-sad { filter: brightness(0.7) saturate(0.5) blur(0.5px); }
+        .character.mood-angry { filter: brightness(0.8) hue-rotate(-10deg) contrast(1.2); }
+        .character.mood-mysterious { filter: brightness(1.2) contrast(0.9) blur(1px); }
+        .character.mood-happy { filter: brightness(1.1) saturate(1.2); }
+        .character.mood-fear { filter: brightness(0.5) saturate(0.3) blur(1px); }
+
+        /* ============================================
+           背景变体
+           ============================================ */
+        .scene-bg.variant-dusk { filter: brightness(0.7) sepia(0.3) hue-rotate(-10deg); }
+        .scene-bg.variant-night { filter: brightness(0.35) hue-rotate(180deg) saturate(0.3); }
+        .scene-bg.variant-dawn { filter: brightness(0.9) sepia(0.2) saturate(0.8); }
+        .scene-bg.variant-fog { filter: brightness(0.6) contrast(0.7) blur(2px); }
+        .scene-bg.variant-storm { filter: brightness(0.5) contrast(1.3) saturate(0.5); }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .game-container { max-width: 100vw; max-height: 100vh; }
+            .dialogue-box { height: 40%; padding: 12px 16px; }
+            .character { height: 60%; }
+            .status-bar-mini { flex-wrap: wrap; gap: 4px; }
+            .status-bar-mini button { font-size: 0.7rem; padding: 4px 8px; }
+            .panel-content { max-width: 90vw; }
+            .choices-container { padding: 8px; }
+            .choice-btn { font-size: 0.85rem; padding: 10px 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .dialogue-box { height: 35%; padding: 10px 14px; }
+            .dialogue-content { font-size: 0.85rem; }
+            .character { height: 50%; }
+            .status-bar-mini button { font-size: 0.65rem; padding: 3px 6px; }
+            .ending-content { max-width: 95vw; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 标题画面 -->
+    <div class="title-screen" id="titleScreen">
+        <canvas class="title-particles" id="titleParticles"></canvas>
+        <div class="title-content">
+            <div class="title-game-name">寻找X</div>
+            <div class="title-subtitle">小径分叉的花园</div>
+            <div class="title-menu">
+                <button class="title-btn primary" id="btnNewGame">新游戏</button>
+                <button class="title-btn" id="btnContinue">继续游戏</button>
+                <button class="title-btn" id="btnSettings">设置</button>
+            </div>
+        </div>
+        <div class="title-version">v1.1 · 12个世界 · 92个结局</div>
+    </div>
+
+    <div class="game-container">
+        <!-- 场景背景 -->
+        <div class="scene-bg" id="sceneBg"></div>
+        <div class="scene-overlay" id="sceneOverlay"></div>
+
+        <!-- 人物层 -->
+        <div class="character-layer" id="characterLayer">
+            <img class="character left hidden" id="charLeft" src="" alt="">
+            <img class="character center hidden" id="charCenter" src="" alt="">
+            <img class="character right hidden" id="charRight" src="" alt="">
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar-mini">
+            <div class="status-item" id="dayStatus">第1天 · 初入</div>
+            <div style="display:flex;gap:10px;">
+                <button class="menu-btn" id="questBtn">📋 任务</button>
+                <button class="menu-btn" id="logBtn">💬</button>
+                <button class="menu-btn" id="saveBtn">保存</button>
+                <button class="menu-btn" id="loadBtn">读取</button>
+                <button class="menu-btn" id="audioBtn">🔊</button>
+            </div>
+        </div>
+
+        <!-- 路径可视化 -->
+        <canvas id="pathCanvas" class="path-canvas hidden"></canvas>
+        <!-- 世界网格 -->
+        <div id="worldGrid" class="world-grid hidden"></div>
+        <!-- 对话框 -->
+
+        <div class="dialogue-box" id="dialogueBox">
+            <div class="dialogue-header">
+                <span class="speaker-name" id="speakerName">旁白</span>
+            </div>
+            <div class="dialogue-content" id="dialogueContent"></div>
+            <div class="choices-container hidden" id="choicesContainer"></div>
+            <div class="click-continue hidden" id="clickContinue">点击继续 ▼</div>
+        </div>
+    </div>
+
+    <!-- 存档面板 -->
+    <div class="panel-overlay" id="savePanel">
+        <div class="panel-content">
+            <div class="panel-title" id="panelTitle">保存游戏</div>
+            <div id="saveSlots"></div>
+            <button class="panel-close" id="panelClose">关闭</button>
+        </div>
+    </div>
+
+    <!-- 任务日志面板 -->
+    <div class="panel-overlay" id="questPanel">
+        <div class="panel-content" style="max-width: 600px; text-align: left;">
+            <div class="panel-title">📋 任务日志</div>
+            <div id="questContent" style="color: #c4b5a0; line-height: 1.8;">
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #e8dcc8; font-size: 1.1rem; margin-bottom: 8px;">当前目标</div>
+                    <div id="currentObjective" style="padding: 10px; background: rgba(212,197,181,0.1); border-radius: 6px;">加载中...</div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #e8dcc8; font-size: 1.1rem; margin-bottom: 8px;">已收集线索 (<span id="clueCount">0</span>)</div>
+                    <div id="clueList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+                <div>
+                    <div style="color: #e8dcc8; font-size: 1.1rem; margin-bottom: 8px;">已访问世界</div>
+                    <div id="worldList" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <div style="color: #e8dcc8; font-size: 1.1rem; margin-bottom: 8px;">已获得特质 (<span id="traitCount">0</span>)</div>
+                    <div id="traitList" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+            </div>
+            <button class="panel-close" id="questClose" style="margin-top: 20px;">关闭</button>
+        </div>
+    </div>
+
+    <!-- 对话日志面板 -->
+    <div class="panel-overlay" id="logPanel">
+        <div class="panel-content" style="max-width: 600px; text-align: left;">
+            <div class="panel-title">对话日志</div>
+            <div id="logScroll" style="max-height: 60vh; overflow-y: auto; color: #c4b5a0; line-height: 1.8; font-size: 0.85rem;"></div>
+            <button class="panel-close" id="logClose" style="margin-top: 20px;">关闭</button>
+        </div>
+    </div>
+
+    <!-- 结局画面 -->
+    <div class="ending-screen" id="endingScreen">
+        <div class="ending-content">
+            <div class="ending-title" id="endingTitle"></div>
+            <div class="ending-desc" id="endingDesc"></div>
+            <div class="ending-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="statDays">0</div>
+                    <div class="stat-label">天数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statClues">0</div>
+                    <div class="stat-label">线索</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statMet">0</div>
+                    <div class="stat-label">遇见</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="loadSaveBtn" style="margin-right: 10px; display: none;">📷 回到存档点</button>
+            <button class="restart-btn" id="continueBtn" style="margin-right: 10px;">返回阿莱夫</button>
+            <button class="restart-btn" id="restartBtn">重新开始</button>
+        </div>
+    </div>
+
+    <!-- 成就 Toast -->
+    <div class="achievement-toast" id="achievementToast">
+        <span class="achievement-icon" id="achievementIcon">🏆</span>
+        <div class="achievement-info">
+            <div class="achievement-name" id="achievementName"></div>
+            <div class="achievement-desc" id="achievementDesc"></div>
+        </div>
+    </div>
+
+    <!-- 设置面板 -->
+    <div class="panel-overlay" id="settingsPanel">
+        <div class="panel-content" style="max-width: 500px; text-align: left;">
+            <div class="panel-title">⚙️ 设置</div>
+            <div class="settings-row">
+                <span class="settings-label">打字机效果</span>
+                <button class="settings-toggle" id="toggleTyping">开</button>
+            </div>
+            <div class="settings-row">
+                <span class="settings-label">打字速度</span>
+                <input type="range" class="settings-slider" id="sliderSpeed" min="20" max="120" value="50">
+                <span class="settings-value" id="speedValue">50ms</span>
+            </div>
+            <div class="settings-row">
+                <span class="settings-label">音乐音量</span>
+                <input type="range" class="settings-slider" id="sliderMusic" min="0" max="100" value="50">
+                <span class="settings-value" id="musicValue">50%</span>
+            </div>
+            <button class="panel-close" id="settingsClose" style="margin-top: 20px;">关闭</button>
+        </div>
+    </div>
+
+    <!-- 片尾字幕 -->
+    <div class="credits-screen" id="creditsScreen">
+        <div class="credits-scroll" id="creditsScroll">
+            <div class="credits-title">寻找X · 小径分叉的花园</div>
+            <div class="credits-section">
+                <div class="credits-heading">十二世界</div>
+                <div class="credits-item" id="creditsWorlds"></div>
+            </div>
+            <div class="credits-section">
+                <div class="credits-heading">X 的身份</div>
+                <div class="credits-item">档案员 · 回忆者 · 追踪者 · 阿莱夫</div>
+                <div class="credits-item">中土旅人 · 江湖侠客 · Bebop流浪者 · 银翼杀手</div>
+                <div class="credits-item">克苏鲁信徒 · 矩阵黑客 · 权力游戏者 · 神隐少女</div>
+                <div class="credits-item">守望者 · 鼠族见证者 · 梦境漫游者 · 守灵夜人</div>
+            </div>
+            <div class="credits-section" id="creditsPlayerStats">
+                <div class="credits-heading">你的旅程</div>
+            </div>
+            <div class="credits-thanks">感谢游玩</div>
+        </div>
+        <div class="credits-skip" id="creditsSkip">点击跳过</div>
+    </div>
+
+    <script src="js/vn-engine.js"></script>
+    <script src="js/music-engine.js"></script>
+    <script src="js/effects-engine.js"></script>
+    <script src="js/hub-chapter.js"></script>
+    <script src="js/blade-runner-chapter.js"></script>
+    <script src="js/x-perspective-chapter.js"></script>
+    <script src="js/cthulhu-chapter.js"></script>
+    <script src="js/alice-chapter.js"></script>
+    <script src="js/middle-earth-chapter.js"></script>
+    <script src="js/wuxia-chapter.js"></script>
+    <script src="js/cowboy-bebop-chapter.js"></script>
+    <script src="js/matrix-chapter.js"></script>
+    <script src="js/got-chapter.js"></script>
+    <script src="js/spirited-chapter.js"></script>
+    <script src="js/wake-chapter.js"></script>
+    <script src="js/watchmen-chapter.js"></script>
+    <script src="js/maus-chapter.js"></script>
+    <script src="js/x-hidden-world-chapter.js"></script>
+    <!-- CHAPTERS 格式兼容层 - 必须在所有章节脚本之后加载 -->
+    <script src="js/chapters-compat.js"></script>
+</body>
+</html>
