@@ -1,0 +1,5154 @@
+/**
+ * 视觉小说引擎 - 小径分叉的花园
+ * 版本 2.0 - 视觉小说版
+ */
+
+// ================================================================
+// 资源配置
+// ================================================================
+const ASSETS = {
+    scenes: {
+        entrance: 'scenes/scene-garden-entrance.jpg',
+        garden: 'scenes/scene-garden-entrance.jpg',
+        library: 'scenes/scene-library.jpg',
+        mirror: 'scenes/scene-mirror-garden.jpg',
+        desert: 'scenes/scene-desert.jpg',
+        crossroads: 'scenes/scene-crossroads.jpg',
+        // 阿莱夫枢纽
+        aleph: 'scenes/scene-aleph.jpg',
+        // 无限图书馆篇章
+        infiniteLibrary: 'scenes/scene-infinite-library.jpg',
+        hiddenChamber: 'scenes/scene-hidden-chamber.jpg',
+        bookWorld: 'scenes/scene-book-world.jpg',
+        // 卡夫卡迷宫篇章
+        kafkaCorridor: 'scenes/scene-kafka-corridor.jpg',
+        waitingRoom: 'scenes/scene-waiting-room.jpg',
+        endlessStairs: 'scenes/scene-endless-stairs.jpg',
+        // 银翼杀手篇章
+        cyberpunkCity: 'scenes/scene-cyberpunk-city.jpg',
+        apartment: 'scenes/scene-apartment.jpg',
+        lab: 'scenes/scene-lab.jpg',
+        penthouse: 'scenes/scene-penthouse.jpg',
+        // X视角篇章
+        xMirror: 'scenes/scene-x-mirror.jpg',
+        xWindow: 'scenes/scene-x-window.jpg',
+        // 克苏鲁篇章
+        cthulhuCity: 'scenes/scene-cthulhu-city.jpg',
+        cthulhuTemple: 'scenes/scene-cthulhu-temple.jpg',
+        innsmouth: 'scenes/scene-innsmouth.jpg',
+        // 爱丽丝篇章
+        teaParty: 'scenes/scene-tea-party.jpg',
+        hedgeMaze: 'scenes/scene-hedge-maze.jpg',
+        queenGround: 'scenes/scene-queen-ground.jpg',
+        // 中土世界篇章
+        middleEarthForest: 'scenes/scene-middle-earth-forest.jpg',
+        middleEarthVolcano: 'scenes/scene-middle-earth-volcano.jpg',
+        middleEarthCity: 'scenes/scene-middle-earth-city.jpg',
+        // 金庸江湖篇章
+        wuxiaTavern: 'scenes/scene-wuxia-tavern.jpg',
+        wuxiaMountain: 'scenes/scene-wuxia-mountain.jpg',
+        wuxiaBamboo: 'scenes/scene-wuxia-bamboo.jpg',
+        // 星际牛仔篇章
+        spaceStation: 'scenes/scene-space-station.jpg',
+        spaceDesert: 'scenes/scene-space-desert.jpg',
+        spaceShip: 'scenes/scene-space-ship.jpg',
+        // 黑客帝国篇章
+        matrixCity: 'scenes/scene-matrix-city.jpg',
+        matrixCode: 'scenes/scene-matrix-code.jpg',
+        matrixRebel: 'scenes/scene-matrix-rebel.jpg',
+        // 冰与火之歌篇章
+        gotCastle: 'scenes/scene-got-castle.jpg',
+        gotNorth: 'scenes/scene-got-north.jpg',
+        gotThrone: 'scenes/scene-got-throne.jpg',
+        // 千与千寻篇章
+        spiritedBathhouse: 'scenes/scene-spirited-bathhouse.jpg',
+        spiritedTrain: 'scenes/scene-spirited-train.jpg',
+        spiritedMarket: 'scenes/scene-spirited-market.jpg',
+        // 芬尼根的守灵夜篇章
+        wakeRiver: 'scenes/scene-wake-river.jpg',
+        wakeTavern: 'scenes/scene-wake-tavern.jpg',
+        wakeSleeper: 'scenes/scene-wake-sleeper.jpg',
+        // 守望者篇章
+        watchmenCity: 'scenes/scene-watchmen-city.jpg',
+        watchmenOffice: 'scenes/scene-watchmen-office.jpg',
+        watchmenClock: 'scenes/scene-watchmen-clock.jpg',
+        // 鼠族篇章
+        mausGhetto: 'scenes/scene-maus-ghetto.jpg',
+        mausCamp: 'scenes/scene-maus-camp.jpg',
+        mausFamily: 'scenes/scene-maus-family.jpg'
+    },
+    characters: {
+        // 序章 - 博尔赫斯文学现实主义风格
+        monk: 'characters/char-monk_1_nobg.png',
+        beauty: 'characters/char-beauty_1_nobg.png',
+        tiger: 'characters/char-tiger_1_nobg.png',
+        x: 'characters/char-x_1_nobg.png',
+        protagonist: 'characters/char-protagonist_1_nobg.png',
+        // 无限图书馆篇章 - 博尔赫斯无限图书馆风格
+        librarianMonk: 'characters/char-librarian-monk_1_nobg.png',
+        assassin: 'characters/char-assassin_1_nobg.png',
+        general: 'characters/char-general_1_nobg.png',
+        // 卡夫卡迷宫篇章
+        bureaucrat: 'characters/char-bureaucrat_nobg.png',
+        gatekeeper: 'characters/char-gatekeeper_nobg.png',
+        watcher: 'characters/char-watcher_nobg.png',
+        // 银翼杀手篇章 - 赛博朋克黑色电影风格
+        replicant: 'characters/char-replicant_1_nobg.png',
+        bladeRunner: 'characters/char-blade-runner_1_nobg.png',
+        executive: 'characters/char-executive_1_nobg.png',
+        // 克苏鲁篇章 - 洛夫克拉夫特宇宙恐怖风格
+        cultist: 'characters/char-cultist_1_nobg.png',
+        investigator: 'characters/char-investigator_1_nobg.png',
+        deepone: 'characters/char-deepone_1_nobg.png',
+        // 爱丽丝篇章 - 维多利亚超现实主义风格
+        madhatter: 'characters/char-madhatter_1_nobg.png',
+        cheshire: 'characters/char-cheshire_1_nobg.png',
+        queen: 'characters/char-queen_1_nobg.png',
+        // 中土世界篇章 - 托尔金史诗奇幻风格
+        elf: 'characters/char-elf_1_nobg.png',
+        dwarf: 'characters/char-dwarf_1_nobg.png',
+        wizard: 'characters/char-wizard_1_nobg.png',
+        // 金庸江湖篇章 - 中国水墨武侠风格
+        swordsman: 'characters/char-swordsman_1_nobg.png',
+        master: 'characters/char-master_1_nobg.png',
+        courtesan: 'characters/char-courtesan_1_nobg.png',
+        // 星际牛仔篇章 - 90年代太空西部风格
+        bountyHunter: 'characters/char-bounty-hunter_1_nobg.png',
+        spacePilot: 'characters/char-space-pilot_1_nobg.png',
+        spaceHacker: 'characters/char-space-hacker_1_nobg.png',
+        // 黑客帝国篇章 - 赛博朋克现实主义风格
+        morpheus: 'characters/char-morpheus_1a_nobg.png',
+        oracle: 'characters/char-oracle_1a_nobg.png',
+        agent: 'characters/char-agent_1a_nobg.png',
+        // 冰与火之歌篇章 - 中世纪政治奇幻风格
+        advisor: 'characters/char-advisor_1_nobg.png',
+        mystic: 'characters/char-mystic_1_nobg.png',
+        warrior: 'characters/char-warrior_1_nobg.png',
+        // 千与千寻篇章 - 吉卜力动画风格
+        maskedSpirit: 'characters/char-masked-spirit_1_nobg.png',
+        bathhouseMistress: 'characters/char-bathhouse-mistress_1_nobg.png',
+        roundSpirit: 'characters/char-round-spirit_1_nobg.png',
+        // 芬尼根的守灵夜篇章 - 乔伊斯超现实主义风格
+        storyteller: 'characters/char-storyteller_1_nobg.png',
+        riverSpirit: 'characters/char-river-spirit_1_nobg.png',
+        sleeper: 'characters/char-sleeper_1_nobg.png',
+        // 守望者篇章 - 美漫黑色电影风格
+        rorschach: 'characters/char-rorschach_1a_nobg.png',
+        owl: 'characters/char-owl_1a_nobg.png',
+        strategist: 'characters/char-strategist_1a_nobg.png',
+        // 鼠族篇章 - 黑白图像小说风格
+        survivor: 'characters/char-survivor_1_nobg.png',
+        youngMouse: 'characters/char-young-mouse_1_nobg.png',
+        fatherMouse: 'characters/char-father-mouse_1_nobg.png'
+    }
+};
+
+// ================================================================
+// 游戏状态
+// ================================================================
+const gameState = {
+    currentScene: 'start',
+    currentDialogue: 0,
+    day: 1,
+    sanity: 100,
+    clues: [],
+    encountered: [],
+    traits: [],
+    xMemories: [],
+    isTyping: false,
+    dialogueComplete: false,
+    currentObjective: '寻找X的线索',
+    completedWorlds: [],
+    dialogueHistory: [],
+    settings: { typingEffect: true, typingSpeed: 50, musicVolume: 0.5, sfxVolume: 0.5 }
+};
+
+// 默认状态的深拷贝工厂函数
+const _defaultGameState = () => ({
+    currentScene: 'start',
+    currentDialogue: 0,
+    day: 1,
+    sanity: 100,
+    clues: [],
+    encountered: [],
+    traits: [],
+    xMemories: [],
+    isTyping: false,
+    dialogueComplete: false,
+    currentObjective: '寻找X的线索',
+    completedWorlds: [],
+    dialogueHistory: [],
+    settings: { typingEffect: true, typingSpeed: 50, musicVolume: 0.5, sfxVolume: 0.5 }
+});
+
+// ================================================================
+// 线索定义
+// ================================================================
+const CLUE_DEFS = {
+    name: { title: 'X的名字', desc: 'X可能是你认识的人，也可能是你自己。' },
+    location: { title: 'X的位置', desc: 'X在花园的某个地方，或者在所有地方。' },
+    time: { title: '时间线索', desc: 'X的存在与时间有关——或者无关。' },
+    connection: { title: '连接', desc: '你和X之间有某种深刻的联系。' },
+    library_secret: { title: '图书馆的秘密', desc: '无限图书馆的中心藏着阿莱夫。' },
+    // 各世界线索（固定奖励）
+    blade_runner: { title: '银翼杀手碎片', desc: '在赛博朋克的雨夜中，你找到了一片关于X的碎片。' },
+    cthulhu: { title: '疯狂之城碎片', desc: '在古老的深渊前，你找到了一片关于X的碎片。' },
+    alice: { title: '梦境世界碎片', desc: '在不遵循逻辑的世界里，你找到了一片关于X的碎片。' },
+    middle_earth: { title: '中土世界碎片', desc: '在史诗般的旅程中，你找到了一片关于X的碎片。' },
+    wuxia: { title: '江湖世界碎片', desc: '在侠义的世界里，你找到了一片关于X的碎片。' },
+    cowboy_bebop: { title: '太空边境碎片', desc: '在星际之间漂泊时，你找到了一片关于X的碎片。' },
+    matrix: { title: '矩阵世界碎片', desc: '在真实与虚幻的边界，你找到了一片关于X的碎片。' },
+    got: { title: '权力游戏碎片', desc: '在权力的漩涡中，你找到了一片关于X的碎片。' },
+    spirited: { title: '神隐世界碎片', desc: '在灵异的浴场中，你找到了一片关于X的碎片。' },
+    wake: { title: '守灵之夜碎片', desc: '在语言的迷宫中，你找到了一片关于X的碎片。' },
+    watchmen: { title: '末日时钟碎片', desc: '在道德抉择面前，你找到了一片关于X的碎片。' },
+    maus: { title: '记忆深渊碎片', desc: '在历史的创伤中，你找到了一片关于X的碎片。' },
+    // 各世界隐藏线索（特殊选择获得）
+    blade_runner_hidden: { title: '银翼杀手·隐秘碎片', desc: '你发现了复制人眼中隐藏的记忆——关于X的更深层的真相。' },
+    cthulhu_hidden: { title: '疯狂之城·隐秘碎片', desc: '深渊中传来的低语揭示了X与宇宙之间的联系。' },
+    alice_hidden: { title: '梦境世界·隐秘碎片', desc: '红心皇后的谜语中藏着一个关于X的秘密。' },
+    middle_earth_hidden: { title: '中土世界·隐秘碎片', desc: '精灵的古老歌谣中记载着X的传说。' },
+    wuxia_hidden: { title: '江湖世界·隐秘碎片', desc: '武功秘籍的最后一页写着X的名字。' },
+    cowboy_bebop_hidden: { title: '太空边境·隐秘碎片', desc: '那首爵士乐的旋律中藏着X的记忆。' },
+    matrix_hidden: { title: '矩阵世界·隐秘碎片', desc: '代码的底层有一个关于X的注释。' },
+    got_hidden: { title: '权力游戏·隐秘碎片', desc: '龙焰中映出了X的影子。' },
+    spirited_hidden: { title: '神隐世界·隐秘碎片', desc: '千与千寻的名字中藏着X的名字。' },
+    wake_hidden: { title: '守灵之夜·隐秘碎片', desc: '梦话中泄露了X的秘密。' },
+    watchmen_hidden: { title: '末日时钟·隐秘碎片', desc: '微笑按钮的背后是X的真相。' },
+    maus_hidden: { title: '记忆深渊·隐秘碎片', desc: '幸存者的证词中有一段关于X的描述。' }
+};
+
+// ================================================================
+// 任务系统
+// ================================================================
+
+// 场景ID前缀 → 世界ID 的映射（用于自动标记世界完成）
+const SCENE_TO_WORLD_MAP = {
+    'blade_': 'blade_runner',
+    'blade_runner': 'blade_runner',
+    'cthulhu': 'cthulhu',
+    'deepone': 'cthulhu',
+    'necronomicon': 'cthulhu',
+    'alice_': 'alice',
+    'rabbit': 'alice',
+    'wonderland': 'alice',
+    'middleearth': 'middle_earth',
+    'middle_earth': 'middle_earth',
+    'ring': 'middle_earth',
+    'wuxia_': 'wuxia',
+    'jianghu': 'wuxia',
+    'bebop': 'cowboy_bebop',
+    'cowboy': 'cowboy_bebop',
+    'matrix_': 'matrix',
+    'matrixcity': 'matrix',
+    'got_': 'got',
+    'westeros': 'got',
+    'spirited': 'spirited',
+    'sen': 'spirited',
+    'yubaba': 'spirited',
+    'wake_': 'wake',
+    'finnegans': 'wake',
+    'watchmen': 'watchmen',
+    'rorschach': 'watchmen',
+    'ozymandias': 'watchmen',
+    'maus': 'maus',
+    'holocaust': 'maus',
+    'vladek': 'maus'
+};
+
+// 结局场景 → 世界 直接映射（处理不包含世界前缀的结局ID）
+const ENDING_TO_WORLD_MAP = {
+    // 银翼杀手（8个结局，ID不含 blade_runner 前缀，必须直接映射）
+    ending_upload_consciousness: 'blade_runner',
+    ending_merge_into_x: 'blade_runner',
+    ending_x_into_you: 'blade_runner',
+    ending_eternal_search: 'blade_runner',
+    ending_escape_together_blade: 'blade_runner',
+    ending_program_termination: 'blade_runner',
+    ending_data_together: 'blade_runner',
+    ending_denial_love: 'blade_runner',
+    // 克苏鲁（9个结局，含 cthulhu 前缀，层3包含匹配可兜底）
+    ending_cthulhu_enlightenment: 'cthulhu',
+    ending_cthulhu_transformation: 'cthulhu',
+    ending_cthulhu_guardian: 'cthulhu',
+    ending_cthulhu_trapped: 'cthulhu',
+    ending_cthulhu_drowned: 'cthulhu',
+    ending_cthulhu_give_up: 'cthulhu',
+    ending_cthulhu_tired: 'cthulhu',
+    ending_cthulhu_x_reunion: 'cthulhu',
+    ending_cthulhu_return_alone: 'cthulhu',
+    // 爱丽丝（3个结局）
+    ending_alice_tea_trapped: 'alice',
+    ending_alice_together: 'alice',
+    ending_alice_queen_prisoner: 'alice',
+    // 中土世界（4个结局）
+    ending_middleearth_watcher: 'middle_earth',
+    ending_middleearth_sacrifice_together: 'middle_earth',
+    ending_middleearth_third_path: 'middle_earth',
+    ending_middleearth_corrupted: 'middle_earth',
+    // 金庸武侠（1个结局）
+    ending_wuxia_together: 'wuxia',
+    // 星际牛仔（3个结局）
+    ending_bebop_coward: 'cowboy_bebop',
+    ending_bebop_sacrifice: 'cowboy_bebop',
+    ending_bebop_respect: 'cowboy_bebop',
+};
+
+// 根据场景ID推断所属世界
+function inferWorldFromScene(sceneId) {
+    if (!sceneId) return null;
+    // 先检查直接结局映射
+    if (ENDING_TO_WORLD_MAP[sceneId]) return ENDING_TO_WORLD_MAP[sceneId];
+    // 再尝试前缀匹配
+    for (const [prefix, worldId] of Object.entries(SCENE_TO_WORLD_MAP)) {
+        if (sceneId.startsWith(prefix)) return worldId;
+    }
+    // 结局场景泛匹配：ending_xxx_worldname 格式
+    if (sceneId.startsWith('ending_')) {
+        for (const [prefix, worldId] of Object.entries(SCENE_TO_WORLD_MAP)) {
+            if (prefix.length > 3 && sceneId.includes(prefix)) return worldId;
+        }
+    }
+    return null;
+}
+
+// 计算有效碎片数量（只计算世界线索和隐藏线索）
+// 世界线索ID列表在 CLUE_DEFS 中以 _hidden 结尾或匹配世界名
+function countValidFragments() {
+    const worldClueIds = [
+        'blade_runner', 'cthulhu', 'alice', 'middle_earth', 'wuxia',
+        'cowboy_bebop', 'matrix', 'got', 'spirited', 'wake', 'watchmen', 'maus'
+    ];
+    return gameState.clues.filter(c => 
+        worldClueIds.includes(c) || (c && c.endsWith('_hidden'))
+    ).length;
+}
+
+const QUEST_SYSTEM = {
+    getCurrentObjective() {
+        if (!gameState.traits.includes('aleph_visited')) {
+            if (gameState.clues.length < 3) {
+                return { title: '收集线索', desc: `与花园中的三个人交谈，收集关于X的线索。（${gameState.clues.length}/3）` };
+            } else {
+                return { title: '找到阿莱夫', desc: '你已经收集了足够的线索。回到无限图书馆，找到通往阿莱夫的路。' };
+            }
+        } else if (countValidFragments() < 12) {
+            const completed = gameState.completedWorlds.length;
+            return { title: '穿越世界', desc: `通过阿莱夫进入不同的世界，收集X的碎片。（${countValidFragments()}/12，已探索${completed}个世界）` };
+        } else {
+            return { title: '揭示真相', desc: '你已经收集了足够的碎片。回到阿莱夫，走向X所在之处。' };
+        }
+    },
+    
+    getClueList() {
+        return gameState.clues.map(c => CLUE_DEFS[c] || { title: c, desc: '一条神秘的线索。' });
+    }
+};
+
+// ================================================================
+// 剧本数据
+// ================================================================
+
+// 章节注册表（用于兼容不同格式的章节文件）
+const CHAPTERS = {};
+
+const SCRIPT = {
+    // ===== 序章 =====
+    start: {
+        scene: 'entrance',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你醒来时，手中握着一张照片。'
+            },
+            {
+                speaker: 'narrator',
+                text: '照片背面写着一个大写的 X。正面应该有一张脸，但那张脸模糊不清，像被水浸泡过的墨迹。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你不知道自己是谁，不知道自己在哪里。但你清楚地知道一件事：你必须找到 X。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你站在一座雾蒙蒙的花园里。远处有三个人影——一个拿着扫帚的老人、一个站在花丛中的女人、一个伏在沙地上的身影。他们似乎都在等待你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向拿扫帚的老人（档案员）', next: 'meet_monk', trait: 'methodical' },
+            { text: '走向花丛中的女人（回忆者）', next: 'meet_beauty', trait: 'intuitive' },
+            { text: '走向沙地上的身影（追踪者）', next: 'meet_tiger', trait: 'instinctive' }
+        ]
+    },
+
+    // ===== 遇见档案员 =====
+    meet_monk: {
+        scene: 'library',
+        characters: [
+            { id: 'monk', position: 'center', clickable: true }
+        ],
+        onEnter: () => {
+            if (!gameState.encountered.includes('monk')) {
+                gameState.encountered.push('monk');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走进一间石室。四壁都是书架，书架上摆满了卷宗和档案。一个瘦削的老人正在用扫帚清扫地面。'
+            },
+            {
+                speaker: 'monk',
+                text: '你来了。我已经等你很久了。',
+                highlight: 'monk'
+            },
+            {
+                speaker: 'monk',
+                text: '我是这座花园的档案员。每一个进来寻找的人，都会在这里留下记录。你想找的X——我这里有关于她的档案。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向一面墙。那上面挂满了照片——成千上万张，每一张背面都写着 X。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那我要怎么找到真正的 X？」', next: 'monk_inquiry' },
+            { text: '查看那些照片', next: 'monk_photos', clue: 'name' },
+            { text: '「你这里有什么线索？」', next: 'monk_clues' }
+        ],
+        clickables: {
+            monk: {
+                dialogues: [
+                    { speaker: 'monk', text: '你想问什么？我已经在这里很久了，久到忘记了时间。' },
+                    { speaker: 'monk', text: '每一份档案都是一个故事。有些故事已经结束，有些还在继续。你的故事呢？' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    monk_inquiry: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '真正的X？让我告诉你我知道的。'
+            },
+            {
+                speaker: 'monk',
+                text: '三个月前，有一个女人来到这座花园。她也拿着一张照片，背面写着X——和你手中这张一模一样。'
+            },
+            {
+                speaker: 'monk',
+                text: '她问我："我在找一个写X的人。"我说："也许X不是被写的，而是被寻找的。"她笑了笑，然后走向花园深处。'
+            },
+            {
+                speaker: 'monk',
+                text: '那是我最后一次见到她。但她留下了一封信，说如果她没回来，就把信交给下一个寻找X的人。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那封信在哪里？」', next: 'monk_letter', clue: 'connection' },
+            { text: '「她去了哪里？」', next: 'monk_where', clue: 'location' },
+            { text: '「那个女人长什么样？」', next: 'monk_description' },
+            { text: '「关于时间……这一切发生了多久？」', next: 'monk_time' },
+            { text: '「X到底是谁？你有档案吗？」', next: 'monk_who' },
+            { text: '「X真的存在吗？」', next: 'monk_exist' }
+        ]
+    },
+
+    monk_clues: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '线索？我有三条。但每条都需要你做出选择。'
+            },
+            {
+                speaker: 'monk',
+                text: '第一条：X曾经来过这座花园，她留下了痕迹。第二条：花园的中心有一扇门，通往所有方向。第三条：你需要收集至少三条线索，才能打开那扇门。'
+            },
+            {
+                speaker: 'monk',
+                text: '我已经告诉你了我知道的。去问问另外两个人吧——回忆者和追踪者。他们也有线索。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「谢谢，我去找他们」', next: 'crossroads' },
+            { text: '「再告诉我更多关于X的事」', next: 'monk_inquiry' }
+        ]
+    },
+
+    monk_letter: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '老人从怀中取出一封泛黄的信。'
+            },
+            {
+                speaker: 'monk',
+                text: '"如果你在读这封信，说明我已经走了很远。X不是一个人，而是一个地方。或者说，X是所有地方的交汇处。去花园的中心，找到那扇刻满文字的门。"'
+            },
+            {
+                speaker: 'monk',
+                text: '"但记住：只有当你收集了足够多的线索，门才会打开。去问其他人吧。"',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我会找到那扇门的」', next: 'crossroads', clue: 'location' },
+            { text: '「还有其他人知道X的事？」', next: 'monk_others' }
+        ]
+    },
+
+    monk_description: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '她……和你有点像。不是长相，是眼神。那种寻找的眼神。'
+            },
+            {
+                speaker: 'monk',
+                text: '她说她的名字不重要，重要的是她正在写一个故事。一个关于寻找的故事。'
+            },
+            {
+                speaker: 'monk',
+                text: '也许……你就是她故事中的角色。或者，她是你的故事中的角色。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我要找到她」', next: 'crossroads', clue: 'name' },
+            { text: '「这太奇怪了」', next: 'monk_clues' }
+        ]
+    },
+
+    monk_others: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '回忆者在花园的镜花丛中。她能读取人们的记忆，但代价是你会失去一部分自己的记忆。'
+            },
+            {
+                speaker: 'monk',
+                text: '追踪者在沙地上。他能闻到人的气味，带你去任何你想去的地方。但他不会告诉你目的地是否安全。'
+            },
+            {
+                speaker: 'monk',
+                text: '去找他们吧。收集足够的线索，然后回到这里。我会带你去找那扇门。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去找回忆者', next: 'meet_beauty' },
+            { text: '去找追踪者', next: 'meet_tiger' },
+            { text: '去花园中心看看', next: 'crossroads' }
+        ]
+    },
+
+    monk_photos: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'left' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走近那面墙。成千上万张照片，每一张都模糊，每一张背面都写着 X。'
+            },
+            {
+                speaker: 'narrator',
+                text: '但当你仔细看，你发现了一些规律。有些照片的边缘有日期——有些是一百年前，有些是昨天，有些甚至是明天。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你抽出一张。照片背面除了 X，还有一行小字：「不要相信回忆者的话。她的记忆是被编辑过的。」'
+            },
+            {
+                speaker: 'narrator',
+                text: '地上有一张新的纸条：「X 的名字在风中。去花园的中心，那里有一扇门通往所有方向。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去花园的中心', next: 'crossroads' },
+            { text: '去找那个「回忆者」', next: 'meet_beauty' }
+        ]
+    },
+
+    monk_time: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '时间在这里没有意义。我可能是昨天来的，也可能是创世那天来的。在这座花园里，所有的时间同时存在。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向墙上的一个时钟——但时钟没有指针，只有无数细小的刻度，密密麻麻，像是蚂蚁的足迹。'
+            },
+            {
+                speaker: 'monk',
+                text: '每一个刻度都是一个寻找者进入花园的瞬间。你看到那个最亮的点了吗？那是你。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你凑近看。确实有一个点在微微发光。而在它旁边，有另一个点——更暗，但仍然存在。'
+            },
+            {
+                speaker: 'monk',
+                text: '你也许会困惑——我说X是三个月前来的，而追踪者说她是三天前来的。在这座花园里，这两个说法都是真的。因为时间不是一条线——它是一个圆。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那是 X 吗？」', next: 'monk_confirm_x' },
+            { text: '去花园的中心', next: 'crossroads' }
+        ]
+    },
+
+    monk_confirm_x: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '那是 X 进入花园的瞬间。比你早……或者比你晚。在这座花园里，"早"和"晚"只是方向不同的同一条路。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续追问', next: 'monk_inquiry' },
+            { text: '去花园的中心', next: 'crossroads', clue: 'time' }
+        ]
+    },
+
+    monk_who: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '老人从书架上抽出一个文件夹。文件夹上没有标签，只有一道裂痕，像是一道伤疤。'
+            },
+            {
+                speaker: 'monk',
+                text: '根据档案，X 是你的——等等，这很奇怪。档案显示 X 同时是你的爱人、你的敌人、你的证人和你的受害者。'
+            },
+            {
+                speaker: 'monk',
+                text: '这不可能。除非……你不是一个人。除非你是四个人，而 X 是你和另一个人之间的那个空间。'
+            },
+            {
+                speaker: 'monk',
+                text: '或者更简单：X 是你的另一个名字。你在寻找的，是过去的自己。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '接受这个可能性', next: 'accept_x_self', trait: 'self_aware' },
+            { text: '拒绝：X 是另一个人', next: 'reject_x_self', trait: 'obsessive' }
+        ]
+    },
+
+    monk_where: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '老人展开一张地图。但这不是普通的地图——这是一张时间的地图。'
+            },
+            {
+                speaker: 'monk',
+                text: '根据这张地图，当你完全忘记她的时候，她就会完全记得你。当你完全记得她的时候，她就会完全忘记你。你们永远在追逐彼此的背影。'
+            },
+            {
+                speaker: 'monk',
+                text: '但有一个例外。如果你们同时到达中心，记忆会重叠。你们会同时记得和忘记。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去花园中心', next: 'crossroads' },
+            { text: '先去找追踪者', next: 'meet_tiger' }
+        ]
+    },
+
+    monk_exist: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '这是最危险的档案。根据某些记录，X 从未存在过。她是你在进入花园的那一刻创造出来的。'
+            },
+            {
+                speaker: 'monk',
+                text: '你需要一个理由来解释自己为什么在这里，于是你创造了 X。你需要一个目标，于是你给自己设定了一个不可能完成的任务。'
+            },
+            {
+                speaker: 'monk',
+                text: '问题是：即使你知道她是被创造的，你还会继续寻找吗？',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「即使她是被创造的，我也要找到她。」', next: 'accept_illusion', trait: 'romantic' },
+            { text: '「如果是被创造的，那寻找就没有意义。」', next: 'ending_silence', trait: 'nihilist' }
+        ]
+    },
+
+    // ===== 遇见回忆者 =====
+    meet_beauty: {
+        scene: 'mirror',
+        characters: [
+            { id: 'beauty', position: 'center', clickable: true }
+        ],
+        onEnter: () => {
+            if (!gameState.encountered.includes('beauty')) {
+                gameState.encountered.push('beauty');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走进一片花丛。雾气温暖，带着一种令人眩晕的香气。一个女人站在花丛深处。'
+            },
+            {
+                speaker: 'beauty',
+                text: '你来了。我在梦里见过你。你在寻找X，对吗？'
+            },
+            {
+                speaker: 'beauty',
+                text: '我可以帮你。但我要先告诉你一件事——X在这里待过。她站在你现在站的地方，问了我同样的问题。'
+            },
+            {
+                speaker: 'beauty',
+                text: '她说："我在找一个答案。为什么我会忘记自己是谁？"然后她走向花园的中心，再也没有回来。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「她去了花园中心？」', next: 'beauty_center', clue: 'location' },
+            { text: '「她忘记了什么？」', next: 'beauty_memory', clue: 'time' },
+            { text: '「你能帮我找到她吗？」', next: 'beauty_help' }
+        ],
+        clickables: {
+            beauty: {
+                dialogues: [
+                    { speaker: 'beauty', text: '记忆是一种选择。你想记住什么？' },
+                    { speaker: 'beauty', text: 'X 的眼睛……你还记得是什么颜色的吗？' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    beauty_center: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '是的。花园的中心有一扇古老的门，上面刻满了文字。她说那扇门通往"所有世界的交汇处"。'
+            },
+            {
+                speaker: 'beauty',
+                text: '但她还说过一句话："只有收集了足够多的碎片，门才会打开。"'
+            },
+            {
+                speaker: 'beauty',
+                text: '我不知道"碎片"指的是什么。也许是线索，也许是记忆，也许是某种……特质。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我要收集这些碎片」', next: 'beauty_help' },
+            { text: '「那扇门在哪里？」', next: 'crossroads', clue: 'location' }
+        ]
+    },
+
+    beauty_memory: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '她忘记了自己的名字。她只记得一个字母——X。'
+            },
+            {
+                speaker: 'beauty',
+                text: '她说："我来这里是为了找回我的名字。但我越找，就越不确定这个名字是否曾经属于我。"'
+            },
+            {
+                speaker: 'beauty',
+                text: '然后她问我："如果我不记得自己是谁，那我还是我吗？"我没有答案。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我会帮她找回名字」', next: 'beauty_help', clue: 'name' },
+            { text: '「这太悲伤了」', next: 'beauty_help' },
+            { text: '「触碰我的额头，唤醒全部记忆」', next: 'beauty_full_memory' }
+        ]
+    },
+
+    beauty_help: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '我可以帮你，但你要做好准备。花园里的三个人——档案员、我、追踪者——每个人都掌握着一部分真相。'
+            },
+            {
+                speaker: 'beauty',
+                text: '档案员知道X去了哪里。我知道X忘记了什么。追踪者知道X的气味——他可以带你找到她。'
+            },
+            {
+                speaker: 'beauty',
+                text: '去和他们都谈谈吧。收集至少三条线索，然后回到花园中心。那扇门会为你打开。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我会去找他们」', next: 'crossroads' },
+            { text: '「如果我已经和档案员谈过了呢？」', next: 'beauty_progress' },
+            { text: '「我想真正见到她，有办法吗？」', next: 'beauty_meet_truly' }
+        ]
+    },
+
+    beauty_progress: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '那你已经迈出了第一步。'
+            },
+            {
+                speaker: 'beauty',
+                text: `你现在有${gameState.clues.length}条线索。当你收集到3条时，就可以去花园中心了。`
+            },
+            {
+                speaker: 'beauty',
+                text: '如果还没和追踪者谈过，去找他吧。他在沙地上等你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去找追踪者', next: 'meet_tiger' },
+            { text: '去花园中心', next: 'crossroads' }
+        ]
+    },
+
+    beauty_full_memory: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '女人伸出手，触碰你的额头。一瞬间，洪水般的记忆涌来——'
+            },
+            {
+                speaker: 'narrator',
+                text: '你记得 X 的笑声。你记得她生气时皱起的眉头。你记得她说"再见"时的语气，那种"再也不见"的语气。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你也记得其他的事——你记得自己是谁了。但记忆继续涌入，你开始失去平衡。'
+            },
+            {
+                speaker: 'narrator',
+                text: '然后你看到了真相：回忆者自己的记忆也是被编辑过的。有人在她的记忆里种下了X，就像种子一样。她不记得是谁做的——但她记得那个人的背影，穿着档案馆的长袍。'
+            },
+            {
+                speaker: 'beauty',
+                text: '现在你记得她了。但你是谁？现在你也知道了我的秘密——我的记忆，和你的记忆一样，是被写进去的。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我不记得我是谁了」', next: 'ending_lost_self', trait: 'sacrifice' },
+            { text: '「帮我找回我自己」', next: 'beauty_restore', trait: 'self_preservation' }
+        ]
+    },
+
+    beauty_meet_truly: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '真正相见？在这座花园里，"真正"是一个危险的词。但我会告诉你一个方法。'
+            },
+            {
+                speaker: 'narrator',
+                text: '她从花丛中摘下一朵花，花瓣是透明的，像是由光构成的。'
+            },
+            {
+                speaker: 'beauty',
+                text: '这朵花叫"同步"。如果你能把它带到花园的中心，你和 X 的记忆会完全重叠。但代价是——你们会变成同一个人。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '接过花，去花园中心', next: 'crossroads', trait: 'sacrifice' },
+            { text: '「有没有不失去自我的方法？」', next: 'beauty_async' }
+        ]
+    },
+
+    beauty_async: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '不失去自我的方法？有一个。但那个方法更残酷。'
+            },
+            {
+                speaker: 'beauty',
+                text: '你们可以选择"平行"。永远记得彼此，但永远无法真正相见。你们会在花园的两端，各自走各自的路。'
+            },
+            {
+                speaker: 'beauty',
+                text: '这是一种永恒的陪伴，也是一种永恒的分离。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我选择平行」', next: 'ending_parallel', trait: 'self_preservation' },
+            { text: '去花园中心', next: 'crossroads' }
+        ]
+    },
+
+    beauty_restore: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '你想找回自己？这比失去自己更难。要找回自己，你必须忘记 X。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「帮我找回自己」', next: 'ending_forget_x', trait: 'self_preservation' },
+            { text: '「不，我宁愿记得 X」', next: 'ending_lost_self', trait: 'sacrifice' }
+        ]
+    },
+
+    beauty_other_way: {
+        scene: 'mirror',
+        characters: [{ id: 'beauty', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'beauty',
+                text: '有。去找档案员，他可以告诉你 X 在哪里。去找追踪者，他可以带你找到 X。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去找档案员', next: 'meet_monk' },
+            { text: '去找追踪者', next: 'meet_tiger' },
+            { text: '去花园中心', next: 'crossroads' }
+        ]
+    },
+
+    // ===== 遇见追踪者 =====
+    meet_tiger: {
+        scene: 'desert',
+        characters: [
+            { id: 'tiger', position: 'center', clickable: true }
+        ],
+        onEnter: () => {
+            if (!gameState.encountered.includes('tiger')) {
+                gameState.encountered.push('tiger');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走向沙地。一只巨大的老虎从沙中站起，金色的眼睛注视着你。'
+            },
+            {
+                speaker: 'tiger',
+                text: '我闻到了。你身上有X的气味。'
+            },
+            {
+                speaker: 'tiger',
+                text: 'X三天前经过这里。她问我："你能带我去花园的中心吗？"我说可以。但她走了另一条路。'
+            },
+            {
+                speaker: 'tiger',
+                text: '她说："我要先收集一些碎片。"然后她走向图书馆的方向。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「她去了图书馆？」', next: 'tiger_library', clue: 'location' },
+            { text: '「你能带我去花园中心吗？」', next: 'tiger_guide' },
+            { text: '「她收集了什么碎片？」', next: 'tiger_fragments', clue: 'connection' }
+        ],
+        clickables: {
+            tiger: {
+                dialogues: [
+                    { speaker: 'tiger', text: '气味……它在分叉。三条路。你自己选择。' },
+                    { speaker: 'tiger', text: '我的鼻子不会说谎。但有时候，真相比谎言更难接受。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    tiger_fast: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: '最快的路径是穿过死亡。在这座花园里，"死亡"不是终点。它是一种……加速器。'
+            },
+            {
+                speaker: 'tiger',
+                text: '但代价是——当你到达时，你可能已经不再是原来的你了。死亡会带走你的一部分。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「带我走」', next: 'path_death', trait: 'desperate' },
+            { text: '「我选择更安全的路」', next: 'tiger_sure' }
+        ]
+    },
+
+    tiger_library: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: '是的。她去找档案员了。档案员知道很多事情——也许太多了。'
+            },
+            {
+                speaker: 'tiger',
+                text: '但她没有从图书馆直接去花园中心。她去了镜花丛，找回忆者。然后她才走向中心。'
+            },
+            {
+                speaker: 'tiger',
+                text: '她走了一条完整的路：档案员→回忆者→我→花园中心。也许这就是收集碎片的方法。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那我现在该怎么做？」', next: 'tiger_guide' },
+            { text: '「她最后去了花园中心吗？」', next: 'crossroads', clue: 'location' }
+        ]
+    },
+
+    tiger_guide: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: '我可以带你去花园中心。但我要警告你——如果你还没有收集足够的线索，那扇门不会打开。'
+            },
+            {
+                speaker: 'tiger',
+                text: '档案员知道位置。回忆者知道记忆。我知道路径。你需要我们三个人的信息。'
+            },
+            {
+                speaker: 'tiger',
+                text: `你现在有${gameState.clues.length}条线索。当你有3条时，我就可以带你穿过那扇门。`,
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「带我去花园中心」', next: 'crossroads' },
+            { text: '「我还需要更多线索」', next: 'tiger_fragments' },
+            { text: '「最快的路怎么走？」', next: 'tiger_fast' },
+            { text: '「X是不是在死亡里？」', next: 'tiger_death' }
+        ]
+    },
+
+    tiger_fragments: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: '碎片就是线索。每一条关于X的信息都是一块碎片。'
+            },
+            {
+                speaker: 'tiger',
+                text: '档案员有X的行踪。回忆者有X的记忆。我有X的气味——也就是她的去向。'
+            },
+            {
+                speaker: 'tiger',
+                text: '收集至少3条线索，然后来找我。我会带你去找那扇门。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我会去收集的」', next: 'crossroads' },
+            { text: '「如果我已经有线索了呢？」', next: 'tiger_check_progress' }
+        ]
+    },
+
+    tiger_check_progress: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: `让我闻闻……你身上有${gameState.clues.length}条线索的气味。`
+            },
+            {
+                speaker: 'tiger',
+                text: gameState.clues.length >= 3 
+                    ? '够了。3条线索。那扇门会为你打开。跟我来。'
+                    : '还不够。你需要至少3条。去和档案员、回忆者谈谈，然后再回来。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: gameState.clues.length >= 3 ? '「带我去那扇门」' : '「我会回来的」', next: 'crossroads' }
+        ]
+    },
+
+    tiger_sure: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: '最确定的路径是跟随气味。这条路很长——可能需要你走完整个花园，遇见所有三个人，收集所有线索。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '跟随它去花园中心', next: 'crossroads', clue: 'location' },
+            { text: '先去档案室', next: 'meet_monk' },
+            { text: '先去镜花园', next: 'meet_beauty' }
+        ]
+    },
+
+    tiger_death: {
+        scene: 'desert',
+        characters: [{ id: 'tiger', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'tiger',
+                text: '你问 X 是否在死亡里？我不知道。但我知道一件事：如果你选择那条路径，你会找到答案。但那个答案可能会杀死你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「带我走那条路径」', next: 'path_death', trait: 'suicidal' },
+            { text: '去花园中心', next: 'crossroads' }
+        ]
+    },
+
+    path_death: {
+        scene: 'desert',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你选择了通往死亡的路径。沙漠变得越来越热，然后突然变得冰冷。'
+            },
+            {
+                speaker: 'narrator',
+                text: '然后你看到了 X。她躺在沙地上，眼睛闭着，像是在睡觉。或者，像是在等待。'
+            },
+            {
+                speaker: 'x',
+                text: '你来了。我等了太久。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '和她一起留在这里', next: 'ending_death_together' },
+            { text: '带她离开', next: 'ending_death_escape' }
+        ]
+    },
+
+    // ===== 十字路口 =====
+    crossroads: {
+        scene: 'crossroads',
+        characters: [],
+        getDialogues: () => {
+            const refs = [];
+            if (gameState.encountered.includes('monk')) refs.push('档案员说过：花园的中心不是地点，而是时间——所有记忆在此处重叠，像一本被反复书写的羊皮纸。');
+            if (gameState.encountered.includes('beauty')) refs.push('回忆者说过：在这里，记住即是相遇，遗忘即是告别——而这两种动作，在花园的语言中是同一个词。');
+            if (gameState.encountered.includes('tiger')) refs.push('追踪者说过：所有的气味最终汇聚成一个点。那个点不是终点，而是所有起点同时存在的地方。');
+            
+            const refText = refs.length > 0 
+                ? refs.join(' ') 
+                : '你还没有和任何人交谈过。花园在等待——但等待这个词，在花园里意味着邀请。你需要先收集线索，就像博尔赫斯在进入巴别图书馆之前，先学会了遗忘。';
+            
+            return [
+                {
+                    speaker: 'narrator',
+                    text: `你站在花园的中心。博尔赫斯在某处写道：迷宫的中心不是出口，而是另一个迷宫。这里有三扇门——一扇门上倒映着无尽的文字，仿佛某本没有第一页也没有最后一页的书；一扇门通往一片澄澈的、没有记忆的大海；一扇门通往一座沙漠，那里每一粒沙都曾是某个文明的图书馆。`
+                },
+                {
+                    speaker: 'narrator',
+                    text: `你已经走了 ${gameState.day} 天。在小径分岔的花园里，一天的重量与一年的重量并无不同。你收集了 ${gameState.clues.length} 条关于 X 的线索——每一条线索都像特隆的某个赫罗尼尔，在你注意到它的那一刻才开始存在。`
+                },
+                {
+                    speaker: 'narrator',
+                    text: refText,
+                    showChoices: true
+                }
+            ];
+        },
+        choices: () => {
+            const choices = [];
+            
+            // 核心流程：收集3条线索后才能进入无限图书馆发现阿莱夫
+            if (gameState.clues.length >= 3) {
+                choices.push({ text: '推开刻满文字的大门——门上的文字在变化，但含义不变：你正在进入一个无限的问题', next: 'enter_infinite_library' });
+            } else {
+                choices.push({ text: '触碰刻满文字的大门——门上的文字太密了，你还无法辨认（需要3条线索）', next: 'need_more_clues' });
+            }
+            
+            // 访问过阿莱夫后，可以直接返回阿莱夫
+            if (gameState.traits.includes('aleph_visited')) {
+                choices.push({ text: '回到阿莱夫——那个直径两三厘米的、包含宇宙所有点的球体', next: 'aleph_choice' });
+            }
+            
+            choices.push({ text: '等待——在环形的时间里，等待即是一种抵达', next: 'ending_wait' });
+            choices.push({ text: '离开——但离开花园的人，是否真的离开了花园？', next: 'ending_leave' });
+            if (gameState.clues.length < 3) {
+                choices.push({ text: '我还需要更多线索——不是信息，而是理解信息的方式', next: 'need_more_clues' });
+                choices.push({ text: '也许我还没准备好——就像博尔赫斯在写《阿莱夫》之前，需要先成为盲人', next: 'need_more' });
+            }
+            return choices;
+        }
+    },
+
+    need_more_clues: {
+        scene: 'crossroads',
+        characters: [],
+        getDialogues: () => {
+            const unmet = [];
+            if (!gameState.encountered.includes('monk')) unmet.push('档案员');
+            if (!gameState.encountered.includes('beauty')) unmet.push('回忆者');
+            if (!gameState.encountered.includes('tiger')) unmet.push('追踪者');
+            
+            const hintText = unmet.length > 0
+                ? `${unmet.join('、')}——${unmet.length > 1 ? '他们每个人都掌握着谜题的一部分，而这些部分拼在一起，并不构成谜底，而是构成另一个谜题' : 'ta掌握着谜题的一部分——而谜题的一部分，就是整个谜题，正如阿莱夫中的每一个点都包含所有的点'}。去和${unmet.length > 1 ? '他们' : 'ta'}交谈吧。`
+                : '你已经和所有人都交谈过了。但线索不是被找到的——线索是在你准备好的那一刻，自己显现的。试着以不同的顺序重新审视它们。';
+            
+            return [
+                {
+                    speaker: 'narrator',
+                    text: '你试图推开那扇刻满文字的大门。门纹丝不动。博尔赫斯曾写道：有些门只有在你不推的时候才会打开。'
+                },
+                {
+                    speaker: 'narrator',
+                    text: `门上浮现出一行字——不是警告，而是定义：「收集 ${3 - gameState.clues.length} 条更多线索。线索不是钥匙，是钥匙的形状的记忆。」`
+                },
+                {
+                    speaker: 'narrator',
+                    text: hintText,
+                    showChoices: true
+                }
+            ];
+        },
+        choices: () => {
+            const choices = [];
+            if (!gameState.encountered.includes('monk')) choices.push({ text: '去找档案员——那个整理碎片的人，也许他自己就是最大的碎片', next: 'meet_monk' });
+            if (!gameState.encountered.includes('beauty')) choices.push({ text: '去找回忆者——记忆是时间的迷宫，而她是迷宫的地图', next: 'meet_beauty' });
+            if (!gameState.encountered.includes('tiger')) choices.push({ text: '去找追踪者——她追踪的不是气味，而是气味消失后留下的空缺', next: 'meet_tiger' });
+            if (choices.length === 0) choices.push({ text: '在花园中徘徊——有时候，徘徊是唯一正确的方向', next: 'crossroads' });
+            return choices;
+        }
+    },
+
+    need_more: {
+        scene: 'crossroads',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你意识到自己还没有准备好。X 仍然是一个谜，而你是那个试图解开谜题的人。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '回到档案室', next: 'meet_monk' },
+            { text: '回到镜花园', next: 'meet_beauty' },
+            { text: '回到荒野', next: 'meet_tiger' }
+        ]
+    },
+
+    // ===== 特殊节点 =====
+    accept_x_self: {
+        scene: 'library',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你接受了这个可能性：X 是你自己。不是比喻，不是象征，而是字面意义上的。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你走出档案室。雾气中，你看到了一个身影——那个身影转身，向你微笑。那是你的脸。或者，是 X 的脸。现在，这两者没有区别了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向那个身影', next: 'ending_found_self' }
+        ]
+    },
+
+    reject_x_self: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '执念是一种力量。它可以推动你走得更远，也可以让你永远原地打转。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续寻找', next: 'crossroads' }
+        ]
+    },
+
+    accept_illusion: {
+        scene: 'library',
+        characters: [{ id: 'monk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'monk',
+                text: '你选择相信自己的创造。这是一种勇气，也是一种疯狂。去吧。去花园的中心。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去花园中心', next: 'crossroads' }
+        ]
+    },
+
+    // ===== 结局 =====
+    ending_found_knowledge: {
+        scene: 'library',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '找到 X', desc: '你完成了寻找。但找到只是另一个开始。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你推开了书之门。一份档案从架子上飘下来，落在你手中。里面是 X 的一切。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你找到了 X。档案的最后一页写着：「X 在花园的另一端，正在阅读关于你的档案。」'
+            },
+            {
+                speaker: 'narrator',
+                text: '档案化为灰烬。'
+            }
+        ]
+    },
+
+    ending_found_memory: {
+        scene: 'mirror',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '重逢', desc: '你和 X 终于相见。不是终点，而是一起走的起点。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你推开了海之门。在镜子的另一端，你看到了 X。她也看到了你。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你们同时开口，说出同一个词：「你。」记忆重叠了。'
+            }
+        ]
+    },
+
+    ending_found_instinct: {
+        scene: 'desert',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '找到 X', desc: '你用本能找到了她。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你推开了沙漠之门。你奔跑，不需要理由，不需要方向。你的身体知道 X 在哪里。'
+            },
+            {
+                speaker: 'narrator',
+                text: '然后你看到了她。X 站在沙漠的尽头，背对着你。她转过身。'
+            }
+        ]
+    },
+
+    ending_found_self: {
+        scene: 'crossroads',
+        characters: [],
+        ending: { title: '找到自己', desc: '你意识到 X 从来不是另一个人，而是你丢失的那部分自己。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你站在三扇门前，但你没有推开任何一扇。你意识到，你一直在寻找的 X，从来就不是另一个人。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你就是 X。X 就是你。而你们，终于和解了。'
+            }
+        ]
+    },
+
+    ending_lost_self: {
+        scene: 'mirror',
+        characters: [],
+        ending: { title: '迷失自我', desc: '你记得 X 的一切，但忘记了自己是谁。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你记得 X 的一切，但你不记得自己了。你变成了寻找的化身。你不再是人，而是一个动词——"寻找"。'
+            }
+        ]
+    },
+
+    ending_silence: {
+        scene: 'entrance',
+        characters: [],
+        ending: { title: '沉默', desc: '你选择了停止寻找。在沉默中，答案不再重要。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你选择了沉默。不是拒绝说话，而是拒绝寻找。这就是卡夫卡式的结局：不是悲剧，不是喜剧，只是……未完成。'
+            }
+        ]
+    },
+
+    ending_wait: {
+        scene: 'crossroads',
+        characters: [],
+        ending: { title: '等待', desc: '你变成了一个等待的人。希望存在，即使它是一种痛苦。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你决定等待。你变成了花园的一个特征，像那三扇门，像那些雾气。X 会来吗？你不知道。但只要你在等，希望就存在。'
+            }
+        ]
+    },
+
+    ending_leave: {
+        scene: 'entrance',
+        characters: [],
+        ending: { title: '离开', desc: '你选择停止寻找。有些谜题不需要答案。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你决定离开。你走出石牌坊。你会忘记 X 吗？也许。也许不会。但即使记得，那也会是一种不同的记得。'
+            }
+        ]
+    },
+
+    ending_parallel: {
+        scene: 'mirror',
+        characters: [],
+        ending: { title: '平行', desc: '你和 X 永远记得彼此，但永远无法真正相见。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你选择了平行。你和 X 会永远记得彼此，但永远无法真正相见。这是一种奇怪的安慰。'
+            }
+        ]
+    },
+
+    ending_forget_x: {
+        scene: 'mirror',
+        characters: [],
+        ending: { title: '遗忘', desc: '你选择了找回自己，代价是忘记 X。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你选择了忘记。一阵温暖，然后是……空白。你把照片放下。它对你没有意义了。'
+            }
+        ]
+    },
+
+    ending_death_together: {
+        scene: 'desert',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '永恒陪伴', desc: '你选择和 X 一起留在死亡里。这是你们的选择。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你决定留下。你们并肩躺在沙地上。"你会后悔吗？" X 问。"也许会，"你说，"但后悔也是一种陪伴。"'
+            }
+        ]
+    },
+
+    ending_death_escape: {
+        scene: 'desert',
+        characters: [],
+        ending: { title: '无法带走', desc: '你试图带走 X，但有些东西无法被带走。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你试图带她离开。但沙漠没有尽头。"没用的，" X 说，"我是这个地方的一部分。你不能带走一个地方。"'
+            }
+        ]
+    },
+
+    // ================================================================
+    // 第二篇章：无限图书馆
+    // ================================================================
+    
+    // 过渡：从花园进入图书馆
+    enter_infinite_library: {
+        scene: 'infiniteLibrary',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你推开一扇刻满文字的门。门后不是房间，而是——无限的六边形回廊。'
+            },
+            {
+                speaker: 'narrator',
+                text: '每一面墙都是书架，每一本书都是一个世界。镜子将回廊无限复制，你看到无数个自己在无数个回廊中。'
+            },
+            {
+                speaker: 'narrator',
+                text: '远处，有三个身影。一个在冥想，一个在阴影中移动，一个靠在书架旁，似乎在等待什么。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向冥想的人', next: 'meet_librarian_monk', trait: 'contemplative' },
+            { text: '走向阴影中的人', next: 'meet_assassin', trait: 'cautious' },
+            { text: '走向等待的人', next: 'meet_general', trait: 'pragmatic' }
+        ]
+    },
+
+    // 遇见图书馆僧侣
+    meet_librarian_monk: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'librarianMonk', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('librarianMonk')) {
+                gameState.encountered.push('librarianMonk');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '一个僧侣坐在回廊中央，双眼闭合，手中捧着一本无字的书。他的存在像是一种沉默的声明。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '你来了。我在等你。或者说，这本书在等你。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '这座图书馆包含所有可能的书——所有已经写成的，所有尚未写成的，所有永远不会被写成的。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他睁开眼睛。那双眼睛清澈得像是能看穿书页。你注意到他长袍的领口处别着一枚徽章——和花园里那个档案员佩戴的一模一样。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「X 在哪本书里？」', next: 'monk_x_book', clue: 'location' },
+            { text: '「你守护的是什么书？」', next: 'monk_guarded_book' },
+            { text: '「这里有没有出口？」', next: 'monk_exit' },
+            { text: '「我可以接替你吗？」', next: 'monk_become_guardian' }
+        ],
+        clickables: {
+            librarianMonk: {
+                dialogues: [
+                    { speaker: 'librarianMonk', text: '每一本书都是一个迷宫。你确定要打开吗？' },
+                    { speaker: 'librarianMonk', text: '沉默是最好的阅读方式。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    monk_x_book: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'librarianMonk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: 'X 在哪本书里？这个问题假设 X 是一个可以被书写的人。但也许 X 是这本书的读者，而不是书中的角色。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向你手中的照片。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '这张照片本身是一本书。背面那个 X，是书名。你一直在读这本书，但你还没有翻到正文。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '翻开照片', next: 'open_photo_book', trait: 'intuitive' },
+            { text: '继续寻找 X 的实体', next: 'search_x_entity' }
+        ]
+    },
+
+    open_photo_book: {
+        scene: 'bookWorld',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你将照片当作书翻开。文字从纸面浮起，形成一条路。你踏上那条由句子铺成的路。'
+            },
+            {
+                speaker: 'narrator',
+                text: '路的尽头，你看到一个身影——但那不是 X。那是你自己，背对着你，正在阅读一本关于 X 的书。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你意识到：X 不是一个人，而是一个故事。而你，是那个故事的唯一读者。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向那个阅读的自己', next: 'ending_merge_self' },
+            { text: '离开这个书的世界', next: 'enter_infinite_library' }
+        ]
+    },
+
+    ending_merge_self: {
+        scene: 'bookWorld',
+        characters: [],
+        ending: { title: '融合', desc: '你与阅读的自己合二为一。X 从此不再是一个寻找的对象，而是一个被阅读的故事。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走向自己，穿过文字的迷雾。当你触碰那个背影时，你们融合了。你不再寻找 X，因为你已经成为那个讲述 X 的人。'
+            }
+        ]
+    },
+
+    monk_guarded_book: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'librarianMonk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: '我守护的书？它没有名字。它记录的是所有被遗忘的事。每一个被遗忘的人，每一个被遗忘的瞬间，都在这本书里。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他手中的无字书微微发光。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '你想知道 X 是否被遗忘了吗？',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「是的，我想知道」', next: 'check_x_forgotten', clue: 'connection' },
+            { text: '「不，我害怕答案」', next: 'fear_answer' }
+        ]
+    },
+
+    check_x_forgotten: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'librarianMonk', position: 'left' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '僧侣带你穿过无数回廊，来到一个隐藏的房间。墙上贴满了照片——都是 X，但每一张都不同。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '这些是被遗忘的 X。每一个进入图书馆的人，都会遗忘一部分 X。这些碎片被收集在这里。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你看到其中一张——那正是你手中的照片。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「这意味着我已经遗忘了 X？」', next: 'already_forgotten' },
+            { text: '拿走所有照片', next: 'take_all_photos' }
+        ]
+    },
+
+    already_forgotten: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'librarianMonk', position: 'left' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: '不。这意味着你正在遗忘。这座图书馆的每一秒都在偷走你的记忆。你越深入，遗忘越多。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '但有一个悖论：只有完全遗忘 X 的人，才能在图书馆的尽头找到 X。因为那里存放的，正是所有被遗忘的事物。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续深入图书馆', next: 'library_depth', trait: 'sacrifice' },
+            { text: '离开图书馆，保留记忆', next: 'exit_preserve_memory', trait: 'self_preservation' }
+        ]
+    },
+
+    library_depth: {
+        scene: 'infiniteLibrary',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你继续深入。回廊变得越来越暗，书架上的文字变得越来越模糊。你感觉到记忆正在流失。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你忘记了 X 的声音。然后是她的脸。然后是她的名字。最后，你忘记了"X"这个符号本身。'
+            },
+            {
+                speaker: 'narrator',
+                text: '然后，你看到了她。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向她', next: 'ending_found_by_forgetting' }
+        ]
+    },
+
+    ending_found_by_forgetting: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '遗忘中找到', desc: '你通过遗忘找到了 X。但你还记得这是你要找的人吗？' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '她站在那里，由所有被遗忘的事物构成。你不知道她是谁，但你知道她一直在等你。'
+            },
+            {
+                speaker: 'x',
+                text: '你终于来了。你忘记了我，所以我才能被找到。'
+            }
+        ]
+    },
+
+    exit_preserve_memory: {
+        scene: 'entrance',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你转身离开。在走出图书馆的那一刻，你感觉到记忆回流。你记得 X 了——但你也记得，你差点永远失去她。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '回到花园继续寻找', next: 'crossroads' }
+        ]
+    },
+
+    // 缺失场景补充
+    monk_exit: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'librarianMonk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: '出口？这座图书馆没有出口。或者说，每一扇门都是出口，但每一扇门都通向另一座图书馆。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向四周的镜子。每一个镜子里都是另一个回廊，另一个你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续寻找 X', next: 'meet_librarian_monk' },
+            { text: '推开最近的一扇门', next: 'enter_infinite_library' }
+        ]
+    },
+
+    fear_answer: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'librarianMonk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: '害怕是合理的。有些答案比问题更危险。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他合上无字书，不再说话。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续在图书馆探索', next: 'enter_infinite_library' }
+        ]
+    },
+
+    search_x_entity: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'librarianMonk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: 'X 的实体……在这座图书馆里，"实体"是一个危险的概念。每一个角色都存在于某本书里，但当你翻开那本书，他们就从角色变成了文字。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向远处。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向他指的方向', next: 'enter_infinite_library' }
+        ]
+    },
+
+    take_all_photos: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'librarianMonk', position: 'left' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你试图拿走所有照片，但当你触碰它们时，它们化作灰尘飘散。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '被遗忘的东西无法被带走。它们只能存在于遗忘之中。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续深入图书馆', next: 'library_depth' }
+        ]
+    },
+
+    // 遇见杀手
+    meet_assassin: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('assassin')) {
+                gameState.encountered.push('assassin');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '一个身影从阴影中浮现。他的动作无声，眼神冰冷。你注意到他的手指轻轻搭在一本书的书脊上——像是在抚摸一把刀。'
+            },
+            {
+                speaker: 'assassin',
+                text: '你也在找人。我看得出来。我们是一样的。'
+            },
+            {
+                speaker: 'assassin',
+                text: '但我在找的人必须死。你在找的人呢？她必须活吗？'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的目光扫过你的肩膀——你肩上还残留着花园里追踪者留下的气味痕迹。他微微眯起眼睛，似乎认出了什么。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我必须找到她，不论死活」', next: 'assassin_shared', trait: 'desperate' },
+            { text: '「我要她活着」', next: 'assassin_conflict', trait: 'romantic' },
+            { text: '「你在找谁？」', next: 'assassin_target' },
+            { text: '「你有没有想过，你的目标是谁？」', next: 'assassin_target_revealed' }
+        ],
+        clickables: {
+            assassin: {
+                dialogues: [
+                    { speaker: 'assassin', text: '图书馆是最好的猎场。没有人能在这里藏住一辈子。' },
+                    { speaker: 'assassin', text: '每一本书都是一条命。我读过很多书。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    assassin_shared: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: '不论死活……我理解。有时候，找到比活着更重要。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他从阴影中抽出一把刀，递给你。'
+            },
+            {
+                speaker: 'assassin',
+                text: '这把刀可以切开书页。用它可以进入任何一本书的世界。但警告你——有些书一旦进入，就再也出不来了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '接过刀', next: 'take_knife', clue: 'location' },
+            { text: '「我不需要武器」', next: 'refuse_weapon' }
+        ]
+    },
+
+    take_knife: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你接过刀。它比想象中轻，几乎像是一片书页。'
+            },
+            {
+                speaker: 'assassin',
+                text: '现在你可以选择。用这把刀切开任何一本书，进入其中的世界。X 就在某本书里。'
+            },
+            {
+                speaker: 'assassin',
+                text: '但你要想清楚：你是要找到她，还是要救她？这两个目标可能不兼容。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '切开最近的一本书', next: 'cut_nearest_book' },
+            { text: '问他 X 在哪本书', next: 'assassin_x_location' }
+        ]
+    },
+
+    cut_nearest_book: {
+        scene: 'bookWorld',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你将刀切入最近的书脊。书页裂开，露出一片由文字构成的荒原。你走进去。'
+            },
+            {
+                speaker: 'narrator',
+                text: '这里是一个故事的世界。你看到无数角色在文字间行走，但他们都是纸做的，没有真正的生命。'
+            },
+            {
+                speaker: 'narrator',
+                text: '在远处，你看到一个身影——不是 X，而是一个正在书写的人。他抬起头，看向你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向书写者', next: 'meet_the_writer' },
+            { text: '退出这本书', next: 'enter_infinite_library' }
+        ]
+    },
+
+    meet_the_writer: {
+        scene: 'bookWorld',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走向那个人。他的脸是空白的——不是没有五官，而是五官在不断变化，像是还没有被书写完成。'
+            },
+            {
+                speaker: 'narrator',
+                text: '「你来了，」他说，声音像是从很远的地方传来，「我一直在等你。我是这个故事的作者，而你——是读者。」'
+            },
+            {
+                speaker: 'narrator',
+                text: '「X 是我写的一个角色。但她……逃走了。她不想被我的故事定义。她逃进了其他的故事，其他的世界。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「带我去她逃去的地方」', next: 'chase_x', trait: 'determined' },
+            { text: '「也许她不想被找到」', next: 'respect_x_escape', trait: 'self_aware' }
+        ]
+    },
+
+    chase_x: {
+        scene: 'bookWorld',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '作者指向书页的边缘。「她逃进了书页之间的空白。那是没有故事的地方，没有定义，没有束缚。」'
+            },
+            {
+                speaker: 'narrator',
+                text: '「但那里也没有存在。进入空白，她将不再是任何角色——包括她自己。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '进入空白寻找她', next: 'enter_the_void' },
+            { text: '放弃，回到图书馆', next: 'enter_infinite_library' }
+        ]
+    },
+
+    enter_the_void: {
+        scene: 'bookWorld',
+        characters: [],
+        ending: { title: '空白', desc: '你进入了书页之间的空白。X 在这里，但你们都不再是任何故事的一部分。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你踏入空白。文字消失了，故事消失了。你看到 X——她没有形状，没有定义，只是存在本身。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你意识到：在这里，你们都是自由的。但自由也是一种虚无。'
+            }
+        ]
+    },
+
+    respect_x_escape: {
+        scene: 'bookWorld',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你停下了。也许 X 逃走是有原因的。也许她不想被任何故事——包括你的寻找——所定义。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '离开，不再寻找', next: 'ending_stop_searching' },
+            { text: '继续，但换一种方式', next: 'enter_infinite_library' }
+        ]
+    },
+
+    ending_stop_searching: {
+        scene: 'infiniteLibrary',
+        characters: [],
+        ending: { title: '停止寻找', desc: '你选择不再寻找 X。也许这是另一种找到——找到放下的勇气。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你放下了手中的照片。它飘落在无数书页之间，成为图书馆的一部分。你不再寻找。X 自由了。你也自由了。'
+            }
+        ]
+    },
+
+    // 杀手相关缺失场景
+    assassin_conflict: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: '你要她活着？那比杀死她更难。在这座图书馆里，存在是一种奢侈。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他收起刀，眼神中有一丝不易察觉的悲伤。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「为什么？」', next: 'assassin_why_alive' },
+            { text: '继续寻找 X', next: 'enter_infinite_library' }
+        ]
+    },
+
+    assassin_why_alive: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: '因为活着意味着被阅读。在这座图书馆里，每一个角色都在被无数读者阅读、解读、定义。'
+            },
+            {
+                speaker: 'assassin',
+                text: '死亡是一种解脱——不再被任何故事束缚。你想让她活着？你确定那不是一种残忍？',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我仍然要找到她」', next: 'take_knife', clue: 'connection' },
+            { text: '离开杀手', next: 'enter_infinite_library' }
+        ]
+    },
+
+    assassin_target: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: '我在找一个作者。他写了一个故事，那个故事杀死了我的过去。我要找到他，结束那个故事。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的手指轻轻颤抖。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「也许 X 知道他在哪里」', next: 'assassin_x_knows' },
+            { text: '继续寻找 X', next: 'enter_infinite_library' }
+        ]
+    },
+
+    assassin_x_knows: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: 'X？也许。在这座图书馆里，每个人都知道每个人。每个人也都在躲避每个人。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '一起寻找', next: 'enter_infinite_library', clue: 'connection' }
+        ]
+    },
+
+    assassin_x_location: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: 'X 在哪本书？我不知道。但我知道一个方法——用这把刀切开你自己的书。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向你脚下。你低头，发现自己站在一本巨大的书上。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '切开脚下的书', next: 'cut_nearest_book' }
+        ]
+    },
+
+    refuse_weapon: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: '不需要武器？那你的寻找只是一种幻想。在这座图书馆里，不切开书页，你永远无法真正进入任何故事。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续无武器寻找', next: 'enter_infinite_library' }
+        ]
+    },
+
+    // 遇见将军
+    meet_general: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('general')) {
+                gameState.encountered.push('general');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '一个穿着褪色军装的男人靠在书架旁。他的肩章少了一颗星，胸前的勋章位置有褪色的痕迹。他看着一张地图，但地图上没有标注。'
+            },
+            {
+                speaker: 'general',
+                text: '又一个迷路的人。这座图书馆专门收集迷路的人。'
+            },
+            {
+                speaker: 'general',
+                text: '我曾经指挥过三千人。现在，我连自己都指挥不了。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他胸前的勋章上刻着一朵花——和花园里回忆者镜花丛中的花一模一样。那是记忆之花。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你在找什么？」', next: 'general_search' },
+            { text: '「你认识 X 吗？」', next: 'general_knows_x' },
+            { text: '「你的地图……」', next: 'general_map' },
+            { text: '「你想找到那场战役的另一种结局吗？」', next: 'general_final_choice' }
+        ],
+        clickables: {
+            general: {
+                dialogues: [
+                    { speaker: 'general', text: '战争教会我一件事：有时候，撤退比进攻更需要勇气。' },
+                    { speaker: 'general', text: '我在这座图书馆走了三十年。或者三百年。时间在这里没有意义。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    general_search: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '我在找一场战役。一场我输掉的战役。我想知道——我到底输在哪里。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指着周围的书架。'
+            },
+            {
+                speaker: 'general',
+                text: '这座图书馆记录了所有可能的结果。在某本书里，我赢了那场战役。在某本书里，三千人都活了下来。我想找到那本书。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '帮他找那本书', next: 'help_general', trait: 'compassionate' },
+            { text: '「也许有些结果不应该被改变」', next: 'accept_defeat' }
+        ]
+    },
+
+    help_general: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你和将军一起在书架间搜寻。终于，在一本积满灰尘的书里，他找到了那场战役的另一种结局。'
+            },
+            {
+                speaker: 'general',
+                text: '在这里……我做出了不同的决定。三千人都活了下来。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他合上书，沉默了很久。'
+            },
+            {
+                speaker: 'general',
+                text: '但这不是我的现实。这只是……一个可能。我还是要回到我的失败里去。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「也许我们可以留在可能里」', next: 'stay_in_possibility' },
+            { text: '告别将军，继续寻找 X', next: 'enter_infinite_library', clue: 'connection' }
+        ]
+    },
+
+    stay_in_possibility: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '留在可能里？那不是活着，那只是……做梦。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他看着你，眼神中有一丝羡慕。'
+            },
+            {
+                speaker: 'general',
+                text: '但也许你是对的。也许这座图书馆存在的意义，就是让我们有一个地方可以做梦。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向远处的一扇门。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向那扇门', next: 'general_final_door' }
+        ]
+    },
+
+    general_final_door: {
+        scene: 'hiddenChamber',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你推开那扇门。里面是一个小房间，墙上挂满了照片——都是同一个人，但每一张都不同。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你认出了那张脸。是 X。'
+            },
+            {
+                speaker: 'narrator',
+                text: '每一张照片下面都有一行字：「X 在寻找你。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '这是真的吗？', next: 'x_seeking_you' }
+        ]
+    },
+
+    x_seeking_you: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你听到身后有脚步声。你转身。'
+            },
+            {
+                speaker: 'narrator',
+                text: 'X 站在那里。她看着你，眼中有一种你从未见过的表情——释然。'
+            },
+            {
+                speaker: 'x',
+                text: '我一直在找你。你不知道吗？'
+            },
+            {
+                speaker: 'x',
+                text: '我们一直在互相寻找。在这座图书馆里，在所有可能的世界里。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '拥抱她', next: 'ending_reunion_library' }
+        ]
+    },
+
+    ending_reunion_library: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '图书馆重逢', desc: '在无限图书馆的深处，你和 X 终于找到了彼此。原来你们一直在互相寻找。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你拥抱她。在这个由所有可能的故事构成的地方，你们的故事终于交汇。'
+            },
+            {
+                speaker: 'x',
+                text: '现在，我们可以一起读这本书了。但……这本书还有更多的章节。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「还有什么？」', next: 'library_to_blade' }
+        ]
+    },
+
+    library_to_blade: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'x',
+                text: '有一个世界，和我们的完全不同。那里没有书，没有花园，只有钢铁和霓虹。'
+            },
+            {
+                speaker: 'x',
+                text: '在那个世界里，人们质疑什么是真实，什么是记忆，什么是灵魂。'
+            },
+            {
+                speaker: 'x',
+                text: '我想……我们需要去那里。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「一起去」', next: 'blade_runner_entrance' }
+        ]
+    },
+
+    // 将军相关缺失场景
+    general_knows_x: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: 'X？我听说过这个名字。在图书馆的某个地方，有一整面墙都是关于她的记录。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向远处的一个黑暗回廊。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向那个回廊', next: 'check_x_forgotten', clue: 'location' },
+            { text: '继续和将军交谈', next: 'meet_general' }
+        ]
+    },
+
+    general_map: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '这张地图？它没有标注，因为图书馆本身就在不断变化。每当你以为找到了路，回廊就会重新排列。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他苦笑了一下。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那怎么找到 X？」', next: 'general_find_x_advice' },
+            { text: '继续探索', next: 'enter_infinite_library' }
+        ]
+    },
+
+    general_find_x_advice: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '找到 X？在这座图书馆里，找到任何东西都需要一个悖论：你必须先忘记你要找什么。'
+            },
+            {
+                speaker: 'general',
+                text: '我找了三十年，越找越远。也许有一天我会完全忘记我在找什么——然后，也许就在那一天，我会找到。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '接受这个悖论', next: 'library_depth', trait: 'sacrifice' },
+            { text: '拒绝这个悖论', next: 'enter_infinite_library', trait: 'determined' }
+        ]
+    },
+
+    accept_defeat: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '不应该被改变？也许你是对的。也许失败是唯一真实的东西。胜利只是可能，失败才是现实。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他低下头，看着自己褪色的勋章。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '告别将军', next: 'enter_infinite_library' }
+        ]
+    },
+
+    // ================================================================
+    // 图书馆人物支线结局
+    // ================================================================
+
+    // 僧侣支线：选择成为新的守护者
+    monk_become_guardian: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'librarianMonk', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'librarianMonk',
+                text: '你想接替我？成为新的守护者？'
+            },
+            {
+                speaker: 'narrator',
+                text: '他看着你，眼中有一种古老的疲惫。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '我已经守护这本书三百年。或者三千年。时间在这里没有意义。'
+            },
+            {
+                speaker: 'librarianMonk',
+                text: '但也许……是时候了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我愿意守护」', next: 'ending_new_guardian' },
+            { text: '「不，我还是要找 X」', next: 'enter_infinite_library' }
+        ]
+    },
+
+    ending_new_guardian: {
+        scene: 'hiddenChamber',
+        characters: [],
+        ending: { title: '新的守护者', desc: '你选择留在图书馆，成为新的守护者。X 的故事将被你记录，而你的故事将被遗忘。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你接过无字书。僧侣的身影渐渐消散，像是被书页吸收。'
+            },
+            {
+                speaker: 'narrator',
+                text: '现在，你是守护者了。你会记录每一个寻找 X 的人，就像僧侣记录了你。'
+            }
+        ]
+    },
+
+    // 杀手支线：发现目标其实是自己
+    assassin_target_revealed: {
+        scene: 'bookWorld',
+        characters: [{ id: 'assassin', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'assassin',
+                text: '我一直在找一个作者。他写了一个故事，那个故事杀死了我的过去。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的声音颤抖。'
+            },
+            {
+                speaker: 'assassin',
+                text: '但我刚刚发现……那个作者就是我自己。我写了那个故事，然后忘记了我写过它。'
+            },
+            {
+                speaker: 'assassin',
+                text: '我想杀死的，是我自己。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你不必杀死任何人」', next: 'ending_assassin_redemption' },
+            { text: '「有时候我们需要杀死过去的自己」', next: 'ending_assassin_transformation' }
+        ]
+    },
+
+    ending_assassin_redemption: {
+        scene: 'infiniteLibrary',
+        characters: [],
+        ending: { title: '杀手的救赎', desc: '杀手放下了刀。他不再追杀任何人，包括他自己。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '他看着你，眼中有一种你从未见过的东西——希望。'
+            },
+            {
+                speaker: 'assassin',
+                text: '谢谢你。也许……我可以写一个新的故事。'
+            }
+        ]
+    },
+
+    ending_assassin_transformation: {
+        scene: 'bookWorld',
+        characters: [],
+        ending: { title: '自我了断', desc: '杀手杀死了"过去的自己"，获得了新生。但新生的他，还是原来的他吗？' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '他用刀切开了那本书。书页间，一个身影倒下——那是他自己，但穿着不同的衣服，有着不同的表情。'
+            },
+            {
+                speaker: 'narrator',
+                text: '当他抬起头时，他的眼神变了。他不再是杀手，也不再是作者。他是谁？连他自己也不知道。'
+            }
+        ]
+    },
+
+    // 将军支线：找到战役的另一种结局，但选择不改变
+    general_final_choice: {
+        scene: 'hiddenChamber',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '我找到了。那本书里有我胜利的版本。三千人都活了下来。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的手在颤抖。'
+            },
+            {
+                speaker: 'general',
+                text: '但你知道吗？那个版本的我，不是我。那个我没有经历过失败，没有失去过任何人。'
+            },
+            {
+                speaker: 'general',
+                text: '他只是一个……可能性。而我，是现实。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你选择了接受失败？」', next: 'general_acceptance' },
+            { text: '「你可以成为那个可能性」', next: 'general_become_possibility' }
+        ]
+    },
+
+    general_acceptance: {
+        scene: 'infiniteLibrary',
+        characters: [{ id: 'general', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'general',
+                text: '接受？不。我不接受失败。但我接受我是那个失败的人。'
+            },
+            {
+                speaker: 'general',
+                text: '这是我的故事。不是那个胜利者的故事。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那你接下来去哪？」', next: 'ending_general_journey' }
+        ]
+    },
+
+    ending_general_journey: {
+        scene: 'infiniteLibrary',
+        characters: [],
+        ending: { title: '将军的旅程', desc: '将军选择继续寻找，不是寻找胜利，而是寻找自己失败的意义。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '他收起地图，走向图书馆的深处。'
+            },
+            {
+                speaker: 'general',
+                text: '也许有一天，我会找到答案。也许不会。但寻找本身，就是我的答案。'
+            }
+        ]
+    },
+
+    general_become_possibility: {
+        scene: 'bookWorld',
+        characters: [],
+        ending: { title: '成为可能性', desc: '将军进入了那本胜利的书。但他发现，那个世界没有他的位置——因为那个世界已经有了一个将军。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '他走进书页。那个胜利的世界在他眼前展开。'
+            },
+            {
+                speaker: 'narrator',
+                text: '但他看到，那个世界里已经有一个他了——一个从未失败的将军，一个他无法成为的人。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他站在书页之间，既不属于这个世界，也不属于那个世界。'
+            }
+        ]
+    },
+
+    // ================================================================
+    // 第三篇章：卡夫卡迷宫
+    // ================================================================
+
+    enter_kafka_maze: {
+        scene: 'kafkaCorridor',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你推开一扇灰色的门。门后是一条长得没有尽头的走廊，两侧是编号的门，天花板上是闪烁的荧光灯。'
+            },
+            {
+                speaker: 'narrator',
+                text: '走廊尽头有一扇巨大的门，上面挂着无数把锁。你知道 X 就在那扇门后面。'
+            },
+            {
+                speaker: 'narrator',
+                text: '但当你走向那扇门时，你发现自己在原地打转。无论你走多久，那扇门始终保持着同样的距离。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续走向大门', next: 'approach_gate' },
+            { text: '敲开最近的门', next: 'knock_nearby_door' },
+            { text: '寻找其他人', next: 'find_others' }
+        ]
+    },
+
+    approach_gate: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('gatekeeper')) {
+                gameState.encountered.push('gatekeeper');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你终于走到了大门前。一个穿着制服的男人站在那里，手中拿着一大串钥匙，但没有任何一把能打开这扇门。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '你不能进去。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的语气平淡，像是在陈述天气。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「为什么？」', next: 'gatekeeper_why' },
+            { text: '「我有权利进去」', next: 'gatekeeper_rights' },
+            { text: '「X 在里面吗？」', next: 'gatekeeper_x_inside' },
+            { text: '「你想进去吗？」', next: 'gatekeeper_secret' }
+        ],
+        clickables: {
+            gatekeeper: {
+                dialogues: [
+                    { speaker: 'gatekeeper', text: '这不是我能决定的。' },
+                    { speaker: 'gatekeeper', text: '你需要等待。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    gatekeeper_why: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: '为什么？这不是我能回答的问题。你需要去问 3 号办公室。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向走廊。你回头看，所有的门都标着"3"。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去 3 号办公室', next: 'office_3' }
+        ]
+    },
+
+    office_3: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('bureaucrat')) {
+                gameState.encountered.push('bureaucrat');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走进一间等候室。里面坐满了人，每个人都拿着一张号码牌。柜台后面坐着一个没有脸的人——或者说，他的脸被阴影完全遮盖了。'
+            },
+            {
+                speaker: 'bureaucrat',
+                text: '请取号。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你低头，发现自己手中已经有一张号码牌：8472。墙上的显示屏显示：正在办理：23。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我要等多久？」', next: 'bureaucrat_wait' },
+            { text: '「我要进去找 X」', next: 'bureaucrat_x' },
+            { text: '插队', next: 'bureaucrat_cut', trait: 'desperate' },
+            { text: '「我能看看你的脸吗？」', next: 'bureaucrat_face' },
+            { text: '离开等候室', next: 'kafka_corridor_return' }
+        ],
+        clickables: {
+            bureaucrat: {
+                dialogues: [
+                    { speaker: 'bureaucrat', text: '请耐心等待。' },
+                    { speaker: 'bureaucrat', text: '系统正在处理。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    kafka_corridor_return: {
+        scene: 'kafkaCorridor',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你决定离开这个荒谬的等候室。走廊依然漫长，但至少你在移动。'
+            },
+            {
+                speaker: 'narrator',
+                text: '卡夫卡的世界就是这样——无尽的走廊，无尽的等待，无尽的形式。但你可以选择不被困住。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续探索', next: 'enter_kafka_maze' },
+            { text: '回到花园', next: 'crossroads' }
+        ]
+    },
+
+    bureaucrat_wait: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '等待时间取决于很多因素。你的申请需要经过 7 个部门的审批。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他递给你一叠表格。'
+            },
+            {
+                speaker: 'bureaucrat',
+                text: '请先填写这些。第 3 页需要公证，第 7 页需要翻译，第 12 页……等等，第 12 页已经废止了。你需要等新版本。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「新版本什么时候出？」', next: 'bureaucrat_new_version' },
+            { text: '填写表格', next: 'fill_forms', trait: 'methodical' }
+        ]
+    },
+
+    bureaucrat_new_version: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '新版本？这不在我的职权范围内。你需要去问 7 号办公室。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你回头看，所有的门都标着"7"。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「这不就是 7 号办公室吗？」', next: 'bureaucrat_confusion' },
+            { text: '离开，继续寻找', next: 'kafka_loop' }
+        ]
+    },
+
+    kafka_loop: {
+        scene: 'endlessStairs',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走进一条螺旋楼梯。你向上走，但每一层都一模一样。你向下走，情况也一样。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你感觉到有人在看着你。你回头，走廊尽头有一个黑影。但当你眨眼，黑影消失了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续向上', next: 'stairs_up' },
+            { text: '继续向下', next: 'stairs_down' },
+            { text: '调查黑影', next: 'investigate_shadow' }
+        ]
+    },
+
+    investigate_shadow: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('watcher')) {
+                gameState.encountered.push('watcher');
+            }
+        },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走向黑影出现的地方。那里空无一人，只有墙上的一行字：「你正在被观察。」'
+            },
+            {
+                speaker: 'narrator',
+                text: '你感觉到背后有视线。你猛地转身。'
+            },
+            {
+                speaker: 'narrator',
+                text: '一个黑影站在你身后，只有眼睛发出微光。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你是谁？」', next: 'watcher_who' },
+            { text: '「你在监视我？」', next: 'watcher_watching' },
+            { text: '逃跑', next: 'watcher_run', trait: 'paranoid' },
+            { text: '「你其实也是被困的人吧？」', next: 'watcher_truth' }
+        ],
+        clickables: {
+            watcher: {
+                dialogues: [
+                    { speaker: 'watcher', text: '……' },
+                    { speaker: 'watcher', text: '继续走。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    watcher_who: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '我是记录者。我记录每一个试图进入大门的人。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的声音像是从很远的地方传来。'
+            },
+            {
+                speaker: 'watcher',
+                text: '你想知道一个秘密吗？从来没有人成功进入那扇门。但他们都还在尝试。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「为什么进不去？」', next: 'watcher_why_impossible' },
+            { text: '「X 在里面吗？」', next: 'watcher_x_inside' }
+        ]
+    },
+
+    watcher_why_impossible: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '因为门后面什么都没有。或者，门后面是另一个走廊，通向另一扇门，后面是另一个走廊……'
+            },
+            {
+                speaker: 'watcher',
+                text: '这是一个没有出口的迷宫。设计它的人早就忘了为什么要设计它。现在它只是在运转，像一台没有目的的机器。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「那 X 在哪里？」', next: 'watcher_where_x' },
+            { text: '「我要怎么出去？」', next: 'watcher_how_exit' }
+        ]
+    },
+
+    watcher_where_x: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: 'X？她不在迷宫里。她从未进入过迷宫。'
+            },
+            {
+                speaker: 'narrator',
+                text: '黑影的眼睛闪烁了一下。'
+            },
+            {
+                speaker: 'watcher',
+                text: '你在寻找的 X，是设计这个迷宫的人。她在外面，看着里面的人徒劳地寻找她。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「这不可能是真的」', next: 'ending_denial' },
+            { text: '「我要怎么出去？」', next: 'watcher_how_exit' }
+        ]
+    },
+
+    watcher_how_exit: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '出去？只有一个方法。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向楼梯下方——那里有一扇门，门上写着「放弃」。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走向那扇门', next: 'door_give_up' },
+            { text: '继续寻找', next: 'kafka_loop', trait: 'obsessive' }
+        ]
+    },
+
+    door_give_up: {
+        scene: 'kafkaCorridor',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走向那扇门。门没有锁，轻轻一推就开了。'
+            },
+            {
+                speaker: 'narrator',
+                text: '门后是一个普通的房间。X 坐在一张椅子上，正在阅读一本书。'
+            },
+            {
+                speaker: 'narrator',
+                text: '她抬起头，看着你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你就是设计迷宫的人？」', next: 'x_the_designer' }
+        ]
+    },
+
+    x_the_designer: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'x',
+                text: '设计迷宫？不。我只是第一个被困在这里的人。'
+            },
+            {
+                speaker: 'x',
+                text: '我花了很长时间才明白：迷宫不是为了困住我们而存在的。迷宫是因为我们相信它存在而存在的。'
+            },
+            {
+                speaker: 'x',
+                text: '你一直在寻找我。但我也在寻找你。我们都在寻找对方，却在这个没有尽头的走廊里错过了无数次。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我们一起出去」', next: 'ending_escape_together' },
+            { text: '「我要留下来」', next: 'ending_stay_in_maze' }
+        ]
+    },
+
+    ending_escape_together: {
+        scene: 'entrance',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '逃离迷宫', desc: '你终于和 X 一起走出了卡夫卡迷宫。但你们都知道，迷宫永远在那里，等待着下一个寻找者。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你们一起走出迷宫。但眼前的不是阳光，而是……霓虹。'
+            },
+            {
+                speaker: 'narrator',
+                text: '雨夜。高楼。飞行车辆。这是一个完全不同的世界。'
+            },
+            {
+                speaker: 'x',
+                text: '这是……下一个地方。我感觉到，这里有我们要找的答案。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「走吧」', next: 'blade_runner_entrance' }
+        ]
+    },
+
+    ending_stay_in_maze: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '留在迷宫', desc: '你选择留在卡夫卡迷宫里。也许在这里，寻找本身就是意义。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: 'X 看着你，眼中有一丝悲伤，但也有理解。'
+            },
+            {
+                speaker: 'x',
+                text: '那么，我们一起走吧。也许有一天，我们会找到那扇门真正的钥匙。'
+            }
+        ]
+    },
+
+    ending_denial: {
+        scene: 'endlessStairs',
+        characters: [],
+        ending: { title: '否认', desc: '你拒绝接受真相，继续在迷宫中徒劳地寻找。这是你的选择，也是你的命运。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你转身离开黑影，继续在楼梯上行走。向上，向下，没有区别。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你永远不会知道，X 就在你身后，看着你渐行渐远。'
+            }
+        ]
+    },
+
+    // 缺失场景补充
+    knock_nearby_door: {
+        scene: 'kafkaCorridor',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你敲开一扇门。门后是一个和你刚才走过的一模一样的走廊。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你走进去，身后的门无声地关上。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续走', next: 'kafka_loop' }
+        ]
+    },
+
+    find_others: {
+        scene: 'waitingRoom',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走进等候室。里面坐满了人，每个人都面无表情，手中拿着号码牌。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你试图和旁边的人说话，但他只是茫然地看着你，然后低下头。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '取号等待', next: 'office_3' }
+        ]
+    },
+
+    gatekeeper_rights: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: '权利？你需要先证明你有权利。证明需要文件，文件需要审批，审批需要时间。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的语气没有任何变化，像是在背诵一段背过无数遍的话。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「什么文件？」', next: 'gatekeeper_documents' }
+        ]
+    },
+
+    gatekeeper_documents: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: '文件清单在 3 号办公室。但 3 号办公室今天不办公。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他指向走廊。你回头看，所有的门都关着。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「什么时候办公？」', next: 'gatekeeper_when' }
+        ]
+    },
+
+    gatekeeper_when: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: '办公时间？这不在我的职权范围内。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他不再说话，只是站在那里，像一尊雕像。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '离开', next: 'kafka_loop' }
+        ]
+    },
+
+    gatekeeper_x_inside: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: 'X？我不认识这个名字。这里没有叫 X 的人。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的眼神空洞，像是在看着你又像是看穿了你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「让我进去确认」', next: 'gatekeeper_why' }
+        ]
+    },
+
+    bureaucrat_x: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: 'X？我们需要查询系统。系统今天维护。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他递给你另一张号码牌：8473。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '等待', next: 'bureaucrat_wait' }
+        ]
+    },
+
+    bureaucrat_cut: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '插队？这是严重违规。你需要填写《插队申请表》。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他递给你一叠更厚的表格。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '填写表格', next: 'fill_forms' }
+        ]
+    },
+
+    fill_forms: {
+        scene: 'waitingRoom',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你开始填写表格。第 1 页：姓名。第 2 页：目的。第 3 页……'
+            },
+            {
+                speaker: 'narrator',
+                text: '你填了很久。当你填完最后一页时，你发现第一页已经泛黄了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '提交表格', next: 'submit_forms' }
+        ]
+    },
+
+    submit_forms: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '表格已收到。审批需要 30 个工作日。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他收下表格，然后指向等候室的椅子。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '等待', next: 'ending_wait_forever' },
+            { text: '离开', next: 'kafka_loop' }
+        ]
+    },
+
+    ending_wait_forever: {
+        scene: 'waitingRoom',
+        characters: [],
+        ending: { title: '永恒等待', desc: '你选择在等候室等待。时间在这里失去了意义，你成为了这个官僚机器的一部分。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你坐下。周围的人都和你一样，面无表情，等待着永远不会到来的号码。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你忘记了为什么要等待，只记得等待本身。'
+            }
+        ]
+    },
+
+    bureaucrat_confusion: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '这里是 3 号办公室。但你要找的 7 号办公室在别处。'
+            },
+            {
+                speaker: 'narrator',
+                text: '「别处」是哪里？他没有回答。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '离开', next: 'kafka_loop' }
+        ]
+    },
+
+    stairs_up: {
+        scene: 'endlessStairs',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你向上走。十层，二十层，一百层。每一层都一样。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你停下来喘气。当你回头看，发现你只走了三层。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续', next: 'kafka_loop' }
+        ]
+    },
+
+    stairs_down: {
+        scene: 'endlessStairs',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你向下走。楼梯似乎没有尽头。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你停下来，发现自己在同一层。墙上的标记显示：3F。你从哪里开始，就回到了哪里。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '继续', next: 'kafka_loop' }
+        ]
+    },
+
+    watcher_run: {
+        scene: 'endlessStairs',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你转身逃跑。你跑上楼梯，跑下楼梯，穿过走廊。'
+            },
+            {
+                speaker: 'narrator',
+                text: '当你停下来喘气时，你发现黑影就在你面前。'
+            },
+            {
+                speaker: 'narrator',
+                text: '「你无法逃离，」黑影说，「因为你无处可去。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '面对他', next: 'investigate_shadow' }
+        ]
+    },
+
+    watcher_watching: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '监视？不。我只是记录。每一个进入迷宫的人都会被记录。'
+            },
+            {
+                speaker: 'watcher',
+                text: '你是第 8472 个。前面有 8471 个。他们都在某个地方，继续寻找。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「他们在哪里？」', next: 'watcher_where_others' }
+        ]
+    },
+
+    watcher_where_others: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '他们？他们就在你身边。在等候室，在走廊，在楼梯上。'
+            },
+            {
+                speaker: 'narrator',
+                text: '你环顾四周。空无一人。但你感觉到，无数双眼睛正在看着你。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「我要怎么找到 X？」', next: 'watcher_where_x' }
+        ]
+    },
+
+    watcher_x_inside: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: 'X 在门后？也许。但那扇门从未被打开过。'
+            },
+            {
+                speaker: 'watcher',
+                text: '守门人有一大串钥匙，但没有一把能打开那扇门。你知道为什么吗？',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「为什么？」', next: 'watcher_why_locked' }
+        ]
+    },
+
+    watcher_why_locked: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '因为那扇门没有锁。它只是一扇门，推一下就会开。'
+            },
+            {
+                speaker: 'watcher',
+                text: '但从来没有人试过。他们都以为需要钥匙，需要审批，需要等待。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你在骗我」', next: 'ending_denial' },
+            { text: '回去推门', next: 'push_the_door' }
+        ]
+    },
+
+    push_the_door: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你回到大门前。守门人还在那里。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '你不能——'
+            },
+            {
+                speaker: 'narrator',
+                text: '你无视他，直接推向大门。门开了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '走进去', next: 'door_give_up' }
+        ]
+    },
+
+    // ================================================================
+    // 卡夫卡迷宫人物支线结局
+    // ================================================================
+
+    // 守门人支线：他其实也想进去
+    gatekeeper_secret: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你注意到守门人的眼神。他在看大门的时候，有一种……渴望。'
+            },
+            {
+                speaker: 'narrator',
+                text: '「你在这里多久了？」你问。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '……我不知道。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '「我想进去，」他突然说，声音低得几乎听不见，「但我不能。我是守门人。守门人不能进去。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你可以跟我一起进去」', next: 'gatekeeper_join' },
+            { text: '「为什么守门人不能进去？」', next: 'gatekeeper_why_cannot' }
+        ]
+    },
+
+    gatekeeper_join: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: '跟你一起？这……这违反了规定。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的手在颤抖，钥匙串发出轻微的碰撞声。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '但也许……规定就是用来违反的。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '推开门，一起进去', next: 'ending_gatekeeper_freedom' }
+        ]
+    },
+
+    ending_gatekeeper_freedom: {
+        scene: 'entrance',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        ending: { title: '守门人的自由', desc: '守门人终于离开了他的岗位。他不知道门后是什么，但至少，他不再被困在原地。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你们一起走出大门。守门人回头看了一眼他守了一辈子的地方。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '谢谢你。我不知道外面有什么……但我终于可以去看看了。'
+            }
+        ]
+    },
+
+    gatekeeper_why_cannot: {
+        scene: 'kafkaCorridor',
+        characters: [{ id: 'gatekeeper', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'gatekeeper',
+                text: '因为……如果守门人进去了，就没有人守门了。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他说完这句话，愣住了。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '但这扇门……从来没有人进去过。那我守的是什么？',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你守的是你自己的牢笼」', next: 'ending_gatekeeper_realization' }
+        ]
+    },
+
+    ending_gatekeeper_realization: {
+        scene: 'kafkaCorridor',
+        characters: [],
+        ending: { title: '顿悟', desc: '守门人意识到他守的不是门，而是他自己。但他选择继续守下去——因为这是他唯一知道的存在方式。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '守门人沉默了很久。'
+            },
+            {
+                speaker: 'gatekeeper',
+                text: '你说得对。但我……我已经不会做别的事了。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他重新站直，恢复了那副面无表情的样子。'
+            }
+        ]
+    },
+
+    // 官僚支线：他其实有脸，只是被系统抹去了
+    bureaucrat_face: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你盯着他看。在阴影中，你似乎看到了什么——一张脸，一张普通人的脸，有皱纹，有疲惫。'
+            },
+            {
+                speaker: 'narrator',
+                text: '「你有脸，」你说。'
+            },
+            {
+                speaker: 'bureaucrat',
+                text: '……曾经有的。'
+            },
+            {
+                speaker: 'bureaucrat',
+                text: '「在这个系统里，有脸的人会被消耗殆尽。所以我学会了隐藏。没有脸，就没有人能看到你的疲惫。」',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你可以离开这个系统」', next: 'bureaucrat_leave' },
+            { text: '「你叫什么名字？」', next: 'bureaucrat_name' }
+        ]
+    },
+
+    bureaucrat_leave: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '离开？去哪里？外面的世界……我已经不记得了。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他的声音里有一丝恐惧。'
+            },
+            {
+                speaker: 'bureaucrat',
+                text: '而且，如果我走了，谁来处理这些表格？谁来叫号？',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「也许不需要有人做这些」', next: 'ending_bureaucrat_freedom' },
+            { text: '「你可以找到新的事情做」', next: 'ending_bureaucrat_hope' }
+        ]
+    },
+
+    ending_bureaucrat_freedom: {
+        scene: 'waitingRoom',
+        characters: [],
+        ending: { title: '系统的崩溃', desc: '官僚离开了他的岗位。等候室里的人渐渐散去，号码牌掉落在地上。系统终于停止了运转。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '他站起来，摘下那顶看不见的帽子，走向出口。'
+            },
+            {
+                speaker: 'narrator',
+                text: '在他身后，显示屏熄灭了。正在办理：——。'
+            }
+        ]
+    },
+
+    ending_bureaucrat_hope: {
+        scene: 'entrance',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        ending: { title: '新的开始', desc: '官僚和你一起离开了迷宫。他不知道未来会怎样，但至少，他有了自己的名字。' },
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '我叫……我叫卡尔。'
+            },
+            {
+                speaker: 'narrator',
+                text: '他说出这个名字的时候，阴影从他脸上褪去。你看到了一个疲惫但真实的人。'
+            }
+        ]
+    },
+
+    bureaucrat_name: {
+        scene: 'waitingRoom',
+        characters: [{ id: 'bureaucrat', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'bureaucrat',
+                text: '名字？我……'
+            },
+            {
+                speaker: 'narrator',
+                text: '他愣住了，像是在回忆一件很久远的事。'
+            },
+            {
+                speaker: 'bureaucrat',
+                text: '我叫……卡尔。我已经三十年没有说出这个名字了。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「卡尔，我们一起走吧」', next: 'ending_bureaucrat_hope' }
+        ]
+    },
+
+    // 监视者支线：他其实是所有被困者的集合
+    watcher_truth: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '你想知道我是谁？'
+            },
+            {
+                speaker: 'narrator',
+                text: '黑影的眼睛闪烁着，像是有很多双眼睛在同时眨眼。'
+            },
+            {
+                speaker: 'watcher',
+                text: '我是所有被困在这里的人。每一个放弃寻找的人，每一个选择等待的人，每一个填写表格直到忘记自己是谁的人……他们都成为了我。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「你会消失吗？」', next: 'watcher_disappear' },
+            { text: '「我可以帮你解脱」', next: 'watcher_release' }
+        ]
+    },
+
+    watcher_disappear: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '消失？不。只要还有人被困在这里，我就存在。'
+            },
+            {
+                speaker: 'watcher',
+                text: '但也许……你可以让我变小一点。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「怎么做到？」', next: 'ending_watcher_diminish' }
+        ]
+    },
+
+    ending_watcher_diminish: {
+        scene: 'endlessStairs',
+        characters: [],
+        ending: { title: '减少一个', desc: '你离开了迷宫。监视者少了一个组成部分——但还有 8471 个。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你走出迷宫的那一刻，感觉到背后的视线少了一道。'
+            },
+            {
+                speaker: 'narrator',
+                text: '但这只是开始。还有很多人在迷宫里，等待着你，或者等待成为监视者的一部分。'
+            }
+        ]
+    },
+
+    watcher_release: {
+        scene: 'endlessStairs',
+        characters: [{ id: 'watcher', position: 'center' }],
+        dialogues: [
+            {
+                speaker: 'watcher',
+                text: '解脱？你是说……让他们自由？'
+            },
+            {
+                speaker: 'narrator',
+                text: '黑影颤抖了一下，像是很多声音在同时叹息。'
+            },
+            {
+                speaker: 'watcher',
+                text: '也许……是时候了。我已经记录了太久。也许记录的意义，就是有一天可以停止记录。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '「让他们走吧」', next: 'ending_watcher_release' }
+        ]
+    },
+
+    ending_watcher_release: {
+        scene: 'entrance',
+        characters: [],
+        ending: { title: '释放', desc: '监视者释放了所有被困者的灵魂。迷宫依然存在，但它是空的——直到下一个寻找者到来。' },
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '你感觉到一阵风吹过。那是 8472 个灵魂同时呼出的气息。'
+            },
+            {
+                speaker: 'narrator',
+                text: '迷宫的墙壁依然矗立，但它们现在是空的。等待被新的故事填满。'
+            }
+        ]
+    }
+};
+
+// ================================================================
+// 引擎核心
+// ================================================================
+const Engine = {
+    elements: {},
+    
+    init() {
+        try {
+            // 初始化状态标志
+            this.panelOpen = false;
+            this.clickInProgress = false;
+            this.sceneLoading = false;
+            
+            // 缓存 DOM 元素
+            this.elements = {
+                sceneBg: document.getElementById('sceneBg'),
+                sceneOverlay: document.getElementById('sceneOverlay'),
+                charLeft: document.getElementById('charLeft'),
+                charCenter: document.getElementById('charCenter'),
+                charRight: document.getElementById('charRight'),
+                speakerName: document.getElementById('speakerName'),
+                dialogueContent: document.getElementById('dialogueContent'),
+                choicesContainer: document.getElementById('choicesContainer'),
+                clickContinue: document.getElementById('clickContinue'),
+                dayStatus: document.getElementById('dayStatus'),
+                dialogueBox: document.getElementById('dialogueBox'),
+                characterLayer: document.getElementById('characterLayer')
+            };
+            
+            // 确保 clickContinue 始终隐藏
+            if (this.elements.clickContinue) {
+                this.elements.clickContinue.style.display = 'none';
+            }
+            
+            // 初始化特效引擎
+            if (typeof effectsEngine !== 'undefined') {
+                effectsEngine.init();
+            }
+            
+            // 绑定事件
+            this.bindEvents();
+            
+            // 显示标题画面，不直接开始游戏
+            this.showTitleScreen();
+        } catch (error) {
+            console.error('引擎初始化失败:', error);
+            alert('游戏初始化失败，请刷新页面重试。');
+        }
+    },
+
+    // ================================================================
+    // 标题画面
+    // ================================================================
+    showTitleScreen() {
+        const titleScreen = document.getElementById('titleScreen');
+        const gameContainer = document.querySelector('.game-container');
+        titleScreen.classList.remove('fade-out');
+        gameContainer.style.opacity = '0';
+        gameContainer.style.pointerEvents = 'none';
+        
+        // 标题粒子
+        this.startTitleParticles();
+        
+        // 继续按钮：仅在有存档时显示
+        let hasSave = false;
+        for (let i = 0; i < 3; i++) { if (localStorage.getItem(`vn_auto_save_${i}`)) hasSave = true; }
+        for (let i = 1; i <= 10; i++) { if (localStorage.getItem(`vn_save_${i}`)) hasSave = true; }
+        document.getElementById('btnContinue').style.display = hasSave ? '' : 'none';
+        
+        // 新游戏
+        document.getElementById('btnNewGame').onclick = () => {
+            this.startGame(false);
+        };
+        
+        // 继续游戏
+        document.getElementById('btnContinue').onclick = () => {
+            this.startGame(true);
+        };
+        
+        // 设置
+        document.getElementById('btnSettings').onclick = () => {
+            this.showSettings();
+        };
+    },
+
+    startTitleParticles() {
+        const canvas = document.getElementById('titleParticles');
+        if (!canvas) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 0.5,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                opacity: Math.random() * 0.5 + 0.1
+            });
+        }
+        
+        const animate = () => {
+            if (document.getElementById('titleScreen').classList.contains('fade-out')) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(196,160,96,${p.opacity})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        };
+        animate();
+    },
+
+    startGame(loadSave) {
+        const titleScreen = document.getElementById('titleScreen');
+        const gameContainer = document.querySelector('.game-container');
+        
+        titleScreen.classList.add('fade-out');
+        gameContainer.style.opacity = '1';
+        gameContainer.style.pointerEvents = 'auto';
+        
+        if (loadSave) {
+            // 加载最新的存档（自动存档或手动存档）
+            let latest = null;
+            let latestTime = 0;
+            for (let i = 0; i < 3; i++) {
+                const d = localStorage.getItem(`vn_auto_save_${i}`);
+                if (d) { try { const p = JSON.parse(d); if (p.timestamp > latestTime) { latest = p; latestTime = p.timestamp; } } catch(e) {} }
+            }
+            for (let i = 1; i <= 10; i++) {
+                const d = localStorage.getItem(`vn_save_${i}`);
+                if (d) { try { const p = JSON.parse(d); if (p.timestamp > latestTime) { latest = p; latestTime = p.timestamp; } } catch(e) {} }
+            }
+            if (latest) {
+                this._applySaveData(latest);
+                this.loadScene(gameState.currentScene);
+            } else {
+                this.loadScene('start');
+            }
+        } else {
+            // 新游戏：完全重置游戏状态
+            Object.assign(gameState, _defaultGameState());
+            // NG+：如果之前完成过终章，保留 truth_seeker 特质
+            if (localStorage.getItem('vn_ng_plus') === 'true') {
+                gameState.traits.push('truth_seeker');
+                gameState._ngPlus = true;
+            }
+            this.loadScene('start');
+        }
+    },
+
+    // ================================================================
+    // 成就系统
+    // ================================================================
+    _achievements: {},
+    _achievementDefinitions: {
+        first_step: { name: '初次踏入', desc: '进入第一个世界', icon: '🚪' },
+        clue_collector: { name: '碎片收集者', desc: '收集5条线索', icon: '🧩' },
+        clue_master: { name: '碎片大师', desc: '收集10条线索', icon: '✨' },
+        world_explorer: { name: '世界旅人', desc: '完成3个世界', icon: '🗺️' },
+        world_veteran: { name: '世界老兵', desc: '完成6个世界', icon: '🌍' },
+        all_worlds: { name: '十二门全开', desc: '完成所有12个世界', icon: '🚪' },
+        sanity_lost: { name: '深渊凝视', desc: '理智值降至0', icon: '👁️' },
+        truth_seeker: { name: '真相大白', desc: '完成终章', icon: '⭐' },
+        trait_collector: { name: '多元人格', desc: '获得5个特质', icon: '🎭' },
+        day_counter: { name: '时光旅人', desc: '度过10天', icon: '⏳' },
+        mirror_truth: { name: '镜中真相', desc: '发现镜中之我——X的隐藏世界', icon: '🪞' }
+    },
+
+    checkAchievements() {
+        const defs = this._achievementDefinitions;
+        const completed = gameState.completedWorlds || [];
+        const clues = countValidFragments();
+        const traits = gameState.traits || [];
+        
+        // 初次踏入
+        if (!this._achievements.first_step && completed.length >= 1) {
+            this._achievements.first_step = true;
+            this.showAchievement(defs.first_step);
+        }
+        // 碎片收集者
+        if (!this._achievements.clue_collector && clues >= 5) {
+            this._achievements.clue_collector = true;
+            this.showAchievement(defs.clue_collector);
+        }
+        // 碎片大师
+        if (!this._achievements.clue_master && clues >= 10) {
+            this._achievements.clue_master = true;
+            this.showAchievement(defs.clue_master);
+        }
+        // 世界旅人
+        if (!this._achievements.world_explorer && completed.length >= 3) {
+            this._achievements.world_explorer = true;
+            this.showAchievement(defs.world_explorer);
+        }
+        // 世界老兵
+        if (!this._achievements.world_veteran && completed.length >= 6) {
+            this._achievements.world_veteran = true;
+            this.showAchievement(defs.world_veteran);
+        }
+        // 十二门全开
+        if (!this._achievements.all_worlds && completed.length >= 12) {
+            this._achievements.all_worlds = true;
+            this.showAchievement(defs.all_worlds);
+        }
+        // 深渊凝视
+        if (!this._achievements.sanity_lost && gameState.sanity <= 0) {
+            this._achievements.sanity_lost = true;
+            this.showAchievement(defs.sanity_lost);
+        }
+        // 特质收集
+        if (!this._achievements.trait_collector && traits.length >= 5) {
+            this._achievements.trait_collector = true;
+            this.showAchievement(defs.trait_collector);
+        }
+        // 时光旅人
+        if (!this._achievements.day_counter && gameState.day >= 10) {
+            this._achievements.day_counter = true;
+            this.showAchievement(defs.day_counter);
+        }
+        // 镜中真相
+        if (!this._achievements.mirror_truth && completed.includes('x_hidden')) {
+            this._achievements.mirror_truth = true;
+            this.showAchievement(defs.mirror_truth);
+        }
+    },
+
+    showAchievement(def) {
+        const toast = document.getElementById('achievementToast');
+        document.getElementById('achievementIcon').textContent = def.icon;
+        document.getElementById('achievementName').textContent = def.name;
+        document.getElementById('achievementDesc').textContent = def.desc;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    },
+
+    // ================================================================
+    // 设置面板
+    // ================================================================
+    showSettings() {
+        const panel = document.getElementById('settingsPanel');
+        this.panelOpen = true;
+        
+        const toggle = document.getElementById('toggleTyping');
+        const typingOn = gameState.settings?.typingEffect !== false;
+        toggle.textContent = typingOn ? '开' : '关';
+        toggle.className = 'settings-toggle' + (typingOn ? ' on' : '');
+        
+        document.getElementById('sliderSpeed').value = gameState.settings?.typingSpeed || 50;
+        document.getElementById('speedValue').textContent = (gameState.settings?.typingSpeed || 50) + 'ms';
+        
+        document.getElementById('sliderMusic').value = Math.round((gameState.settings?.musicVolume || 0.5) * 100);
+        document.getElementById('musicValue').textContent = Math.round((gameState.settings?.musicVolume || 0.5) * 100) + '%';
+        
+        toggle.onclick = () => {
+            gameState.settings.typingEffect = !gameState.settings.typingEffect;
+            toggle.textContent = gameState.settings.typingEffect ? '开' : '关';
+            toggle.className = 'settings-toggle' + (gameState.settings.typingEffect ? ' on' : '');
+            this.autoSave();
+        };
+        
+        document.getElementById('sliderSpeed').oninput = (e) => {
+            gameState.settings.typingSpeed = parseInt(e.target.value);
+            document.getElementById('speedValue').textContent = e.target.value + 'ms';
+            this.autoSave();
+        };
+        
+        document.getElementById('sliderMusic').oninput = (e) => {
+            gameState.settings.musicVolume = parseInt(e.target.value) / 100;
+            document.getElementById('musicValue').textContent = e.target.value + '%';
+            if (typeof musicEngine !== 'undefined' && musicEngine.setVolume) {
+                musicEngine.setVolume(gameState.settings.musicVolume);
+            }
+            this.autoSave();
+        };
+        
+        document.getElementById('settingsClose').onclick = () => {
+            panel.classList.remove('visible');
+            this.panelOpen = false;
+        };
+        panel.classList.add('visible');
+    },
+
+    // ================================================================
+    // 片尾字幕
+    // ================================================================
+    rollCredits() {
+        // 解锁 NG+
+        localStorage.setItem('vn_ng_plus', 'true');
+        
+        const screen = document.getElementById('creditsScreen');
+        const scroll = document.getElementById('creditsScroll');
+        
+        // 填充世界名
+        const worldNames = {
+            blade_runner: '银翼杀手', cthulhu: '疯狂之城', alice: '梦境世界',
+            middle_earth: '中土世界', wuxia: '江湖世界', cowboy_bebop: '太空边境',
+            matrix: '矩阵世界', got: '权力游戏', spirited: '神隐世界',
+            wake: '守灵之夜', watchmen: '末日时钟', maus: '记忆深渊'
+        };
+        const completed = (gameState.completedWorlds || []).map(w => worldNames[w] || w);
+        document.getElementById('creditsWorlds').textContent = completed.length > 0 
+            ? completed.join(' · ') 
+            : '未曾探索';
+        
+        // 填充玩家统计
+        const stats = document.getElementById('creditsPlayerStats');
+        stats.innerHTML = `
+            <div class="credits-heading">你的旅程</div>
+            <div class="credits-item">探索世界: ${completed.length}/12</div>
+            <div class="credits-item">收集碎片: ${countValidFragments()}</div>
+            <div class="credits-item">获得特质: ${(gameState.traits || []).length}</div>
+            <div class="credits-item">度过天数: ${gameState.day}</div>
+            <div class="credits-item">解锁成就: ${Object.keys(this._achievements).length}</div>
+        `;
+        
+        // 重置动画
+        scroll.style.animation = 'none';
+        scroll.offsetHeight;
+        scroll.style.animation = 'creditsRoll 35s linear forwards';
+        
+        screen.classList.add('visible');
+        
+        // 跳过
+        document.getElementById('creditsSkip').onclick = () => {
+            screen.classList.remove('visible');
+        };
+        
+        // 35秒后自动关闭
+        this._creditsTimer = setTimeout(() => {
+            screen.classList.remove('visible');
+        }, 36000);
+    },
+    
+    bindEvents() {
+        // 点击继续
+        this.clickInProgress = false;
+        this.panelOpen = false;
+        this.elements.dialogueBox.addEventListener('click', (e) => {
+            if (e.target.classList.contains('choice-btn')) return;
+            if (this.panelOpen) return; // 面板打开时阻止对话点击
+            // 打字机进行中 → 点击跳过，立即显示完整文本
+            if (!gameState.dialogueComplete) {
+                this.finishTyping();
+                return;
+            }
+            if (this.clickInProgress) return; // 防止快速点击
+            
+            const script = SCRIPT[gameState.currentScene];
+            if (!script) {
+                console.error('bindEvents click: SCRIPT[' + gameState.currentScene + '] is undefined');
+                return;
+            }
+            const dialogues = script.getDialogues ? script.getDialogues() : script.dialogues;
+            
+            if (gameState.currentDialogue < dialogues.length - 1) {
+                this.clickInProgress = true;
+                gameState.currentDialogue++;
+                this.showDialogue(dialogues[gameState.currentDialogue]);
+                // 短暂延迟后允许下一次点击
+                setTimeout(() => {
+                    this.clickInProgress = false;
+                }, 100);
+            }
+        });
+        
+        // 人物点击
+        ['charLeft', 'charCenter', 'charRight'].forEach(pos => {
+            this.elements[pos].addEventListener('click', () => {
+                this.onCharacterClick(pos);
+            });
+        });
+        
+        // 角色层点击（委托到对话系统）
+        if (this.elements.characterLayer) {
+            this.elements.characterLayer.addEventListener('click', (e) => {
+                // 不阻止角色精灵的点击事件
+                if (e.target.closest('.character')) return;
+                if (this.panelOpen) return;
+                // 打字机进行中 → 跳过
+                if (!gameState.dialogueComplete) {
+                    this.finishTyping();
+                    return;
+                }
+                if (this.clickInProgress) return;
+                this.elements.dialogueBox.click();
+            });
+        }
+        
+        // 菜单按钮
+        document.getElementById('saveBtn').addEventListener('click', () => this.showSavePanel('save'));
+        document.getElementById('loadBtn').addEventListener('click', () => this.showSavePanel('load'));
+        document.getElementById('panelClose').addEventListener('click', () => {
+            document.getElementById('savePanel').classList.remove('visible');
+            this.panelOpen = false;
+        });
+        document.getElementById('audioBtn').addEventListener('click', () => {
+            const btn = document.getElementById('audioBtn');
+            if (typeof musicEngine !== 'undefined') {
+                const nowPlaying = musicEngine.toggle();
+                btn.textContent = nowPlaying ? '🔇' : '🔊';
+            } else {
+                btn.textContent = btn.textContent === '🔊' ? '🔇' : '🔊';
+            }
+        });
+        
+        // 任务日志按钮
+        document.getElementById('questBtn').addEventListener('click', () => this.showQuestPanel());
+        document.getElementById('logBtn').addEventListener('click', () => this.showDialogueLog());
+        document.getElementById('logClose').addEventListener('click', () => {
+            document.getElementById('logPanel').classList.remove('visible');
+            this.panelOpen = false;
+        });
+        document.getElementById('questClose').addEventListener('click', () => {
+            document.getElementById('questPanel').classList.remove('visible');
+            this.panelOpen = false;
+        });
+        
+        // 返回阿莱夫继续探索
+        document.getElementById('continueBtn').addEventListener('click', () => {
+            document.getElementById('endingScreen').classList.remove('visible');
+            // 记录已完成的世界
+            if (!gameState.traits.includes('world_traveler')) {
+                gameState.traits.push('world_traveler');
+            }
+            // 终章结局 → 触发片尾字幕
+            if (gameState.currentScene && (gameState.currentScene.startsWith('final_') || gameState.currentScene.startsWith('ending_'))) {
+                this._achievements.truth_seeker = true;
+                this.showAchievement(this._achievementDefinitions.truth_seeker);
+                this.rollCredits();
+            } else {
+                this.loadScene('aleph_return');
+            }
+        });
+        
+        // 回到存档点
+        document.getElementById('loadSaveBtn').addEventListener('click', () => {
+            if (this.loadAutoSave()) {
+                console.log('已加载自动存档');
+            } else {
+                alert('没有找到存档点');
+            }
+        });
+        
+        // 重新开始
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            const endingScreen = document.getElementById('endingScreen');
+            endingScreen.classList.remove('visible');
+            endingScreen.style.removeProperty('opacity');
+            endingScreen.style.removeProperty('pointer-events');
+            endingScreen.style.removeProperty('display');
+            // 清除自动存档
+            localStorage.removeItem('vn_save_0');
+            // 重置按钮显示
+            const loadSaveBtn = document.getElementById('loadSaveBtn');
+            if (loadSaveBtn) loadSaveBtn.style.display = 'none';
+            // 完全重置游戏状态
+            Object.assign(gameState, _defaultGameState());
+            delete gameState._autoSaveSlot;
+            delete gameState._lastScene;
+            delete gameState._ngPlus;
+            this.loadScene('start');
+        });
+    },
+    
+    loadScene(sceneId) {
+        // 防止重复加载
+        if (this.sceneLoading) return;
+        this.sceneLoading = true;
+        
+        const script = SCRIPT[sceneId];
+        if (!script) {
+            console.error('Scene not found:', sceneId);
+            this.sceneLoading = false;
+            return;
+        }
+        
+        // 清除之前的打字机定时器
+        if (this.typingTimer) {
+            clearTimeout(this.typingTimer);
+        }
+        
+        // 过渡动画
+        this.elements.sceneOverlay.classList.add('active');
+        
+        setTimeout(() => {
+            // 更新状态 - 只在进入阿莱夫世界时增加天数，序章章节不增加
+            const storyScenes = ['enter_infinite_library', 'enter_kafka_maze'];
+            const worldScenes = ['cthulhu_entrance', 'alice_entrance', 'middleearth_entrance', 
+                'wuxia_entrance', 'bebop_entrance', 'matrix_entrance', 'got_entrance', 
+                'spirited_entrance', 'wake_entrance', 'watchmen_entrance', 'maus_entrance', 
+                'blade_runner_entrance', 'x_hidden_entrance'];
+            if (worldScenes.includes(sceneId)) {
+                gameState.day++;
+            }
+            // 追踪上一个场景（用于 aleph_return 自动完成世界）
+            gameState._lastScene = gameState.currentScene;
+            gameState.currentScene = sceneId;
+            gameState.currentDialogue = 0;
+            gameState.dialogueComplete = false;
+            
+            // 更新场景背景
+            this.elements.sceneBg.style.backgroundImage = `url('${ASSETS.scenes[script.scene]}')`;
+            
+            // 背景变体（时间/天气）
+            ['variant-dusk', 'variant-night', 'variant-dawn', 'variant-fog', 'variant-storm'].forEach(v => {
+                this.elements.sceneBg.classList.remove(v);
+            });
+            if (script.bgVariant) {
+                this.elements.sceneBg.classList.add('variant-' + script.bgVariant);
+            }
+            
+            // 离开阿莱夫时隐藏路径可视化
+            if (script.scene !== 'aleph') {
+                const pathCanvas = document.getElementById('pathCanvas');
+                if (pathCanvas) pathCanvas.classList.add('hidden');
+            }
+            
+            // 切换场景音乐
+            if (typeof musicEngine !== 'undefined' && musicEngine.isPlaying) {
+                musicEngine.playForScene(script.scene);
+            }
+            
+            // 切换场景粒子特效
+            if (typeof effectsEngine !== 'undefined') {
+                effectsEngine.startParticles(script.scene);
+            }
+            
+            // 更新人物
+            this.updateCharacters(script.characters || []);
+            
+            // 执行进入回调
+            if (script.onEnter) script.onEnter();
+            
+            // 更新状态栏
+            this.updateStatus();
+            
+            // 显示第一句对话
+            setTimeout(() => {
+                this.elements.sceneOverlay.classList.remove('active');
+                let dialogues = script.getDialogues ? script.getDialogues() : script.dialogues;
+                if (!dialogues || !Array.isArray(dialogues) || dialogues.length === 0) {
+                    console.error('loadScene: dialogues is null, not an array, or empty for scene:', sceneId);
+                    this.sceneLoading = false;
+                    return;
+                }
+                // 拷贝数组避免污染原始数据
+                dialogues = [...dialogues];
+                
+                // NG+ 序章增强对话
+                if (gameState._ngPlus) {
+                    if (sceneId === 'start') {
+                        dialogues.unshift({
+                            speaker: 'narrator',
+                            text: '一阵强烈的既视感袭来。你曾经来过这里——不，不止一次。你完成过这趟旅程，找到了X，然后不知为何又回到了起点。花园的雾气在你面前散开，仿佛在迎接一位老朋友。你知道该去找谁，也知道每扇门后藏着什么。但这一次，你感觉到了一些不同——有些东西在等待着你，一些你之前从未注意到的细节。'
+                        });
+                    } else if (sceneId === 'meet_monk') {
+                        dialogues.unshift({
+                            speaker: 'monk',
+                            text: '「你回来了。」档案员抬起头，扫帚停在半空。他的眼神中闪过一丝你从未见过的光芒——不是冷漠，不是睿智，而是一种深沉的、近乎怜悯的理解。「上一次你找到了X。但你又回到了这里。不是所有人都能做到这一点。告诉我——这一次，你在寻找什么？」'
+                        });
+                    }
+                }
+                
+                this.showDialogue(dialogues[0]);
+                this.sceneLoading = false;
+            }, 300);
+            
+        }, 500);
+    },
+    
+    updateCharacters(characters) {
+        // 隐藏所有人物（带动画）
+        ['left', 'center', 'right'].forEach(pos => {
+            const el = this.elements['char' + pos.charAt(0).toUpperCase() + pos.slice(1)];
+            if (el && !el.classList.contains('hidden')) {
+                if (typeof effectsEngine !== 'undefined') {
+                    effectsEngine.animateCharacterOut(el, pos);
+                }
+                setTimeout(() => {
+                    el.classList.add('hidden');
+                    el.classList.remove('speaking');
+                }, 400);
+            } else if (el) {
+                el.classList.add('hidden');
+                el.classList.remove('speaking');
+            }
+        });
+        
+        // 显示指定人物（带动画）
+        setTimeout(() => {
+            characters.forEach(char => {
+                const pos = char.position;
+                const el = this.elements['char' + pos.charAt(0).toUpperCase() + pos.slice(1)];
+                if (el) {
+                    el.src = ASSETS.characters[char.id];
+                    el.dataset.charId = char.id;
+                    el.classList.remove('hidden');
+                    if (typeof effectsEngine !== 'undefined') {
+                        effectsEngine.animateCharacterIn(el, pos);
+                    }
+                }
+            });
+        }, 450);
+    },
+    
+    showDialogue(dialogue) {
+        if (!dialogue || !dialogue.text) {
+            console.error('showDialogue: invalid dialogue object:', dialogue);
+            return;
+        }
+        // 记录对话历史
+        if (!gameState.dialogueHistory) gameState.dialogueHistory = [];
+        gameState.dialogueHistory.push({
+            speaker: dialogue.speaker,
+            text: dialogue.text,
+            scene: gameState.currentScene
+        });
+        if (gameState.dialogueHistory.length > 200) {
+            gameState.dialogueHistory.shift();
+        }
+        
+        const script = SCRIPT[gameState.currentScene];
+        
+        // 更新说话者
+        const speakerEl = this.elements.speakerName;
+        speakerEl.className = 'speaker-name ' + (dialogue.speaker || 'narrator');
+        
+        const speakerNames = {
+            narrator: '旁白',
+            monk: '档案员',
+            beauty: '回忆者',
+            tiger: '追踪者',
+            x: 'X',
+            // 无限图书馆篇章
+            librarianMonk: '僧侣',
+            assassin: '杀手',
+            general: '将军',
+            // 卡夫卡迷宫篇章
+            bureaucrat: '官僚',
+            gatekeeper: '守门人',
+            watcher: '监视者',
+            // 银翼杀手篇章
+            replicant: '复制人',
+            bladeRunner: '银翼杀手',
+            executive: '公司高层',
+            // 黑客帝国篇章
+            morpheus: '墨菲斯',
+            oracle: '先知',
+            agentSmith: '特工史密斯',
+            protagonist: '主角',
+            // 冰与火之歌篇章
+            advisor: '谋士',
+            commander: '统帅',
+            spy: '密探',
+            // 千与千寻篇章
+            maskedSpirit: '面具之灵',
+            riverSpirit: '河神',
+            // 芬尼根的守灵夜篇章
+            storyteller: '讲述者',
+            // 守望者篇章
+            rorschach: '罗夏',
+            owl: '夜枭',
+            // 鼠族篇章
+            survivor: '幸存者'
+        };
+        speakerEl.textContent = speakerNames[dialogue.speaker] || dialogue.speaker;
+        
+        // 高亮说话的人物
+        ['charLeft', 'charCenter', 'charRight'].forEach(pos => {
+            this.elements[pos].classList.remove('speaking');
+        });
+        
+        if (dialogue.highlight) {
+            const chars = script.characters || [];
+            chars.forEach(char => {
+                if (char.id === dialogue.highlight) {
+                    const pos = 'char' + char.position.charAt(0).toUpperCase() + char.position.slice(1);
+                    this.elements[pos].classList.add('speaking');
+                }
+            });
+        }
+        
+        // 角色表情切换
+        ['charLeft', 'charCenter', 'charRight'].forEach(pos => {
+            ['mood-sad', 'mood-angry', 'mood-mysterious', 'mood-happy', 'mood-fear'].forEach(c => {
+                this.elements[pos].classList.remove(c);
+            });
+        });
+        if (dialogue.mood && dialogue.highlight) {
+            const chars = script.characters || [];
+            chars.forEach(char => {
+                if (char.id === dialogue.highlight) {
+                    const pos = 'char' + char.position.charAt(0).toUpperCase() + char.position.slice(1);
+                    this.elements[pos].classList.add('mood-' + dialogue.mood);
+                }
+            });
+        }
+        
+        // 打字机效果
+        this.typeText(dialogue.text, () => {
+            gameState.dialogueComplete = true;
+            
+            // 显示选择或继续提示
+            if (dialogue.showChoices) {
+                this.showChoices();
+            } else {
+                this.elements.clickContinue.classList.remove('hidden');
+            }
+        });
+    },
+    
+    typeText(text, callback) {
+        // 清除之前的打字机定时器
+        if (this.typingTimer) {
+            clearTimeout(this.typingTimer);
+        }
+        
+        // 保存当前打字状态，供 finishTyping 使用
+        this._typingText = text;
+        this._typingCallback = callback;
+        
+        gameState.isTyping = true;
+        this.elements.clickContinue.classList.add('hidden');
+        this.elements.choicesContainer.classList.add('hidden');
+        
+        const el = this.elements.dialogueContent;
+        
+        // 打字机效果（可选，带音效）
+        const useTypingEffect = gameState.settings?.typingEffect !== false; // 默认启用打字机效果
+        
+        if (useTypingEffect) {
+            el.innerHTML = '';
+            let i = 0;
+            const typeChar = () => {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    // 打字音效
+                    if (typeof effectsEngine !== 'undefined' && i % 3 === 0) {
+                        effectsEngine.playTypeSound();
+                    }
+                    this.typingTimer = setTimeout(typeChar, gameState.settings?.typingSpeed || 50);
+                } else {
+                    gameState.isTyping = false;
+                    gameState.dialogueComplete = true;
+                    if (callback) callback();
+                }
+            };
+            typeChar();
+        } else {
+            // 直接显示完整文本（即时显示，无滚动）
+            el.innerHTML = text;
+            gameState.isTyping = false;
+            gameState.dialogueComplete = true;
+            if (callback) callback();
+        }
+    },
+    
+    // 跳过打字机效果，立即显示完整文本
+    finishTyping() {
+        if (!gameState.isTyping) return;
+        if (this.typingTimer) {
+            clearTimeout(this.typingTimer);
+            this.typingTimer = null;
+        }
+        gameState.isTyping = false;
+        gameState.dialogueComplete = true;
+        
+        // 立即显示完整文本
+        if (this._typingText) {
+            this.elements.dialogueContent.innerHTML = this._typingText;
+        }
+        
+        // 触发回调（显示继续提示或选项）
+        if (this._typingCallback) {
+            const cb = this._typingCallback;
+            this._typingText = null;
+            this._typingCallback = null;
+            cb();
+        }
+    },
+    
+    showChoices() {
+        const script = SCRIPT[gameState.currentScene];
+        if (!script) return;
+        let choices = script.choices;
+        
+        if (typeof choices === 'function') {
+            choices = choices();
+        }
+        
+        if (!choices || !Array.isArray(choices)) {
+            console.warn('showChoices: choices is null or not an array');
+            return;
+        }
+        
+        if (choices.length === 0) {
+            console.warn('showChoices: choices is empty array for scene:', gameState.currentScene);
+            return;
+        }
+        
+        const container = this.elements.choicesContainer;
+        container.innerHTML = '';
+        container.classList.remove('hidden');
+        
+        choices.forEach((choice, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            
+            // 构建选择文本 + 后果标签
+            let btnHTML = choice.text;
+            let costLabels = '';
+            if (choice.cost) {
+                if (choice.cost.sanity) costLabels += `<span class="cost-tag cost-sanity">理智-${choice.cost.sanity}</span>`;
+                if (choice.cost.day) costLabels += `<span class="cost-tag cost-day">时间+${choice.cost.day}</span>`;
+            }
+            if (choice.trait) costLabels += `<span class="cost-tag cost-trait">${choice.trait}</span>`;
+            if (choice.clue) costLabels += `<span class="cost-tag cost-clue">${choice.clue}</span>`;
+            if (costLabels) {
+                btnHTML += `<span class="choice-costs">${costLabels}</span>`;
+            }
+            btn.innerHTML = btnHTML;
+            
+            btn.style.animationDelay = `${index * 0.1}s`;
+            btn.onclick = () => this.makeChoice(choice);
+            container.appendChild(btn);
+        });
+    },
+    
+    makeChoice(choice) {
+        // 记录特质
+        if (choice.trait && !gameState.traits.includes(choice.trait)) {
+            gameState.traits.push(choice.trait);
+        }
+        
+        // 收集线索
+        let clueGained = false;
+        if (choice.clue && !gameState.clues.includes(choice.clue)) {
+            gameState.clues.push(choice.clue);
+            clueGained = true;
+            
+            // 获得线索时的视觉反馈
+            if (typeof effectsEngine !== 'undefined') {
+                effectsEngine.flash('#d4af37', 300);
+            }
+            
+            // 获得线索时自动存档
+            this.autoSave();
+        }
+        
+        // 处理 cost（day 消耗和 sanity 消耗）
+        if (choice.cost) {
+            if (choice.cost.day) {
+                gameState.day += choice.cost.day;
+            }
+            if (choice.cost.sanity) {
+                gameState.sanity = Math.max(0, (gameState.sanity || 100) - choice.cost.sanity);
+                // 理智值过低时的视觉反馈
+                if (gameState.sanity <= 30 && typeof effectsEngine !== 'undefined') {
+                    effectsEngine.flash('#ff0000', 500);
+                }
+                // 理智值归零时触发特殊结局
+                if (gameState.sanity <= 0) {
+                    gameState.sanity = 100; // 重置sanity，避免存档死循环
+                    this.showEnding({
+                        title: '疯狂 · 深渊凝视',
+                        desc: '你在克苏鲁的深渊中迷失了自我。深渊凝视了你，你没有承受住那道目光。'
+                    }, choice.next);
+                    return;
+                }
+            }
+        }
+        
+        // 检查场景是否存在
+        const nextScript = SCRIPT[choice.next];
+        if (!nextScript) {
+            console.error('场景不存在:', choice.next);
+            alert('错误：场景 "' + choice.next + '" 不存在');
+            return;
+        }
+        
+        // 检查是否是结局
+        if (nextScript.ending) {
+            // 自动标记世界完成（如果是世界内的结局）
+            const worldId = inferWorldFromScene(choice.next);
+            if (worldId && typeof completeWorld === 'function') {
+                completeWorld(worldId);
+                this.checkAchievements();
+            }
+            this.showEnding(nextScript.ending, choice.next);
+            return;
+        }
+        
+        // 加载下一个场景
+        this.loadScene(choice.next);
+        
+        // 显示线索获得提示
+        if (clueGained) {
+            setTimeout(() => this.showClueNotification(choice.clue), 600);
+        }
+    },
+    
+    autoSave() {
+        // 自动存档（保留最近3个）
+        const saveData = {
+            ...gameState,
+            timestamp: Date.now(),
+            autoSave: true
+        };
+        const slot = (gameState._autoSaveSlot || 0) % 3;
+        localStorage.setItem(`vn_auto_save_${slot}`, JSON.stringify(saveData));
+        gameState._autoSaveSlot = slot + 1;
+        console.log(`自动存档已保存 (slot ${slot})`);
+    },
+
+    loadAutoSave() {
+        // 加载最新的自动存档
+        let latest = null;
+        let latestTime = 0;
+        for (let i = 0; i < 3; i++) {
+            const data = localStorage.getItem(`vn_auto_save_${i}`);
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.timestamp > latestTime) { latest = parsed; latestTime = parsed.timestamp; }
+                } catch(e) {}
+            }
+        }
+        if (!latest) {
+            const oldData = localStorage.getItem('vn_save_0');
+            if (oldData) { try { latest = JSON.parse(oldData); } catch(e) {} }
+        }
+        if (latest) {
+            this._applySaveData(latest);
+            this.loadScene(gameState.currentScene);
+            console.log('自动存档已加载，回到：', gameState.currentScene);
+            return true;
+        }
+        return false;
+    },
+
+    _applySaveData(parsed) {
+        if (!parsed.completedWorlds) parsed.completedWorlds = [];
+        if (!parsed.traits) parsed.traits = [];
+        if (!parsed.clues) parsed.clues = [];
+        if (!parsed.encountered) parsed.encountered = [];
+        if (!parsed.xMemories) parsed.xMemories = [];
+        if (!parsed.day) parsed.day = 1;
+        if (!parsed.currentScene) parsed.currentScene = 'start';
+        if (!parsed.currentObjective) parsed.currentObjective = '寻找X的线索';
+        if (!parsed.currentDialogue) parsed.currentDialogue = 0;
+        if (parsed.dialogueComplete === undefined) parsed.dialogueComplete = false;
+        if (parsed.isTyping === undefined) parsed.isTyping = false;
+        if (!parsed.settings) parsed.settings = { typingEffect: true, typingSpeed: 50, musicVolume: 0.5, sfxVolume: 0.5 };
+        Object.assign(gameState, parsed);
+        const es = document.getElementById('endingScreen');
+        if (es) { es.classList.remove('visible'); es.style.removeProperty('opacity'); es.style.removeProperty('pointer-events'); }
+        const lb = document.getElementById('loadSaveBtn');
+        if (lb) lb.style.display = 'none';
+    },
+    
+    showClueNotification(clueId) {
+        const clue = CLUE_DEFS[clueId] || { title: '新线索', desc: '你获得了新的信息。' };
+        
+        const notif = document.createElement('div');
+        notif.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px 20px;
+            background: rgba(10,15,12,0.95);
+            border: 1px solid rgba(122,186,152,0.4);
+            border-radius: 8px;
+            color: #c4b5a0;
+            z-index: 50;
+            max-width: 300px;
+            animation: slideIn 0.5s ease;
+        `;
+        notif.innerHTML = `
+            <div style="color: #7aba98; font-size: 0.8rem; margin-bottom: 4px;">📋 获得线索</div>
+            <div style="color: #e8dcc8; font-weight: bold;">${clue.title}</div>
+            <div style="color: #8a7f72; font-size: 0.85rem; margin-top: 4px;">${clue.desc}</div>
+            <div style="color: #6a6058; font-size: 0.75rem; margin-top: 8px;">当前线索：${gameState.clues.length} 条</div>
+        `;
+        
+        document.body.appendChild(notif);
+        
+        setTimeout(() => {
+            notif.style.animation = 'slideOut 0.5s ease';
+            setTimeout(() => notif.remove(), 500);
+        }, 4000);
+    },
+    
+    onCharacterClick(position) {
+        // 防抖：对话进行中不允许点击角色
+        if (this.clickInProgress || !gameState.dialogueComplete) return;
+        this.clickInProgress = true;
+        
+        const el = this.elements[position];
+        const charId = el.dataset.charId;
+        if (!charId) { this.clickInProgress = false; return; }
+        
+        const script = SCRIPT[gameState.currentScene];
+        const clickables = script.clickables;
+        
+        if (clickables && clickables[charId]) {
+            const dialogues = clickables[charId].dialogues;
+            const randomDialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
+            
+            const speakerNames = {
+                monk: '档案员',
+                beauty: '回忆者',
+                tiger: '追踪者',
+                x: 'X',
+                librarianMonk: '僧侣',
+                assassin: '杀手',
+                general: '将军',
+                bureaucrat: '官僚',
+                gatekeeper: '守门人',
+                watcher: '监视者'
+            };
+            
+            this.elements.speakerName.className = 'speaker-name ' + randomDialogue.speaker;
+            this.elements.speakerName.textContent = speakerNames[randomDialogue.speaker] || randomDialogue.speaker;
+            this.typeText(randomDialogue.text, () => {
+                gameState.dialogueComplete = true;
+                // 自动推进场景，无需二次点击
+                this.elements.clickContinue.classList.remove('hidden');
+                this.clickInProgress = false;
+            });
+        } else {
+            this.clickInProgress = false;
+        }
+    },
+    
+    showEnding(ending, sceneId) {
+        // 兼容两种 ending 格式：对象 {title, desc} 和布尔值 true + endingTitle/endingDesc
+        let title, desc;
+        if (!ending) {
+            title = '结局';
+            desc = '你到达了一个结局。';
+        } else if (ending === true || ending === 'true') {
+            const script = SCRIPT[sceneId || gameState.currentScene];
+            title = (script && script.endingTitle) || '结局';
+            desc = (script && script.endingDesc) || '你到达了一个结局。';
+        } else {
+            title = ending.title || '结局';
+            desc = ending.desc || '你到达了一个结局。';
+        }
+        
+        document.getElementById('endingTitle').textContent = title;
+        document.getElementById('endingDesc').textContent = desc;
+        document.getElementById('statDays').textContent = gameState.day || 0;
+        document.getElementById('statClues').textContent = (gameState.clues && gameState.clues.length) || 0;
+        document.getElementById('statMet').textContent = (gameState.encountered && gameState.encountered.length) || 0;
+        
+        // 始终先重置"回到存档点"按钮状态
+        const loadSaveBtn = document.getElementById('loadSaveBtn');
+        if (loadSaveBtn) loadSaveBtn.style.display = 'none';
+        
+        // 检查是否有自动存档，显示"回到存档点"按钮
+        const hasAutoSave = localStorage.getItem('vn_save_0') !== null;
+        if (hasAutoSave && loadSaveBtn) {
+            loadSaveBtn.style.display = 'inline-block';
+        }
+        
+        // 只有访问过阿莱夫后或在世界结局后显示"返回阿莱夫"按钮
+        const continueBtn = document.getElementById('continueBtn');
+        if (continueBtn) {
+            const isInWorldEnding = inferWorldFromScene(sceneId) !== null;
+            if (gameState.traits.includes('aleph_visited') || isInWorldEnding) {
+                continueBtn.style.display = 'inline-block';
+                // 更新按钮文本，显示线索进度
+                continueBtn.textContent = `返回阿莱夫（${countValidFragments()}/12碎片）`;
+                // 如果还没访问过阿莱夫，自动标记
+                if (!gameState.traits.includes('aleph_visited')) {
+                    gameState.traits.push('aleph_visited');
+                }
+            } else {
+                continueBtn.style.display = 'none';
+            }
+        }
+        
+        // 自动存档
+        this.autoSave();
+        
+        setTimeout(() => {
+            const endingScreen = document.getElementById('endingScreen');
+            // 清除可能残留的内联样式，让CSS class完全接管
+            endingScreen.style.removeProperty('opacity');
+            endingScreen.style.removeProperty('pointer-events');
+            endingScreen.style.removeProperty('display');
+            endingScreen.classList.add('visible');
+        }, 1000);
+    },
+    
+    updateStatus() {
+        // 终章阶段
+        let phase;
+        if (gameState.currentScene.startsWith('final_') || gameState.currentScene === 'final_return_garden' || gameState.currentScene === 'final_meet_x' || gameState.currentScene.startsWith('ending_')) {
+            phase = { name: '终章' };
+        } else {
+            const phases = [
+                { max: 2, name: '初入' },
+                { max: 5, name: '徘徊' },
+                { max: 8, name: '迷失' },
+                { max: 12, name: '临界' },
+                { max: 999, name: '永恒' }
+            ];
+            
+            phase = phases[phases.length - 1];
+            for (const p of phases) {
+                if (gameState.day <= p.max) {
+                    phase = p;
+                    break;
+                }
+            }
+        }
+        
+        const clueText = countValidFragments() > 0 ? ` · ${countValidFragments()}/12碎片` : '';
+        const worldText = gameState.completedWorlds.length > 0 ? ` · ${gameState.completedWorlds.length}世界` : '';
+        const sanityText = (gameState.sanity && gameState.sanity < 100) ? ` · 理智${gameState.sanity}` : '';
+        this.elements.dayStatus.textContent = `第${gameState.day}天${clueText}${worldText}${sanityText} · ${phase.name}`;
+    },
+    
+    // 存档系统
+    showSavePanel(mode) {
+        const panel = document.getElementById('savePanel');
+        const title = document.getElementById('panelTitle');
+        const slots = document.getElementById('saveSlots');
+        
+        this.panelOpen = true;
+        
+        title.textContent = mode === 'save' ? '保存游戏' : '读取游戏';
+        slots.innerHTML = '';
+        
+        const worldNames = {
+            blade_runner: '银翼杀手', cthulhu: '疯狂之城', alice: '梦境世界',
+            middle_earth: '中土', wuxia: '江湖', cowboy_bebop: '太空边境',
+            matrix: '矩阵', got: '权力游戏', spirited: '神隐',
+            wake: '守灵夜', watchmen: '守望者', maus: '鼠族'
+        };
+        
+        for (let i = 1; i <= 10; i++) {
+            const data = localStorage.getItem(`vn_save_${i}`);
+            const slot = document.createElement('div');
+            slot.style.cssText = 'padding:12px;margin:8px 0;background:rgba(255,255,255,0.05);border-radius:8px;cursor:pointer;position:relative;transition:background 0.2s;';
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    const date = new Date(parsed.timestamp);
+                    const world = worldNames[parsed.currentScene] || '未知';
+                    const traits = (parsed.traits || []).length;
+                    slot.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <div style="color:#c4b5a0;font-weight:600;">存档 ${i} · 第${parsed.day}天</div>
+                            <div style="color:#6a6058;font-size:0.72rem;margin-top:2px;">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                            <div style="color:#8a8072;font-size:0.7rem;margin-top:2px;">${world} · ${traits}个特质 · ${(parsed.clues||[]).length}条线索</div>
+                        </div>
+                        <div style="color:#6a6058;font-size:0.7rem;cursor:pointer;padding:4px;" title="删除存档">✕</div>
+                    </div>`;
+                } catch(e) {
+                    slot.innerHTML = `<div style="color:#c47070;">存档 ${i} - 数据损坏</div>`;
+                }
+            } else {
+                slot.innerHTML = `<div style="color:#6a6058;">存档 ${i} - 空</div>`;
+            }
+            
+            slot.onclick = (e) => {
+                // 删除按钮（点击 ✕）
+                if (e.target.textContent === '✕') {
+                    e.stopPropagation();
+                    localStorage.removeItem(`vn_save_${i}`);
+                    this.showSavePanel(mode);
+                    return;
+                }
+                if (mode === 'save') {
+                    localStorage.setItem(`vn_save_${i}`, JSON.stringify({
+                        ...gameState,
+                        timestamp: Date.now()
+                    }));
+                    this.showSavePanel('save');
+                } else if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        this._applySaveData(parsed);
+                        document.getElementById('savePanel').classList.remove('visible');
+                        this.panelOpen = false;
+                        this.loadScene(gameState.currentScene);
+                    } catch(e) {
+                        console.error('存档数据损坏:', e.message);
+                        alert('存档数据损坏，无法加载');
+                    }
+                }
+            };
+            
+            slots.appendChild(slot);
+        }
+        
+        // 更新特质列表
+        const traitNames = {
+            brave: '勇敢', cautious: '谨慎', curious: '好奇', intuitive: '直觉',
+            rational: '理性', empathetic: '共情', analytical: '分析', contemplative: '沉思',
+            self_aware: '自省', awakened: '觉醒', seeker_of_truth: '求真', truth_seeker: '求索',
+            playful: '顽皮', mad: '疯狂', heroic: '英雄', noble: '高贵',
+            xia: '侠义', free_spirit: '自由', zen: '禅心', drifter: '漂泊',
+            lone_wolf: '孤狼', free: '不羁', awakening: '觉醒', hacker: '黑客',
+            rebellion: '反叛', honor: '荣誉', ambition: '野心', leadership: '领导',
+            growth: '成长', humility: '谦逊', compassion: '慈悲', wordplay: '文字游戏',
+            cyclical: '循环', dreamer: '梦想家', moral: '道德', sacrificial: '牺牲',
+            justice: '正义', memory: '记忆', witness: '见证', empathy: '移情',
+            aleph_visited: '阿莱夫访客'
+        };
+        document.getElementById('traitCount').textContent = gameState.traits.length;
+        const traitList = document.getElementById('traitList');
+        traitList.innerHTML = '';
+        if (gameState.traits.length === 0) {
+            traitList.innerHTML = '<div style="color: #6a6058; font-style: italic;">还没有获得特质。做出选择来获得特质。</div>';
+        } else {
+            gameState.traits.forEach(traitId => {
+                const tag = document.createElement('span');
+                tag.style.cssText = 'padding: 4px 10px; background: rgba(196,112,112,0.15); border-radius: 12px; color: #c47070; font-size: 0.8rem;';
+                tag.textContent = traitNames[traitId] || traitId;
+                tag.title = traitId;
+                traitList.appendChild(tag);
+            });
+        }
+        
+        panel.classList.add('visible');
+    },
+    
+    // 任务日志系统
+    showDialogueLog() {
+        const panel = document.getElementById('logPanel');
+        const scroll = document.getElementById('logScroll');
+        
+        this.panelOpen = true;
+        
+        const history = gameState.dialogueHistory || [];
+        if (history.length === 0) {
+            scroll.innerHTML = '<div style="color: #6a6058; font-style: italic; text-align: center;">还没有对话记录。</div>';
+        } else {
+            const speakerNames = {
+                narrator: '旁白', monk: '档案员', beauty: '回忆者', tiger: '追踪者', x: 'X',
+                librarianMonk: '僧侣', assassin: '杀手', general: '将军',
+                bureaucrat: '官僚', gatekeeper: '守门人', watcher: '监视者',
+                replicant: '复制人', bladeRunner: '银翼杀手', executive: '公司高层',
+                madhatter: '疯帽子', cheshire: '柴郡猫', queen: '红心女王',
+                spike: 'Spike', jet: 'Jet', faye: 'Faye', ed: 'Ed',
+                frodo: 'Frodo', gandalf: 'Gandalf', aragorn: 'Aragorn',
+                neo: 'Neo', morpheus: 'Morpheus', trinity: 'Trinity',
+                tyrion: 'Tyrion', daenerys: 'Daenerys', jon: 'Jon Snow',
+                chihiro: '千寻', haku: '白龙', yubaba: '汤婆婆',
+                rorschach: 'Rorschach', drmanhattan: '曼哈顿博士', ozymandias: 'Ozymandias',
+                vladek: 'Vladek', artie: 'Artie', anja: 'Anja'
+            };
+            
+            let html = '';
+            history.forEach((entry, i) => {
+                const speaker = speakerNames[entry.speaker] || entry.speaker;
+                html += `<div style="margin-bottom: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <span style="color: #e8dcc8; font-weight: 600;">${speaker}</span>
+                    <span style="color: #6a6058; font-size: 0.7rem; margin-left: 8px;">#${i + 1}</span>
+                    <div style="margin-top: 2px;">${entry.text}</div>
+                </div>`;
+            });
+            scroll.innerHTML = html;
+            scroll.scrollTop = scroll.scrollHeight;
+        }
+        
+        panel.classList.add('visible');
+    },
+
+    showQuestPanel() {
+        const panel = document.getElementById('questPanel');
+        
+        this.panelOpen = true;
+        
+        // 更新当前目标
+        const objective = QUEST_SYSTEM.getCurrentObjective();
+        document.getElementById('currentObjective').innerHTML = `
+            <div style="color: #e8dcc8; font-weight: bold;">${objective.title}</div>
+            <div style="color: #c4b5a0; font-size: 0.9rem; margin-top: 4px;">${objective.desc}</div>
+        `;
+        
+        // 更新线索列表
+        document.getElementById('clueCount').textContent = countValidFragments();
+        const clueList = document.getElementById('clueList');
+        clueList.innerHTML = '';
+        
+        if (gameState.clues.length === 0) {
+            clueList.innerHTML = '<div style="color: #6a6058; font-style: italic;">还没有收集到线索。去和花园中的三个人谈谈吧。</div>';
+        } else {
+            gameState.clues.forEach(clueId => {
+                const clue = CLUE_DEFS[clueId] || { title: clueId, desc: '一条神秘的线索。' };
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 8px 12px; background: rgba(212,197,181,0.08); border-radius: 6px; border-left: 3px solid #7aba98;';
+                item.innerHTML = `<div style="color: #e8dcc8; font-size: 0.9rem;">${clue.title}</div>
+                    <div style="color: #8a7f72; font-size: 0.8rem;">${clue.desc}</div>`;
+                clueList.appendChild(item);
+            });
+        }
+        
+        // 更新已访问世界
+        const worldList = document.getElementById('worldList');
+        worldList.innerHTML = '';
+        
+        if (gameState.completedWorlds.length === 0) {
+            worldList.innerHTML = '<div style="color: #6a6058; font-style: italic;">还没有访问过任何世界。</div>';
+        } else {
+            gameState.completedWorlds.forEach(worldId => {
+                const worldNames = {
+                    blade_runner: '银翼杀手', cthulhu: '疯狂之城', alice: '梦境世界',
+                    middle_earth: '中土世界', wuxia: '江湖世界', cowboy_bebop: '太空边境',
+                    matrix: '矩阵世界', got: '权力游戏', spirited: '神隐世界',
+                    wake: '守灵之夜', watchmen: '末日时钟', maus: '记忆深渊'
+                };
+                const tag = document.createElement('span');
+                tag.style.cssText = 'padding: 4px 10px; background: rgba(122,186,152,0.2); border-radius: 12px; color: #7aba98; font-size: 0.8rem;';
+                tag.textContent = worldNames[worldId] || worldId;
+                worldList.appendChild(tag);
+            });
+        }
+        
+        panel.classList.add('visible');
+    }
+};
+
+// 启动
+document.addEventListener('DOMContentLoaded', () => Engine.init());

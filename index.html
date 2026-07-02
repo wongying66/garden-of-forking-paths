@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻找X | 小径分叉的花园</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 背景图层 -->
+    <div class="bg-layer active" id="bgGarden" style="background-image:url('bg-garden.jpg')"></div>
+    <div class="bg-layer" id="bgDoorBooks" style="background-image:url('bg-door-books.jpg')"></div>
+    <div class="bg-layer" id="bgDoorOcean" style="background-image:url('bg-door-ocean.jpg')"></div>
+    <div class="bg-layer" id="bgDoorDesert" style="background-image:url('bg-door-desert.jpg')"></div>
+    <div class="bg-layer" id="bgBookSand" style="background-image:url('bg-book-sand.jpg')"></div>
+    <div class="bg-overlay"></div>
+    <div class="bg-vignette"></div>
+
+    <!-- 菜单按钮 -->
+    <div class="menu-buttons">
+        <button class="menu-btn" id="saveBtn">保存</button>
+        <button class="menu-btn" id="loadBtn">读取</button>
+    </div>
+
+    <!-- 音频控制 -->
+    <div class="audio-control">
+        <button class="audio-btn" id="audioBtn">🔊</button>
+    </div>
+
+    <div class="container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-label">时间</span>
+                <span class="status-value" id="dayCount">第1天</span>
+                <span class="status-value" id="dayPhase" style="color:#7aba98;font-size:0.7rem;margin-left:4px;">初入</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">X的状态</span>
+                <span class="status-value x-clue" id="xStatus">清晰</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">关于X的线索</span>
+                <span class="status-value x-clue">
+                    <span class="clue-count" id="clueDots">
+                        <span class="clue-dot"></span>
+                        <span class="clue-dot"></span>
+                        <span class="clue-dot"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">已遇见</span>
+                <span class="status-value" id="metCount">0/3</span>
+            </div>
+        </div>
+
+        <!-- 人物面板 -->
+        <div class="characters-panel">
+            <div class="char-card" data-char="monk" id="cardMonk">
+                <span class="char-icon">🧹</span>
+                <div class="char-name">档案员</div>
+                <div class="char-essence">知识</div>
+            </div>
+            <div class="char-card" data-char="beauty" id="cardBeauty">
+                <span class="char-icon">🌸</span>
+                <div class="char-name">回忆者</div>
+                <div class="char-essence">欲望</div>
+            </div>
+            <div class="char-card" data-char="tiger" id="cardTiger">
+                <span class="char-icon">🐅</span>
+                <div class="char-name">追踪者</div>
+                <div class="char-essence">本能</div>
+            </div>
+        </div>
+
+        <!-- 主角本色揭示 -->
+        <div class="protagonist-reveal" id="protagonistReveal"></div>
+
+        <!-- 线索面板 -->
+        <div class="clues-panel" id="cluesPanel">
+            <div class="clues-title">关于 X 的已知信息</div>
+            <div id="cluesList">
+                <div class="clue-item">你手中有一张照片，背面写着 "X"，但照片上的人脸已经模糊</div>
+            </div>
+        </div>
+
+        <!-- 主叙事 -->
+        <div class="narrative">
+            <div class="scene-meta" id="sceneMeta"></div>
+            <div class="scene-title" id="sceneTitle">序章</div>
+            <div class="story-text" id="storyText"></div>
+        </div>
+
+        <!-- 选择 -->
+        <div class="choices" id="choices"></div>
+
+        <!-- 结局标记 -->
+        <div class="ending-banner hidden" id="endingBanner">
+            <div class="ending-text">—— 一个结局，也是另一个开始 ——</div>
+        </div>
+    </div>
+
+    <!-- X 的碎片记忆弹窗 -->
+    <div class="x-memory-popup" id="xMemoryPopup"></div>
+
+    <!-- 存档界面 -->
+    <div class="save-load-panel" id="saveLoadPanel">
+        <div class="save-load-content">
+            <div class="save-load-title" id="saveLoadTitle">保存游戏</div>
+            <div id="saveSlots"></div>
+            <button class="save-load-close" id="saveLoadClose">关闭</button>
+        </div>
+    </div>
+
+    <!-- 结局总结页面 -->
+    <div class="ending-summary" id="endingSummary">
+        <div class="summary-content">
+            <div class="summary-title">旅程结束</div>
+            
+            <div class="summary-section">
+                <div class="summary-label">你的结局</div>
+                <div class="summary-ending-name" id="summaryEndingName"></div>
+                <div class="summary-value" id="summaryEndingDesc"></div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-label">你的本色</div>
+                <div id="summaryTraits"></div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-label">旅程统计</div>
+                <div class="summary-value">
+                    走了 <span id="summaryDays">0</span> 天<br>
+                    收集 <span id="summaryClues">0</span> 条线索<br>
+                    遇见 <span id="summaryMet">0</span> 个人<br>
+                    关于 X 的记忆 <span id="summaryXMemories">0</span> 片
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-label">关于 X 的发现</div>
+                <div class="summary-value" id="summaryXFindings"></div>
+            </div>
+
+            <button class="summary-close" id="summaryClose">重新开始</button>
+        </div>
+    </div>
+
+    <!-- 脚本 -->
+    <script src="js/engine.js"></script>
+    <script src="js/scenes.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

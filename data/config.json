@@ -1,0 +1,115 @@
+{
+  "gameTitle": "寻找X | 小径分叉的花园",
+  "version": "2.0.0",
+
+  "X_MEMORIES": {
+    "voice": {
+      "id": "voice",
+      "trigger": "random",
+      "text": "X 的声音：低沉，带着一丝沙哑，像是在风中说的话",
+      "scenes": ["meet_beauty", "beauty_remember"]
+    },
+    "laugh": {
+      "id": "laugh",
+      "trigger": "random",
+      "text": "X 的笑声：不是开心的笑，而是一种释然的叹息",
+      "scenes": ["monk_photos"]
+    },
+    "habit": {
+      "id": "habit",
+      "trigger": "choice",
+      "text": "X 有一个习惯：思考时会用手指轻轻敲打桌面",
+      "scenes": ["monk_inquiry"]
+    },
+    "words": {
+      "id": "words",
+      "trigger": "choice",
+      "text": "X 曾经说过：「迷宫的出口在入口之前就已经存在」",
+      "scenes": ["crossroads"]
+    },
+    "scent": {
+      "id": "scent",
+      "trigger": "random",
+      "text": "X 身上有一种气味：旧书页和雨水的混合",
+      "scenes": ["meet_monk", "tiger_sure"]
+    },
+    "fear": {
+      "id": "fear",
+      "trigger": "choice",
+      "text": "X 害怕的东西：不是死亡，而是被遗忘",
+      "scenes": ["beauty_async"]
+    },
+    "dream": {
+      "id": "dream",
+      "trigger": "random",
+      "text": "X 的梦境：一座没有门的房子，窗外是无限的海",
+      "scenes": ["meet_tiger", "ending_found_memory"]
+    },
+    "promise": {
+      "id": "promise",
+      "trigger": "choice",
+      "text": "X 的承诺：「如果你忘记我，我会在花园等你记起来」",
+      "scenes": ["ending_wait", "ending_found_final"]
+    }
+  },
+
+  "DAY_PHASES": [
+    { "max": 2, "name": "初入", "xStatus": "清晰", "xDesc": "X 的轮廓仍然分明" },
+    { "max": 5, "name": "徘徊", "xStatus": "模糊", "xDesc": "X 的记忆开始褪色" },
+    { "max": 8, "name": "迷失", "xStatus": "遥远", "xDesc": "X 几乎只是一个符号" },
+    { "max": 12, "name": "临界", "xStatus": "消散", "xDesc": "X 正在从存在中撤退" },
+    { "max": 999, "name": "永恒", "xStatus": "虚无", "xDesc": "X 已不再存在" }
+  ],
+
+  "TRAIT_NAMES": {
+    "methodical": "有条理",
+    "intuitive": "直觉型",
+    "instinctive": "本能型",
+    "contemplative": "沉思者",
+    "desperate": "执着",
+    "romantic": "浪漫",
+    "nihilist": "虚无主义者",
+    "skeptic": "怀疑者",
+    "self_aware": "自我觉察",
+    "obsessive": "执念深",
+    "sacrifice": "牺牲型",
+    "self_preservation": "自我保护",
+    "determined": "坚定",
+    "suicidal": "宿命论者",
+    "pragmatic": "务实",
+    "exhausted": "疲惫"
+  },
+
+  "ENDING_INFO": {
+    "found": { "title": "找到 X", "desc": "你完成了寻找。但找到只是另一个开始。" },
+    "found_self": { "title": "找到自己", "desc": "你意识到 X 从来不是另一个人，而是你丢失的那部分自己。" },
+    "found_together": { "title": "重逢", "desc": "你和 X 终于相见。不是终点，而是一起走的起点。" },
+    "not_found": { "title": "未找到", "desc": "有些寻找没有结果。但这不意味着寻找没有意义。" },
+    "lost_self": { "title": "迷失自我", "desc": "你记得 X 的一切，但忘记了自己是谁。" },
+    "silence": { "title": "沉默", "desc": "你选择了停止寻找。在沉默中，答案不再重要。" },
+    "waiting": { "title": "等待", "desc": "你变成了一个等待的人。希望存在，即使它是一种痛苦。" },
+    "waited_too_long": { "title": "等待太久", "desc": "你等了太久，久到忘记了在等谁。" },
+    "leave": { "title": "离开", "desc": "你选择停止寻找。有些谜题不需要答案。" },
+    "time_lost": { "title": "时间迷失", "desc": "你走了太久，久到忘记了在寻找什么。" },
+    "parallel": { "title": "平行", "desc": "你和 X 永远记得彼此，但永远无法真正相见。" },
+    "forgot_x": { "title": "遗忘", "desc": "你选择了找回自己，代价是忘记 X。" },
+    "death_together": { "title": "永恒陪伴", "desc": "你选择和 X 一起留在死亡里。这是你们的选择。" },
+    "escape_failed": { "title": "无法带走", "desc": "你试图带走 X，但有些东西无法被带走。" }
+  },
+
+  "CHARACTERS": {
+    "monk": { "name": "档案员", "icon": "🧹", "essence": "知识", "cssClass": "monk" },
+    "beauty": { "name": "回忆者", "icon": "🌸", "essence": "欲望", "cssClass": "beauty" },
+    "tiger": { "name": "追踪者", "icon": "🐅", "essence": "本能", "cssClass": "tiger" }
+  },
+
+  "CLUES": {
+    "photo": { "id": "photo", "text": "你手中有一张照片，背面写着 X，但照片上的人脸已经模糊", "found": true },
+    "name": { "id": "name", "text": "X 的全名是——但你每次试图回忆，那个名字就变成了风声", "found": false },
+    "location": { "id": "location", "text": "X 最后一次被看见，是在这座花园的某扇门后面", "found": false },
+    "time": { "id": "time", "text": "X 消失的时间，和你进入花园的时间，是同一个瞬间", "found": false },
+    "connection": { "id": "connection", "text": "X 可能是你的爱人、你的敌人、你的证人，或者……你的另一个名字", "found": false }
+  },
+
+  "SAVE_SLOTS": 5
+}
