@@ -352,6 +352,102 @@ const QUEST_SYSTEM = {
 // 章节注册表（用于兼容不同格式的章节文件）
 const CHAPTERS = {};
 
+// 统一的角色名称中文映射表（所有显示角色名称的地方共用此常量）
+const SHARED_SPEAKER_NAMES = {
+    narrator: '旁白',
+    monk: '档案员',
+    beauty: '回忆者',
+    tiger: '追踪者',
+    x: 'X',
+    // 无限图书馆篇章
+    librarianMonk: '僧侣',
+    assassin: '杀手',
+    general: '将军',
+    // 卡夫卡迷宫篇章
+    bureaucrat: '官僚',
+    gatekeeper: '守门人',
+    watcher: '监视者',
+    // 银翼杀手篇章
+    replicant: '复制人',
+    bladeRunner: '银翼杀手',
+    executive: '公司高层',
+    // 黑客帝国篇章
+    morpheus: '墨菲斯',
+    oracle: '先知',
+    agentSmith: '特工史密斯',
+    agent: '特工',
+    protagonist: '主角',
+    // 冰与火之歌篇章
+    advisor: '谋士',
+    commander: '统帅',
+    spy: '密探',
+    mystic: '神秘人',
+    warrior: '战士',
+    // 千与千寻篇章
+    maskedSpirit: '面具之灵',
+    riverSpirit: '河神',
+    bathhouseMistress: '汤婆婆',
+    roundSpirit: '圆灵',
+    // 芬尼根的守灵夜篇章
+    storyteller: '讲述者',
+    sleeper: '沉睡者',
+    // 守望者篇章
+    rorschach: '罗夏',
+    owl: '夜枭',
+    strategist: '战略家',
+    // 鼠族篇章
+    survivor: '幸存者',
+    youngMouse: '小老鼠',
+    fatherMouse: '鼠父',
+    // 爱丽丝梦游仙境篇章
+    madhatter: '疯帽子',
+    cheshire: '柴郡猫',
+    queen: '红心女王',
+    // 克苏鲁篇章
+    cultist: '信徒',
+    investigator: '调查员',
+    deepone: '深潜者',
+    // 中土世界篇章
+    elf: '精灵',
+    dwarf: '矮人',
+    wizard: '巫师',
+    // 金庸武侠篇章
+    swordsman: '剑客',
+    master: '宗师',
+    courtesan: '花魁',
+    // 星际牛仔篇章
+    bountyHunter: '赏金猎人',
+    spacePilot: '飞行员',
+    spaceHacker: '黑客',
+    // 星际牛仔角色名
+    spike: '斯派克',
+    jet: '杰特',
+    faye: '菲',
+    ed: '艾德',
+    // 中土世界角色名
+    frodo: '弗罗多',
+    gandalf: '甘道夫',
+    aragorn: '阿拉贡',
+    // 黑客帝国角色名
+    neo: '尼奥',
+    trinity: '崔妮蒂',
+    // 冰与火之歌角色名
+    tyrion: '提利昂',
+    daenerys: '丹妮莉丝',
+    jon: '琼恩',
+    // 千与千寻角色名
+    chihiro: '千寻',
+    haku: '白龙',
+    yubaba: '汤婆婆',
+    // 守望者角色名
+    drmanhattan: '曼哈顿博士',
+    ozymandias: '奥兹曼迪亚斯',
+    // 鼠族角色名
+    vladek: '弗拉德克',
+    artie: '阿蒂',
+    anja: '安雅'
+};
+
 const SCRIPT = {
     // ===== 序章 =====
     start: {
@@ -3838,11 +3934,6 @@ const Engine = {
                 characterLayer: document.getElementById('characterLayer')
             };
             
-            // 确保 clickContinue 始终隐藏
-            if (this.elements.clickContinue) {
-                this.elements.clickContinue.style.display = 'none';
-            }
-            
             // 初始化特效引擎
             if (typeof effectsEngine !== 'undefined') {
                 effectsEngine.init();
@@ -3868,6 +3959,7 @@ const Engine = {
         titleScreen.classList.remove('fade-out');
         gameContainer.style.opacity = '0';
         gameContainer.style.pointerEvents = 'none';
+        gameContainer.setAttribute('aria-hidden', 'true');
         
         // 标题粒子
         this.startTitleParticles();
@@ -3940,6 +4032,7 @@ const Engine = {
         titleScreen.classList.add('fade-out');
         gameContainer.style.opacity = '1';
         gameContainer.style.pointerEvents = 'auto';
+        gameContainer.removeAttribute('aria-hidden');
         
         if (loadSave) {
             // 加载最新的存档（自动存档或手动存档）
@@ -4448,44 +4541,7 @@ const Engine = {
         const speakerEl = this.elements.speakerName;
         speakerEl.className = 'speaker-name ' + (dialogue.speaker || 'narrator');
         
-        const speakerNames = {
-            narrator: '旁白',
-            monk: '档案员',
-            beauty: '回忆者',
-            tiger: '追踪者',
-            x: 'X',
-            // 无限图书馆篇章
-            librarianMonk: '僧侣',
-            assassin: '杀手',
-            general: '将军',
-            // 卡夫卡迷宫篇章
-            bureaucrat: '官僚',
-            gatekeeper: '守门人',
-            watcher: '监视者',
-            // 银翼杀手篇章
-            replicant: '复制人',
-            bladeRunner: '银翼杀手',
-            executive: '公司高层',
-            // 黑客帝国篇章
-            morpheus: '墨菲斯',
-            oracle: '先知',
-            agentSmith: '特工史密斯',
-            protagonist: '主角',
-            // 冰与火之歌篇章
-            advisor: '谋士',
-            commander: '统帅',
-            spy: '密探',
-            // 千与千寻篇章
-            maskedSpirit: '面具之灵',
-            riverSpirit: '河神',
-            // 芬尼根的守灵夜篇章
-            storyteller: '讲述者',
-            // 守望者篇章
-            rorschach: '罗夏',
-            owl: '夜枭',
-            // 鼠族篇章
-            survivor: '幸存者'
-        };
+        const speakerNames = SHARED_SPEAKER_NAMES;
         speakerEl.textContent = speakerNames[dialogue.speaker] || dialogue.speaker;
         
         // 高亮说话的人物
@@ -4526,12 +4582,10 @@ const Engine = {
             // 显示选择或继续提示
             if (dialogue.showChoices) {
                 this.showChoices();
-            } else {
-                this.elements.clickContinue.classList.remove('hidden');
             }
         });
     },
-    
+
     typeText(text, callback) {
         // 清除之前的打字机定时器
         if (this.typingTimer) {
@@ -4543,7 +4597,6 @@ const Engine = {
         this._typingCallback = callback;
         
         gameState.isTyping = true;
-        this.elements.clickContinue.classList.add('hidden');
         this.elements.choicesContainer.classList.add('hidden');
         
         const el = this.elements.dialogueContent;
@@ -4637,7 +4690,24 @@ const Engine = {
                 if (choice.cost.sanity) costLabels += `<span class="cost-tag cost-sanity">理智-${choice.cost.sanity}</span>`;
                 if (choice.cost.day) costLabels += `<span class="cost-tag cost-day">时间+${choice.cost.day}</span>`;
             }
-            if (choice.trait) costLabels += `<span class="cost-tag cost-trait">${choice.trait}</span>`;
+            if (choice.trait) {
+                const TRAIT_NAMES = {
+                    methodical: '有条不紊',
+                    intuitive: '直觉',
+                    instinctive: '本能',
+                    contemplative: '沉思',
+                    self_aware: '自我觉察',
+                    obsessive: '执着',
+                    reckless: '鲁莽',
+                    curious: '好奇',
+                    cautious: '谨慎',
+                    compassionate: '同情',
+                    ruthless: '冷酷',
+                    hopeful: '希望',
+                    despairing: '绝望'
+                };
+                costLabels += `<span class="cost-tag cost-trait">${TRAIT_NAMES[choice.trait] || choice.trait}</span>`;
+            }
             if (choice.clue) costLabels += `<span class="cost-tag cost-clue">${choice.clue}</span>`;
             if (costLabels) {
                 btnHTML += `<span class="choice-costs">${costLabels}</span>`;
@@ -4677,7 +4747,7 @@ const Engine = {
                 gameState.day += choice.cost.day;
             }
             if (choice.cost.sanity) {
-                gameState.sanity = Math.max(0, (gameState.sanity || 100) - choice.cost.sanity);
+                gameState.sanity = Math.max(0, (gameState.sanity ?? 100) - choice.cost.sanity);
                 // 理智值过低时的视觉反馈
                 if (gameState.sanity <= 30 && typeof effectsEngine !== 'undefined') {
                     effectsEngine.flash('#ff0000', 500);
@@ -4830,25 +4900,12 @@ const Engine = {
             const dialogues = clickables[charId].dialogues;
             const randomDialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
             
-            const speakerNames = {
-                monk: '档案员',
-                beauty: '回忆者',
-                tiger: '追踪者',
-                x: 'X',
-                librarianMonk: '僧侣',
-                assassin: '杀手',
-                general: '将军',
-                bureaucrat: '官僚',
-                gatekeeper: '守门人',
-                watcher: '监视者'
-            };
+            const speakerNames = SHARED_SPEAKER_NAMES;
             
             this.elements.speakerName.className = 'speaker-name ' + randomDialogue.speaker;
             this.elements.speakerName.textContent = speakerNames[randomDialogue.speaker] || randomDialogue.speaker;
             this.typeText(randomDialogue.text, () => {
                 gameState.dialogueComplete = true;
-                // 自动推进场景，无需二次点击
-                this.elements.clickContinue.classList.remove('hidden');
                 this.clickInProgress = false;
             });
         } else {
@@ -5064,20 +5121,7 @@ const Engine = {
         if (history.length === 0) {
             scroll.innerHTML = '<div style="color: #6a6058; font-style: italic; text-align: center;">还没有对话记录。</div>';
         } else {
-            const speakerNames = {
-                narrator: '旁白', monk: '档案员', beauty: '回忆者', tiger: '追踪者', x: 'X',
-                librarianMonk: '僧侣', assassin: '杀手', general: '将军',
-                bureaucrat: '官僚', gatekeeper: '守门人', watcher: '监视者',
-                replicant: '复制人', bladeRunner: '银翼杀手', executive: '公司高层',
-                madhatter: '疯帽子', cheshire: '柴郡猫', queen: '红心女王',
-                spike: 'Spike', jet: 'Jet', faye: 'Faye', ed: 'Ed',
-                frodo: 'Frodo', gandalf: 'Gandalf', aragorn: 'Aragorn',
-                neo: 'Neo', morpheus: 'Morpheus', trinity: 'Trinity',
-                tyrion: 'Tyrion', daenerys: 'Daenerys', jon: 'Jon Snow',
-                chihiro: '千寻', haku: '白龙', yubaba: '汤婆婆',
-                rorschach: 'Rorschach', drmanhattan: '曼哈顿博士', ozymandias: 'Ozymandias',
-                vladek: 'Vladek', artie: 'Artie', anja: 'Anja'
-            };
+            const speakerNames = SHARED_SPEAKER_NAMES;
             
             let html = '';
             history.forEach((entry, i) => {
