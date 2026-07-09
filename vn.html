@@ -103,10 +103,10 @@
             position: absolute;
             bottom: 0;
             left: 0; right: 0;
-            height: 50%;
+            height: 30%;
             background: linear-gradient(to top, rgba(10,15,12,0.98), rgba(10,14,11,0.93));
             border-top: 2px solid rgba(212,197,181,0.3);
-            padding: 12px 40px 16px;
+            padding: 8px 40px 10px;
             z-index: 20;
             display: flex;
             flex-direction: column;
@@ -117,12 +117,12 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
             flex-shrink: 0;
         }
 
         .speaker-name {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: #e8dcc8;
             letter-spacing: 0.1em;
         }
@@ -153,11 +153,11 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            font-size: 1.25rem;
-            line-height: 2.0;
+            font-size: 1.05rem;
+            line-height: 1.75;
             color: #f0e6d3;
             text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-            padding: 4px 0;
+            padding: 2px 0;
         }
 
         .dialogue-content p { margin-bottom: 1em; text-indent: 2em; }
@@ -182,9 +182,9 @@
         .choices-container {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            margin-top: 6px;
-            max-height: 150px;
+            gap: 3px;
+            margin-top: 4px;
+            max-height: 90px;
             overflow-y: auto;
             padding-right: 4px;
             flex-shrink: 0;
@@ -202,13 +202,13 @@
         }
 
         .choice-btn {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: rgba(212,197,181,0.1);
             border: 1px solid rgba(212,197,181,0.25);
             border-radius: 6px;
             color: #c4b5a0;
             font-family: inherit;
-            font-size: 1.0rem;
+            font-size: 0.85rem;
             text-align: left;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -225,15 +225,15 @@
         /* 选择后果标签 */
         .choice-costs {
             display: block;
-            margin-top: 3px;
-            font-size: 0.75rem;
+            margin-top: 2px;
+            font-size: 0.68rem;
         }
         .cost-tag {
             display: inline-block;
-            padding: 1px 6px;
+            padding: 1px 5px;
             border-radius: 3px;
             margin-right: 4px;
-            font-size: 0.75rem;
+            font-size: 0.68rem;
         }
         .cost-sanity { background: rgba(196,112,112,0.15); color: #c47070; }
         .cost-day { background: rgba(196,160,96,0.15); color: #c4a060; }
@@ -726,23 +726,23 @@
         /* 响应式 */
         @media (max-width: 768px) {
             .game-container { max-width: 100vw; max-height: 100vh; }
-            .dialogue-box { height: 50%; padding: 10px 16px 12px; }
+            .dialogue-box { height: 30%; padding: 6px 16px 8px; }
             .character { height: 60%; }
             .status-bar-mini { flex-wrap: wrap; gap: 4px; }
             .status-bar-mini button { font-size: 0.7rem; padding: 4px 8px; }
             .panel-content { max-width: 90vw; }
-            .choices-container { max-height: 130px; gap: 3px; }
-            .choice-btn { font-size: 0.85rem; padding: 6px 12px; }
-            .dialogue-content { font-size: 1.05rem; line-height: 1.8; }
+            .choices-container { max-height: 80px; gap: 2px; }
+            .choice-btn { font-size: 0.78rem; padding: 5px 10px; }
+            .dialogue-content { font-size: 0.95rem; line-height: 1.6; }
         }
 
         @media (max-width: 480px) {
-            .dialogue-box { height: 50%; padding: 8px 12px 10px; }
-            .dialogue-content { font-size: 0.9rem; line-height: 1.7; }
+            .dialogue-box { height: 30%; padding: 5px 10px 8px; }
+            .dialogue-content { font-size: 0.85rem; line-height: 1.5; }
             .character { height: 50%; }
             .status-bar-mini button { font-size: 0.65rem; padding: 3px 6px; }
-            .choices-container { max-height: 110px; gap: 2px; }
-            .choice-btn { font-size: 0.75rem; padding: 5px 10px; }
+            .choices-container { max-height: 70px; gap: 1px; }
+            .choice-btn { font-size: 0.7rem; padding: 4px 8px; }
             .ending-content { max-width: 95vw; padding: 16px; }
         }
     </style>
