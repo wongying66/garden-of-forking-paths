@@ -456,26 +456,22 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你醒来时，手中握着一张照片。'
+                text: '你醒来时，手中握着一张照片。照片上的脸模糊不清，不是被水泡过——而是从未被拍清楚。博尔赫斯在某个地方写道：一个模糊的镜像，比一个清晰的镜像更接近原物，因为原物本身也是模糊的。'
             },
             {
                 speaker: 'narrator',
-                text: '照片背面写着一个大写的 X。正面应该有一张脸，但那张脸模糊不清，像被水浸泡过的墨迹。'
+                text: '照片背面写着一个大写的X。不是字母，而是一个坐标——一个交汇点，一个所有方向同时存在的奇点。你不知道自己是谁，不知道自己在哪里。但你清楚地知道一件事：你必须找到X。不是因为她丢了——而是因为你在寻找她这件事，就是你存在的唯一证据。'
             },
             {
                 speaker: 'narrator',
-                text: '你不知道自己是谁，不知道自己在哪里。但你清楚地知道一件事：你必须找到 X。'
-            },
-            {
-                speaker: 'narrator',
-                text: '你站在一座雾蒙蒙的花园里。远处有三个人影——一个拿着扫帚的老人、一个站在花丛中的女人、一个伏在沙地上的身影。他们似乎都在等待你。',
+                text: '你站在一座雾蒙蒙的花园里。雾不是障碍——雾是花园的文本。远处有三个人影，每一个都像镜中的倒影，但又各不相同。一个在扫一座不存在的图书馆，一个在照看会映出记忆的花，一个在追踪早已消失的足迹。他们似乎都在等待你——但等待这个词，在这里意味着：存在。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '走向拿扫帚的老人（档案员）', next: 'meet_monk', trait: 'methodical' },
-            { text: '走向花丛中的女人（回忆者）', next: 'meet_beauty', trait: 'intuitive' },
-            { text: '走向沙地上的身影（追踪者）', next: 'meet_tiger', trait: 'instinctive' }
+            { text: '走向拿扫帚的老人——他扫的不是灰尘，而是时间的灰烬（档案员）', next: 'meet_monk', trait: 'methodical' },
+            { text: '走向花丛中的女人——她照看的不是花，而是关于花的记忆（回忆者）', next: 'meet_beauty', trait: 'intuitive' },
+            { text: '走向沙地上的身影——他追踪的不是足迹，而是足迹消失后的空白（追踪者）', next: 'meet_tiger', trait: 'instinctive' }
         ]
     },
 
@@ -488,32 +484,36 @@ const SCRIPT = {
         onEnter: () => {
             if (!gameState.encountered.includes('monk')) {
                 gameState.encountered.push('monk');
+                if (!gameState.clues.includes('name')) {
+                    gameState.clues.push('name');
+                }
             }
         },
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你走进一间石室。四壁都是书架，书架上摆满了卷宗和档案。一个瘦削的老人正在用扫帚清扫地面。'
+                text: '你走进一间石室。四壁都是书架，书架上堆满了卷宗。空气里弥漫着旧纸和墨水的味道——不是气味，而是一种时间的密度。一个瘦削的老人正在用扫帚清扫地面，扫帚划过石板的节奏，像在书写某种你不认识的文字。'
             },
             {
                 speaker: 'monk',
-                text: '你来了。我已经等你很久了。',
+                text: '你来了。当然，我说"你来了"——但在这座花园里，来和去是同一个动词。你已经在这里很久了，只是刚刚才注意到。',
                 highlight: 'monk'
             },
             {
                 speaker: 'monk',
-                text: '我是这座花园的档案员。每一个进来寻找的人，都会在这里留下记录。你想找的X——我这里有关于她的档案。'
+                text: '我是这座花园的档案员。每一个寻找的人，都会在这里留下记录——不是他们找到了什么，而是他们如何寻找。寻找本身，就是一种书写。关于X——我这里有她的档案。或者说，有关于"她"的档案。引号很重要，因为这个名字本身，就是一个引号。',
+                speakTime: 8000
             },
             {
                 speaker: 'narrator',
-                text: '他指向一面墙。那上面挂满了照片——成千上万张，每一张背面都写着 X。',
+                text: '他指向一面墙。那上面挂满了照片——成千上万张，每一张背面都写着X。但当你仔细看时，你发现有些照片上的人脸，和你自己的脸有几分相似。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「那我要怎么找到真正的 X？」', next: 'monk_inquiry' },
-            { text: '查看那些照片', next: 'monk_photos', clue: 'name' },
-            { text: '「你这里有什么线索？」', next: 'monk_clues' }
+            { text: '「档案里写了什么？」', next: 'monk_inquiry' },
+            { text: '翻看那些照片——每张照片都是一个可能的X', next: 'monk_photos', clue: 'location' },
+            { text: '「你在这里多久了？什么是档案员？」', next: 'monk_clues' }
         ],
         clickables: {
             monk: {
@@ -532,29 +532,30 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'monk',
-                text: '真正的X？让我告诉你我知道的。'
+                text: '档案是一个奇怪的东西。你以为你读的是关于别人的记录，但实际上，每一份档案都是读者自己的镜像。博尔赫斯说，天堂应该是一座图书馆——但他没有说，地狱也是。'
             },
             {
                 speaker: 'monk',
-                text: '三个月前，有一个女人来到这座花园。她也拿着一张照片，背面写着X——和你手中这张一模一样。'
+                text: '让我告诉你关于X的事。但我先问你一个问题：你怎么知道你不是X？你怎么知道你不是在寻找自己？'
             },
             {
                 speaker: 'monk',
-                text: '她问我："我在找一个写X的人。"我说："也许X不是被写的，而是被寻找的。"她笑了笑，然后走向花园深处。'
+                text: '三个月前——或者三十年前，在这座花园里没有区别——有一个女人来到这里。她也拿着一张照片，背面写着X。她问了我同样的问题。或者，也许是你问了她同样的问题。时间在这座花园里不是一条直线，而是一张反复折叠的纸——博尔赫斯叫它"小径分叉的花园"。',
+                speakTime: 10000
             },
             {
                 speaker: 'monk',
-                text: '那是我最后一次见到她。但她留下了一封信，说如果她没回来，就把信交给下一个寻找X的人。',
+                text: '她留下了一封信。她说，如果她没回来，就把信交给下一个寻找X的人。我一直在想——"下一个"是什么意思？也许你不是下一个，也许你是同一个。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「那封信在哪里？」', next: 'monk_letter', clue: 'connection' },
-            { text: '「她去了哪里？」', next: 'monk_where', clue: 'location' },
-            { text: '「那个女人长什么样？」', next: 'monk_description' },
-            { text: '「关于时间……这一切发生了多久？」', next: 'monk_time' },
-            { text: '「X到底是谁？你有档案吗？」', next: 'monk_who' },
-            { text: '「X真的存在吗？」', next: 'monk_exist' }
+            { text: '「那封信——它写的到底是什么？」', next: 'monk_letter', clue: 'connection' },
+            { text: '「她走向了哪里？」', next: 'monk_where', clue: 'location' },
+            { text: '「那个女人长什么样？她是我吗？」', next: 'monk_description' },
+            { text: '「关于时间——这一切发生了多久？」', next: 'monk_time' },
+            { text: '「X到底是谁？档案里有没有她的名字？」', next: 'monk_who' },
+            { text: '「X真的存在吗？还是她只是一个引号？」', next: 'monk_exist' }
         ]
     },
 
@@ -564,21 +565,22 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'monk',
-                text: '线索？我有三条。但每条都需要你做出选择。'
+                text: '线索？每个到这里的人都要问这个问题。但线索不是被找到的——线索是在你准备好的那一刻，自己显现的。博尔赫斯用了整整一本书来写一个人寻找一个字母的故事。那个字母就是Aleph——所有字母的起点，所有语言的共同分母。'
             },
             {
                 speaker: 'monk',
-                text: '第一条：X曾经来过这座花园，她留下了痕迹。第二条：花园的中心有一扇门，通往所有方向。第三条：你需要收集至少三条线索，才能打开那扇门。'
+                text: '第一条：X曾经来过，她留下了痕迹——不是脚印，而是关于脚印的记忆。第二条：花园的中心有一扇门，上面刻满了文字。那些文字每时每刻都在变化，但含义不变。第三条：你需要收集线索——不是三条，而是足够多，多到你可以同时相信所有互相矛盾的版本。',
+                speakTime: 10000
             },
             {
                 speaker: 'monk',
-                text: '我已经告诉你了我知道的。去问问另外两个人吧——回忆者和追踪者。他们也有线索。',
+                text: '我说得太多了。但说太多，也是档案员的本能。去和回忆者谈谈吧——她掌握的不是事实，而是关于事实的记忆。还有追踪者——他掌握的不是方向，而是所有方向的可能性。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「谢谢，我去找他们」', next: 'crossroads' },
-            { text: '「再告诉我更多关于X的事」', next: 'monk_inquiry' }
+            { text: '「我会去见他们——但也许我还会回来」', next: 'crossroads' },
+            { text: '「再告诉我一些关于X的事——不是事实，而是……可能性」', next: 'monk_inquiry' }
         ]
     },
 
@@ -588,21 +590,21 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '老人从怀中取出一封泛黄的信。'
+                text: '老人从怀中取出一封泛黄的信。纸张已经脆了，但字迹清晰——那是一种你不认识的字体，但你能读懂每一个字，就像在梦里读一本你从未读过的书。'
             },
             {
                 speaker: 'monk',
-                text: '"如果你在读这封信，说明我已经走了很远。X不是一个人，而是一个地方。或者说，X是所有地方的交汇处。去花园的中心，找到那扇刻满文字的门。"'
+                text: '"如果你在读这封信——"她写道，"——那你就是我了。不是比喻，不是修辞。当你读到这句话的时候，你和我之间没有区别。我寻找X，你也在寻找X。我写下了这封信，但当你读它的时候，你也在写。我们共享同一个动词。"'
             },
             {
                 speaker: 'monk',
-                text: '"但记住：只有当你收集了足够多的线索，门才会打开。去问其他人吧。"',
+                text: '"去花园中心。那里有一扇门，门上的文字会告诉你下一步。但你不需要记住这些文字——它们会记住你。"',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「我会找到那扇门的」', next: 'crossroads', clue: 'location' },
-            { text: '「还有其他人知道X的事？」', next: 'monk_others' }
+            { text: '「我会找到那扇门——不是因为它通向哪里，而是因为它本身就是终点」', next: 'crossroads', clue: 'location' },
+            { text: '「还有其他人知道这封信的事吗？」', next: 'monk_others' }
         ]
     },
 
@@ -612,21 +614,21 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'monk',
-                text: '她……和你有点像。不是长相，是眼神。那种寻找的眼神。'
+                text: '她……让我想想。不是想她的长相，而是想她给我的感觉。她站在这里的时候，我总觉得书架上的书脊都在微微发光——就像镜子。'
             },
             {
                 speaker: 'monk',
-                text: '她说她的名字不重要，重要的是她正在写一个故事。一个关于寻找的故事。'
+                text: '她说她正在写一个故事。一个关于寻找的故事。她问我："在这个故事里，我是作者还是角色？"我说："也许两者都是。也许博尔赫斯写《环形废墟》的时候，他自己也在被另一个博尔赫斯书写。"'
             },
             {
                 speaker: 'monk',
-                text: '也许……你就是她故事中的角色。或者，她是你的故事中的角色。',
+                text: '她笑了笑。那个笑容，我现在想起来，和你的笑容很像。也许不是像——也许就是同一个。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「我要找到她」', next: 'crossroads', clue: 'name' },
-            { text: '「这太奇怪了」', next: 'monk_clues' }
+            { text: '「我要找到她——或者找到我自己」', next: 'crossroads', clue: 'name' },
+            { text: '「这太奇怪了——但奇怪才是花园的常态」', next: 'monk_clues' }
         ]
     },
 
@@ -636,22 +638,22 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'monk',
-                text: '回忆者在花园的镜花丛中。她能读取人们的记忆，但代价是你会失去一部分自己的记忆。'
+                text: '回忆者在镜花丛中。她不读取记忆——她读取的是记忆之间的空白。那些被遗忘的间隙，比被记住的事情更真实。博尔赫斯说，遗忘是记忆的一种形式，也许是唯一真诚的形式。'
             },
             {
                 speaker: 'monk',
-                text: '追踪者在沙地上。他能闻到人的气味，带你去任何你想去的地方。但他不会告诉你目的地是否安全。'
+                text: '追踪者在沙地上。他不追踪足迹——他追踪的是足迹被风吹散之后留下的空缺。他找到的不是方向，而是所有方向的分叉点。'
             },
             {
                 speaker: 'monk',
-                text: '去找他们吧。收集足够的线索，然后回到这里。我会带你去找那扇门。',
+                text: '去找他们吧。然后回到这里。不是因为我需要你回来——而是因为花园需要你迷路。博尔赫斯说，迷宫的美不在于出口，而在于你永远找不到出口。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '去找回忆者', next: 'meet_beauty' },
-            { text: '去找追踪者', next: 'meet_tiger' },
-            { text: '去花园中心看看', next: 'crossroads' }
+            { text: '去找回忆者——去记忆的空白处', next: 'meet_beauty' },
+            { text: '去找追踪者——去方向的分叉点', next: 'meet_tiger' },
+            { text: '去花园中心——也许那扇门在等我', next: 'crossroads' }
         ]
     },
 
@@ -661,25 +663,25 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你走近那面墙。成千上万张照片，每一张都模糊，每一张背面都写着 X。'
+                text: '你走近那面墙。成千上万张照片，每一张都模糊，每一张背面都写着X。但在模糊之中，你发现了一个规律——每张照片上的人脸，轮廓都在缓慢地变化，像水面上的倒影。'
             },
             {
                 speaker: 'narrator',
-                text: '但当你仔细看，你发现了一些规律。有些照片的边缘有日期——有些是一百年前，有些是昨天，有些甚至是明天。'
+                text: '有些照片的边缘有日期——有些是一百年前，有些是昨天，有些甚至是明天。博尔赫斯在《特隆》里写道：未来已经存在，只是我们的记忆还没有到达那里。'
             },
             {
                 speaker: 'narrator',
-                text: '你抽出一张。照片背面除了 X，还有一行小字：「不要相信回忆者的话。她的记忆是被编辑过的。」'
+                text: '你抽出一张。照片背面除了X，还有一行小字：「不要相信回忆者的话。她的记忆是真实的，但真实本身也是一种虚构。」'
             },
             {
                 speaker: 'narrator',
-                text: '地上有一张新的纸条：「X 的名字在风中。去花园的中心，那里有一扇门通往所有方向。」',
+                text: '照片下面压着一张纸条，纸条上的字迹和你的很像：「X的名字写在风中。去花园中心——那里有一扇门，门上的文字是你自己写的。」',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '去花园的中心', next: 'crossroads' },
-            { text: '去找那个「回忆者」', next: 'meet_beauty' }
+            { text: '去花园中心——那扇门在等我书写', next: 'crossroads' },
+            { text: '去找回忆者——看看她记忆中有什么关于我的事', next: 'meet_beauty' }
         ]
     },
 
@@ -816,31 +818,36 @@ const SCRIPT = {
         onEnter: () => {
             if (!gameState.encountered.includes('beauty')) {
                 gameState.encountered.push('beauty');
+                if (!gameState.clues.includes('time')) {
+                    gameState.clues.push('time');
+                }
             }
         },
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你走进一片花丛。雾气温暖，带着一种令人眩晕的香气。一个女人站在花丛深处。'
+                text: '你走进一片花丛。雾气是温暖的，带着一种让人眩晕的香气——不是花的香气，而是记忆的香气。每一朵花都是一面微小的镜子，你的倒影在千万片花瓣上同时出现，但每一个倒影的表情都略有不同。'
             },
             {
                 speaker: 'beauty',
-                text: '你来了。我在梦里见过你。你在寻找X，对吗？'
+                text: '你来了。或者应该说——你又来了。你上一次来的时候，问了我同样的问题。但那次你问的是："我什么时候会来？"',
+                highlight: 'beauty'
             },
             {
                 speaker: 'beauty',
-                text: '我可以帮你。但我要先告诉你一件事——X在这里待过。她站在你现在站的地方，问了我同样的问题。'
+                text: '我是回忆者。但回忆是一个危险的词——在这座花园里，回忆不是回顾过去，而是创造一个过去。你寻找的X，在这里留下了一段记忆。不是她的记忆，而是关于她的记忆——这两者之间的差别，就是这座花园存在的理由。',
+                speakTime: 10000
             },
             {
                 speaker: 'beauty',
-                text: '她说："我在找一个答案。为什么我会忘记自己是谁？"然后她走向花园的中心，再也没有回来。',
+                text: '她站在你现在站的位置，看着这些镜子花，问我："如果我不记得自己是谁，那我还是我吗？"我没有回答。不是因为我不能——而是因为这个问题本身，就是答案。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「她去了花园中心？」', next: 'beauty_center', clue: 'location' },
-            { text: '「她忘记了什么？」', next: 'beauty_memory', clue: 'time' },
-            { text: '「你能帮我找到她吗？」', next: 'beauty_help' }
+            { text: '「她去了花园中心？——不，她是走向了所有方向」', next: 'beauty_center', clue: 'location' },
+            { text: '「她忘记了什么？——或者说，她选择记得什么？」', next: 'beauty_memory', clue: 'time' },
+            { text: '「你能帮我找到她吗？——但也许我需要先找到自己」', next: 'beauty_help' }
         ],
         clickables: {
             beauty: {
@@ -859,21 +866,21 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'beauty',
-                text: '是的。花园的中心有一扇古老的门，上面刻满了文字。她说那扇门通往"所有世界的交汇处"。'
+                text: '花园中心有一扇门。不是门——是一个"门"的概念。博尔赫斯说，在特隆的哲学里，没有名词，只有动词。所以那扇门不是一个东西，而是一个动作：开。'
             },
             {
                 speaker: 'beauty',
-                text: '但她还说过一句话："只有收集了足够多的碎片，门才会打开。"'
+                text: '门上刻满了文字。但我不能告诉你那些文字是什么——因为每个人的门上，文字都不同。X说，她看到的文字是："你在找的不是X，而是寻找X这件事本身。"'
             },
             {
                 speaker: 'beauty',
-                text: '我不知道"碎片"指的是什么。也许是线索，也许是记忆，也许是某种……特质。',
+                text: '她说："只有当你收集了足够多的碎片，门才会开。"但碎片是什么？不是线索，不是信息——而是你愿意相信多少个互相矛盾的版本。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「我要收集这些碎片」', next: 'beauty_help' },
-            { text: '「那扇门在哪里？」', next: 'crossroads', clue: 'location' }
+            { text: '「我要收集这些碎片——不是收集，而是成为碎片」', next: 'beauty_help' },
+            { text: '「那扇门在哪里？——不，那扇门什么时候？」', next: 'crossroads', clue: 'location' }
         ]
     },
 
@@ -883,22 +890,22 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'beauty',
-                text: '她忘记了自己的名字。她只记得一个字母——X。'
+                text: '她忘记了自己的名字。但"忘记"这个词不对——她选择不再记得。在花园里，遗忘是一种主动的行为，就像博尔赫斯笔下的富内斯——不是因为他记不住，而是因为他记住了太多。'
             },
             {
                 speaker: 'beauty',
-                text: '她说："我来这里是为了找回我的名字。但我越找，就越不确定这个名字是否曾经属于我。"'
+                text: '她说："我来这里是为了找回我的名字。但我越找，就越不确定这个名字是否曾经属于我。也许名字不是被拥有的，而是被借用的。也许X，不是我失去的名字，而是我借出去的名字。"'
             },
             {
                 speaker: 'beauty',
-                text: '然后她问我："如果我不记得自己是谁，那我还是我吗？"我没有答案。',
+                text: '她问我："如果我借出了我的名字，那现在的我，是谁？"我当时没有回答——现在我也不确定。但也许，这个问题本身，就是她留给你的线索。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「我会帮她找回名字」', next: 'beauty_help', clue: 'name' },
-            { text: '「这太悲伤了」', next: 'beauty_help' },
-            { text: '「触碰我的额头，唤醒全部记忆」', next: 'beauty_full_memory' }
+            { text: '「我会帮她找回名字——不是这个名字，而是所有名字的源头」', next: 'beauty_help', clue: 'name' },
+            { text: '「这太悲伤了——但悲伤也是一种记忆的方式」', next: 'beauty_help' },
+            { text: '「触碰我的额头——让我看见所有被遗忘的记忆」', next: 'beauty_full_memory' }
         ]
     },
 
@@ -908,22 +915,22 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'beauty',
-                text: '我可以帮你，但你要做好准备。花园里的三个人——档案员、我、追踪者——每个人都掌握着一部分真相。'
+                text: '我可以帮你。但帮助这个词，在花园里是一面镜子——你帮我的同时，我帮你。花园里的三个人——档案员掌握着名字，我掌握着时间，追踪者掌握着空间。但名字、时间、空间——这些词在花园里是同一个词的不同写法。'
             },
             {
                 speaker: 'beauty',
-                text: '档案员知道X去了哪里。我知道X忘记了什么。追踪者知道X的气味——他可以带你找到她。'
+                text: '档案员知道X是谁——不是她的身份，而是她的名字。我知道X什么时候来过——不是日期，而是时间本身是什么。追踪者知道X去了哪里——不是地点，而是方向如何分叉。'
             },
             {
                 speaker: 'beauty',
-                text: '去和他们都谈谈吧。收集至少三条线索，然后回到花园中心。那扇门会为你打开。',
+                text: '去和他们都谈谈吧。当你收集了足够多的碎片——不是数量，而是重量，一种你在梦醒时分能感到的重量的碎片——花园中心的那扇门，会在你到达之前就为你打开。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「我会去找他们」', next: 'crossroads' },
+            { text: '「我会去找他们——不是寻找，而是被找到」', next: 'crossroads' },
             { text: '「如果我已经和档案员谈过了呢？」', next: 'beauty_progress' },
-            { text: '「我想真正见到她，有办法吗？」', next: 'beauty_meet_truly' }
+            { text: '「我想真正见到她——不是记忆，而是她本人」', next: 'beauty_meet_truly' }
         ]
     },
 
@@ -1073,31 +1080,36 @@ const SCRIPT = {
         onEnter: () => {
             if (!gameState.encountered.includes('tiger')) {
                 gameState.encountered.push('tiger');
+                if (!gameState.clues.includes('location')) {
+                    gameState.clues.push('location');
+                }
             }
         },
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你走向沙地。一只巨大的老虎从沙中站起，金色的眼睛注视着你。'
+                text: '你走向沙地。每一粒沙都是一个微小的镜面——不是反射光，而是反射记忆。一只巨大的老虎从沙中站起，不是破沙而出，而是像沙雕遇风显形。它的金色眼睛没有瞳孔——或者说，瞳孔本身就是整个沙漠。'
             },
             {
                 speaker: 'tiger',
-                text: '我闻到了。你身上有X的气味。'
+                text: '我闻到了。不是你的气味——是你身上关于X的气味。气味在花园里不是化学，是语法。每一种气味都是一句话，而你身上的这句话，主语是X，宾语是你，动词是——寻找。',
+                highlight: 'tiger'
             },
             {
                 speaker: 'tiger',
-                text: 'X三天前经过这里。她问我："你能带我去花园的中心吗？"我说可以。但她走了另一条路。'
+                text: 'X三天前经过这里。或者三百年——在沙漠里，时间不是流动的，而是堆积的。她问我："你能带我去花园中心吗？"我说可以。但她走了另一条路——不是因为我指的路不对，而是因为正确的路，就是所有路中最不确定的那一条。',
+                speakTime: 10000
             },
             {
                 speaker: 'tiger',
-                text: '她说："我要先收集一些碎片。"然后她走向图书馆的方向。',
+                text: '她说："我要先收集一些碎片。"然后她走向了图书馆的方向。但图书馆本身就是一座沙漠——博尔赫斯说，在无限的图书馆里，每一本书都是另一本书的镜像，而沙漠，就是书被烧成灰之后的样子。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「她去了图书馆？」', next: 'tiger_library', clue: 'location' },
-            { text: '「你能带我去花园中心吗？」', next: 'tiger_guide' },
-            { text: '「她收集了什么碎片？」', next: 'tiger_fragments', clue: 'connection' }
+            { text: '「她去了图书馆？——不，她是去了所有书的共同源头」', next: 'tiger_library', clue: 'location' },
+            { text: '「你能带我去花园中心吗？——我指的是所有中心」', next: 'tiger_guide' },
+            { text: '「她收集了什么碎片？——也许碎片就是她自己」', next: 'tiger_fragments', clue: 'connection' }
         ],
         clickables: {
             tiger: {
@@ -1136,21 +1148,21 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'tiger',
-                text: '是的。她去找档案员了。档案员知道很多事情——也许太多了。'
+                text: '她去找档案员了。档案员知道很多事情——不是因为他收集了它们，而是因为他被收集了。每一个进入图书馆的人，都会成为档案的一部分。档案员本人，也许就是第一份档案。'
             },
             {
                 speaker: 'tiger',
-                text: '但她没有从图书馆直接去花园中心。她去了镜花丛，找回忆者。然后她才走向中心。'
+                text: '但她没有从图书馆直接去花园中心。她去了镜花丛，找回忆者。然后她才走向中心。不是因为她需要更多线索——而是因为她需要从不同的方向同时抵达。博尔赫斯在《小径分叉的花园》里写道：一个人同时选择所有的路，才能抵达所有的终点。'
             },
             {
                 speaker: 'tiger',
-                text: '她走了一条完整的路：档案员→回忆者→我→花园中心。也许这就是收集碎片的方法。',
+                text: '她走了一条完整的路径：档案员→回忆者→我→花园中心。不是线性的——是同时的。在花园里，顺序不是先后的，而是深浅的。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「那我现在该怎么做？」', next: 'tiger_guide' },
-            { text: '「她最后去了花园中心吗？」', next: 'crossroads', clue: 'location' }
+            { text: '「那我现在该怎么做？——不是顺序，而是深浅」', next: 'tiger_guide' },
+            { text: '「她最后去了花园中心吗？——或者说，她一直在花园中心？」', next: 'crossroads', clue: 'location' }
         ]
     },
 
@@ -1160,23 +1172,24 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'tiger',
-                text: '我可以带你去花园中心。但我要警告你——如果你还没有收集足够的线索，那扇门不会打开。'
+                text: '我可以带你去花园中心。但带路这个词，在沙漠里是危险的——我带你走的路，会成为你走过的路，但不会成为你唯一的路。'
             },
             {
                 speaker: 'tiger',
-                text: '档案员知道位置。回忆者知道记忆。我知道路径。你需要我们三个人的信息。'
+                text: '档案员知道名字。回忆者知道时间。我知道空间——不是某一条路，而是所有路分叉的那个点。你需要我们三个人的信息——不是信息本身，而是信息之间的空白。那些空白，才是真正的线索。',
+                speakTime: 8000
             },
             {
                 speaker: 'tiger',
-                text: `你现在有${gameState.clues.length}条线索。当你有3条时，我就可以带你穿过那扇门。`,
+                text: `你现在有${gameState.clues.length}条线索。数量不重要——但当你有了三条不同的线索，你就有了三种不同的谎言。而三种谎言的交集，就是真相。`,
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「带我去花园中心」', next: 'crossroads' },
-            { text: '「我还需要更多线索」', next: 'tiger_fragments' },
-            { text: '「最快的路怎么走？」', next: 'tiger_fast' },
-            { text: '「X是不是在死亡里？」', next: 'tiger_death' }
+            { text: '「带我去花园中心——不是带路，而是同时走所有路」', next: 'crossroads' },
+            { text: '「我还需要更多的角度——不是线索，而是看线索的方式」', next: 'tiger_fragments' },
+            { text: '「最快的路怎么走？——但最快，也许就是最慢」', next: 'tiger_fast' },
+            { text: '「X是不是在死亡里？——死亡是花园的另一种语法」', next: 'tiger_death' }
         ]
     },
 
@@ -1186,21 +1199,21 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'tiger',
-                text: '碎片就是线索。每一条关于X的信息都是一块碎片。'
+                text: '碎片？X收集的不是碎片——是碎片之间的裂缝。在花园里，事物之间的空白比事物本身更真实。博尔赫斯用一生的时间写一本不存在的书，因为他知道，空白才是书的内容。'
             },
             {
                 speaker: 'tiger',
-                text: '档案员有X的行踪。回忆者有X的记忆。我有X的气味——也就是她的去向。'
+                text: '档案员有X的名字——但不是她的身份，而是名字本身。回忆者有X的记忆——但不是事件，而是记忆的重力。我有X的足迹——但不是她走过的路，而是她没走过的路。'
             },
             {
                 speaker: 'tiger',
-                text: '收集至少3条线索，然后来找我。我会带你去找那扇门。',
+                text: '当你收集了三种不同的碎片——不是拼图，而是三种互相矛盾的拼图——花园中心的那扇门，会自己打开。不是因为你打开了它，而是因为它一直在等你意识到它已经开了。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「我会去收集的」', next: 'crossroads' },
-            { text: '「如果我已经有线索了呢？」', next: 'tiger_check_progress' }
+            { text: '「我会去收集——不是碎片，而是空白」', next: 'crossroads' },
+            { text: '「如果我已经有了足够多的矛盾呢？」', next: 'tiger_check_progress' }
         ]
     },
 
@@ -1210,18 +1223,18 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'tiger',
-                text: `让我闻闻……你身上有${gameState.clues.length}条线索的气味。`
+                text: `让我闻闻……你身上有${gameState.clues.length}条线索。不是气味——是语法。每一条线索都是一句话，而你已经有了${gameState.clues.length}句话。`
             },
             {
                 speaker: 'tiger',
                 text: gameState.clues.length >= 3 
-                    ? '够了。3条线索。那扇门会为你打开。跟我来。'
-                    : '还不够。你需要至少3条。去和档案员、回忆者谈谈，然后再回来。',
+                    ? '够了。不是数量够了——而是矛盾够了。三种不同的说法，三种不同的谎言，而谎言的交点就是真相。那扇门会为你打开。跟我来。'
+                    : '还不够。不是数量——而是你还没有同时相信所有矛盾的准备。去和档案员、回忆者谈谈，然后带着三种不同的真相回来。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: gameState.clues.length >= 3 ? '「带我去那扇门」' : '「我会回来的」', next: 'crossroads' }
+            { text: gameState.clues.length >= 3 ? '「带我去那扇门——它已经开了」' : '「我会回来的——不是回来，而是从未离开」', next: 'crossroads' }
         ]
     },
 
@@ -1231,14 +1244,14 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'tiger',
-                text: '最确定的路径是跟随气味。这条路很长——可能需要你走完整个花园，遇见所有三个人，收集所有线索。',
+                text: '最确定的路径？没有最确定的——只有最诚实的。最诚实的路是跟随所有气味，走完整个花园，遇见所有三个人，收集所有矛盾，然后在花园中心，什么都不做——让门自己开。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '跟随它去花园中心', next: 'crossroads', clue: 'location' },
-            { text: '先去档案室', next: 'meet_monk' },
-            { text: '先去镜花园', next: 'meet_beauty' }
+            { text: '跟随它去花园中心——不是跟随，而是被跟随', next: 'crossroads', clue: 'connection' },
+            { text: '先去档案室——那些书在等我，或者说，我在等那些书', next: 'meet_monk' },
+            { text: '先去镜花园——让记忆倒映出我的脸', next: 'meet_beauty' }
         ]
     },
 
@@ -1248,13 +1261,13 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'tiger',
-                text: '你问 X 是否在死亡里？我不知道。但我知道一件事：如果你选择那条路径，你会找到答案。但那个答案可能会杀死你。',
+                text: '你问X是否在死亡里？在花园里，死亡不是终点——它是一个语法标记。博尔赫斯在《巴别图书馆》里写道：死亡是图书馆里唯一一本没有文字的书。你要读它吗？',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '「带我走那条路径」', next: 'path_death', trait: 'suicidal' },
-            { text: '去花园中心', next: 'crossroads' }
+            { text: '「带我走那条路径——不是走向死亡，而是走向语法结束的地方」', next: 'path_death', trait: 'suicidal' },
+            { text: '去花园中心——让门代替死亡来回答', next: 'crossroads' }
         ]
     },
 
@@ -1264,21 +1277,25 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你选择了通往死亡的路径。沙漠变得越来越热，然后突然变得冰冷。'
+                text: '你选择了通往死亡的路径。沙漠变得越来越热，然后突然变得冰冷——不是温度的变化，而是语言的变化。"热"和"冷"这些词，在这里失去了意义，因为你已经离开了语言可以描述的范围。'
             },
             {
                 speaker: 'narrator',
-                text: '然后你看到了 X。她躺在沙地上，眼睛闭着，像是在睡觉。或者，像是在等待。'
+                text: '然后你看到了X。她躺在沙地上，眼睛闭着，像是在睡觉。或者像是在等待——等待一个词，一个能让她重新存在的词。博尔赫斯说，地狱不是火，而是被遗忘。也许天堂也不是光，而是被记住。'
             },
             {
                 speaker: 'x',
-                text: '你来了。我等了太久。',
+                text: '你来了。我等了太久——但"太久"是一个时间概念，而在这里，时间是静止的。你终于读到了这本书的最后一页。但书的最后一页，通常也是第一页的镜像。'
+            },
+            {
+                speaker: 'narrator',
+                text: '她伸出手。那一瞬间，你看到了照片上的脸——那张脸终于清晰了。它和她的脸一模一样。也和你自己的脸一模一样。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '和她一起留在这里', next: 'ending_death_together' },
-            { text: '带她离开', next: 'ending_death_escape' }
+            { text: '和她一起留在这里——不是留下，而是停止寻找', next: 'ending_death_together' },
+            { text: '带她离开——不是离开，而是重新开始寻找', next: 'ending_death_escape' }
         ]
     },
 
@@ -1382,14 +1399,14 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你意识到自己还没有准备好。X 仍然是一个谜，而你是那个试图解开谜题的人。',
+                text: '你意识到自己还没有准备好。不是缺乏勇气——而是你还没有学会同时相信所有矛盾的答案。博尔赫斯说，怀疑是智力的一种形式，但信念是另一种。也许你需要的不是更多的线索，而是接受线索之间互相矛盾这一事实。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '回到档案室', next: 'meet_monk' },
-            { text: '回到镜花园', next: 'meet_beauty' },
-            { text: '回到荒野', next: 'meet_tiger' }
+            { text: '回到档案室——那些书脊背面，也许写着另一个你', next: 'meet_monk' },
+            { text: '回到镜花园——让记忆的碎片重新排列', next: 'meet_beauty' },
+            { text: '回到荒野——在沙地的空白处，也许有新的文字', next: 'meet_tiger' }
         ]
     },
 
@@ -1400,16 +1417,16 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'narrator',
-                text: '你接受了这个可能性：X 是你自己。不是比喻，不是象征，而是字面意义上的。'
+                text: '你接受了这个可能性：X是你自己。不是比喻，不是象征，而是字面意义上的。博尔赫斯在《另一个》中写道：与另一个自己相遇，是世界上最可怕也最安宁的事——因为你终于知道，你不是一个人，但另一个人也不是你。'
             },
             {
                 speaker: 'narrator',
-                text: '你走出档案室。雾气中，你看到了一个身影——那个身影转身，向你微笑。那是你的脸。或者，是 X 的脸。现在，这两者没有区别了。',
+                text: '你走出档案室。雾气中，你看到了一个身影——那个身影转身，向你微笑。那是你的脸。或者，是X的脸。现在，这两者没有区别了。就像博尔赫斯说的，镜子的恐怖在于：它不会说谎，但它的真相，比你想象的要复杂得多。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '走向那个身影', next: 'ending_found_self' }
+            { text: '走向那个身影——不是相遇，而是认出', next: 'ending_found_self' }
         ]
     },
 
@@ -1419,12 +1436,12 @@ const SCRIPT = {
         dialogues: [
             {
                 speaker: 'monk',
-                text: '执念是一种力量。它可以推动你走得更远，也可以让你永远原地打转。',
+                text: '执念是一种力量。它可以推动你走得更远，也可以让你永远在一面镜子里打转。博尔赫斯笔下的富内斯，记住了每一片树叶，却无法理解"树叶"这个概念。有时候，拒绝一个答案，就是对这个答案最深的敬意。',
                 showChoices: true
             }
         ],
         choices: [
-            { text: '继续寻找', next: 'crossroads' }
+            { text: '继续寻找——不是拒绝，而是选择更深的迷宫', next: 'crossroads' }
         ]
     },
 
