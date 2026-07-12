@@ -160,6 +160,21 @@
             padding: 2px 0;
         }
 
+        .dialogue-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dialogue-content::-webkit-scrollbar-track {
+            background: rgba(212,197,181,0.05);
+            border-radius: 4px;
+        }
+        .dialogue-content::-webkit-scrollbar-thumb {
+            background: rgba(212,197,181,0.25);
+            border-radius: 4px;
+        }
+        .dialogue-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(212,197,181,0.4);
+        }
+
         .dialogue-content p { margin-bottom: 1em; text-indent: 2em; }
         .dialogue-content p:first-child { text-indent: 0; }
 
@@ -191,14 +206,18 @@
         }
 
         .choices-container::-webkit-scrollbar {
-            width: 4px;
+            width: 8px;
         }
         .choices-container::-webkit-scrollbar-track {
             background: rgba(212,197,181,0.05);
+            border-radius: 4px;
         }
         .choices-container::-webkit-scrollbar-thumb {
-            background: rgba(212,197,181,0.2);
-            border-radius: 2px;
+            background: rgba(212,197,181,0.25);
+            border-radius: 4px;
+        }
+        .choices-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(212,197,181,0.4);
         }
 
         .choice-btn {
