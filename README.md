@@ -116,7 +116,7 @@ The first playable prototype was created in Trae. Codex was then used as a repos
 - loaded the final story scripts in their real browser order inside an isolated runtime;
 - counted scene nodes and transitions and checked missing targets/assets;
 - identified that `/index.html` still opened a legacy game while the current build lived at `/vn.html`;
-- replaced the public root with a deterministic redirect while preserving the old page as `legacy-index.html`;
+- replaced the public root with a deterministic redirect while preserving the old page under `archive/legacy/legacy-index.html`;
 - designed and implemented the bounded GPT-5.6 epilogue flow;
 - kept the API key on the server and added input limits, structured output, an anonymous safety identifier, and an offline fallback;
 - removed hard-coded Trae session paths from tests;
@@ -146,7 +146,7 @@ This is intentionally a small, auditable model role. The authored rule engine co
 
 - `index.html` — public root; redirects to the current game.
 - `vn.html` — current visual-novel interface.
-- `legacy-index.html` — preserved legacy interface; not the public default.
+- `archive/legacy/legacy-index.html` — preserved legacy interface; archived and not part of the public runtime.
 - `js/vn-engine.js` — main state and rendering engine.
 - `js/*-chapter.js` — authored world chapters.
 - `js/ai-epilogue.js` — browser client and offline fallback.
