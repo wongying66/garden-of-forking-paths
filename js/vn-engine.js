@@ -202,7 +202,7 @@ const CLUE_DEFS = {
     connection: { title: '连接', desc: '你和X之间有某种深刻的联系。' },
     library_secret: { title: '图书馆的秘密', desc: '无限图书馆的中心藏着阿莱夫。' },
     // 各世界线索（固定奖励）
-    blade_runner: { title: '银翼杀手碎片', desc: '在赛博朋克的雨夜中，你找到了一片关于X的碎片。' },
+    blade_runner: { title: '银翼杀手碎片', desc: 'X没有用出身证明自己。她曾替另一个没有名字的复制人承担后果。' },
     cthulhu: { title: '疯狂之城碎片', desc: '在古老的深渊前，你找到了一片关于X的碎片。' },
     alice: { title: '梦境世界碎片', desc: '在不遵循逻辑的世界里，你找到了一片关于X的碎片。' },
     middle_earth: { title: '中土世界碎片', desc: '在史诗般的旅程中，你找到了一片关于X的碎片。' },
@@ -215,7 +215,7 @@ const CLUE_DEFS = {
     watchmen: { title: '末日时钟碎片', desc: '在道德抉择面前，你找到了一片关于X的碎片。' },
     maus: { title: '记忆深渊碎片', desc: '在历史的创伤中，你找到了一片关于X的碎片。' },
     // 各世界隐藏线索（特殊选择获得）
-    blade_runner_hidden: { title: '银翼杀手·隐秘碎片', desc: '你发现了复制人眼中隐藏的记忆——关于X的更深层的真相。' },
+    blade_runner_hidden: { title: '银翼杀手·隐秘碎片', desc: 'X删除了自己的身份记录，却保留了另一个人的名字。' },
     cthulhu_hidden: { title: '疯狂之城·隐秘碎片', desc: '深渊中传来的低语揭示了X与宇宙之间的联系。' },
     alice_hidden: { title: '梦境世界·隐秘碎片', desc: '红心皇后的谜语中藏着一个关于X的秘密。' },
     middle_earth_hidden: { title: '中土世界·隐秘碎片', desc: '精灵的古老歌谣中记载着X的传说。' },

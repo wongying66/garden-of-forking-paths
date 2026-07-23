@@ -104,6 +104,35 @@ assert.equal(
     'launch pool should contain only the five polished worlds'
 );
 
+// The rewritten Blade Runner route must keep one legible thematic spine:
+// meet the unnamed replicant, read X's responsibility record, then choose
+// proof, witness, or burden. These checks prevent future text edits from
+// silently routing the player back into the old contradictory explanations.
+assert.equal(
+    evaluate("SCRIPT['blade_runner_entrance'].choices.map(choice => choice.next).join(',')"),
+    'blade_contact_replicant,blade_test_checkpoint'
+);
+assert.equal(
+    evaluate("SCRIPT['blade_x_record'].dialogues.some(dialogue => String(dialogue.text).includes('责任记录'))"),
+    true
+);
+assert.equal(
+    evaluate("SCRIPT['blade_personhood_choice'].choices.map(choice => choice.next).join(',')"),
+    'blade_personhood_proof,blade_personhood_witness,blade_personhood_burden'
+);
+for (const endingId of ['blade_personhood_proof', 'blade_personhood_witness', 'blade_personhood_burden']) {
+    assert.equal(
+        evaluate(`Engine.shouldShowEndingScreen(SCRIPT[${JSON.stringify(endingId)}])`),
+        true,
+        `${endingId} must settle the Blade Runner world`
+    );
+    assert.equal(
+        evaluate(`Engine.resolveWorldForEnding(${JSON.stringify(endingId)})`),
+        'blade_runner',
+        `${endingId} must resolve to blade_runner`
+    );
+}
+
 // A terminal world choice must write the settlement scene before showing the
 // ending screen. This makes the checkpoint and return-to-Aleph path deterministic
 // even for legacy scenes without a world-prefixed ending ID.

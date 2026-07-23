@@ -1063,4 +1063,241 @@ const BLADE_RUNNER_SCRIPT = {
     }
 };
 
+// ----------------------------------------------------------------
+// 第一轮文字重写：把本篇从“X 的多重身份谜题”收束为“谁有资格定义一个人”。
+// 旧支线仍保留在对象中，但主入口改走下面这条代表性路线：
+// 测试一个无编号复制人 → 查找 X-0 责任记录 → 选择证明、见证或承担。
+// ----------------------------------------------------------------
+Object.assign(BLADE_RUNNER_SCRIPT, {
+    blade_runner_entrance: {
+        scene: 'cyberpunkCity',
+        characters: [],
+        dialogues: [
+            {
+                speaker: 'narrator',
+                text: '雨把霓虹灯冲成一条条断裂的颜色。你手里的照片重新亮起，背面多了一行刚刚出现的字：找到那个没有编号的人。'
+            },
+            {
+                speaker: 'narrator',
+                text: '公司正在回收一名无编号复制人。她最后一次被监控拍到时，身边有一个字母：X。你要先找到她，再弄清楚 X 为什么会出现在她的档案里。',
+                showChoices: true
+            }
+        ],
+        choices: [
+            { text: '去街边诊所，先听她说话', next: 'blade_contact_replicant', trait: 'empathetic' },
+            { text: '跟随回收信号，执行身份测试', next: 'blade_test_checkpoint', trait: 'analytical' }
+        ]
+    },
+
+    blade_contact_replicant: {
+        scene: 'apartment',
+        characters: [{ id: 'replicant', position: 'center', clickable: true }],
+        onEnter: () => {
+            if (!gameState.encountered.includes('replicant')) gameState.encountered.push('replicant');
+        },
+        dialogues: [
+            { speaker: 'narrator', text: '诊所后门没有门牌。女人坐在停电的候诊室里，手腕上没有编号，桌上也没有任何能证明她属于哪家公司的证件。' },
+            { speaker: 'replicant', text: '他们叫我无编号，所以我不能算一个人。X说，如果我想活下去，先要有人愿意记住我。' },
+            { speaker: 'replicant', text: '她没有教我怎么证明自己像人。她只问我：如果必须有人承担后果，你愿不愿意替另一个人留下名字？', showChoices: true }
+        ],
+        choices: [
+            { text: '请她讲 X 留下的那段记忆', next: 'blade_listen_to_memory', trait: 'empathetic' },
+            { text: '拿出测试仪，先确认她是不是“人”', next: 'blade_test_checkpoint', trait: 'analytical' }
+        ],
+        clickables: {
+            replicant: {
+                dialogues: [
+                    { speaker: 'replicant', text: '我还没有名字。不是忘了，是从来没人愿意把名字写在我身上。' },
+                    { speaker: 'replicant', text: 'X 有一个名字，但她把它从记录里删掉了。她说，名字不是证明，是别人记住你时使用的入口。' }
+                ],
+                loop: true
+            }
+        }
+    },
+
+    blade_test_checkpoint: {
+        scene: 'cyberpunkCity',
+        characters: [{ id: 'replicant', position: 'center' }],
+        dialogues: [
+            { speaker: 'narrator', text: '回收小组留下了一台测试仪。屏幕上只有一个问题：她是否具有人类反应。没有姓名，没有经历，只有一个需要被判定的对象。' },
+            { speaker: 'replicant', text: '你可以问。我会回答。只是先告诉我：如果我的答案让你满意，你会把我当成人；如果不满意，你会把我交回去吗？', showChoices: true }
+        ],
+        choices: [
+            { text: '问她最怕失去什么', next: 'blade_test_result', trait: 'empathetic' },
+            { text: '问她是否记得自己的童年', next: 'blade_test_result', trait: 'analytical' },
+            { text: '收起测试仪，直接听她说', next: 'blade_listen_to_memory', trait: 'rebellion' }
+        ]
+    },
+
+    blade_test_result: {
+        scene: 'cyberpunkCity',
+        characters: [{ id: 'replicant', position: 'center' }],
+        dialogues: [
+            { speaker: 'replicant', text: '你在等一个正确的反应。但恐惧可以被写进程序，童年可以被复制，连眼泪也可以被合成。你到底是在测我，还是在测自己相信什么？' },
+            { speaker: 'narrator', text: '测试仪给出“无法确认”。公司系统要求你提交结果。', showChoices: true }
+        ],
+        choices: [
+            { text: '把她标记为“无法确认”，提交结果', next: 'blade_company_record', trait: 'compliance' },
+            { text: '拒绝提交结果，改听她的记忆', next: 'blade_listen_to_memory', trait: 'rebellion' }
+        ]
+    },
+
+    blade_listen_to_memory: {
+        scene: 'apartment',
+        characters: [{ id: 'replicant', position: 'center' }],
+        dialogues: [
+            { speaker: 'replicant', text: '我记得一间白色实验室。培养舱外站着一个女人，她没有编号牌，只有一支笔。她把我的名字写在纸上，又把纸撕掉。' },
+            { speaker: 'replicant', text: '她告诉我：不要花一生证明自己是人。先决定你愿意为谁负责。第二天，她替我把追踪信号引到自己身上。她就是 X。' },
+            { speaker: 'narrator', text: '这不是一段能证明来源的记忆。它只证明了一件事：有人曾经为了另一个人的未来，主动让自己从记录里消失。', showChoices: true }
+        ],
+        choices: [
+            { text: '写下她选择的名字，再去查档案', next: 'blade_named_replicant', clue: 'blade_runner' },
+            { text: '继续追问 X 的去向', next: 'blade_named_replicant', clue: 'blade_runner', trait: 'seeker_of_truth' }
+        ]
+    },
+
+    blade_named_replicant: {
+        scene: 'apartment',
+        characters: [{ id: 'replicant', position: 'center' }],
+        dialogues: [
+            { speaker: 'replicant', text: '她给我写下的名字是玛拉。不是公司登记的名字，是她希望我自己保留的名字。' },
+            { speaker: 'replicant', text: 'X-0 的档案里说她是“原型”。但我看过另一页：她不是第一个被制造的人，她是第一个拒绝把别人交回去的人。', showChoices: true }
+        ],
+        choices: [
+            { text: '把“玛拉”写入公开档案', next: 'blade_records', trait: 'witness' },
+            { text: '把名字藏起来，带玛拉离开', next: 'blade_records', trait: 'protective' }
+        ]
+    },
+
+    blade_company_record: {
+        scene: 'lab',
+        characters: [{ id: 'bladeRunner', position: 'left' }],
+        dialogues: [
+            { speaker: 'narrator', text: '公司终端把她标记为“无法确认”。系统没有说她不是人，只说她不值得占用一个确定的身份。' },
+            { speaker: 'bladeRunner', text: '这就是他们的办法。先让你无法证明，再把“无法证明”当成抹掉你的理由。X-0 的档案在原型档案室。去那里，你会看到他们不愿公开的那一页。', showChoices: true }
+        ],
+        choices: [
+            { text: '打开 X-0 的责任记录', next: 'blade_x_record', trait: 'curiosity' },
+            { text: '先搜索自己的档案', next: 'blade_self_record', trait: 'self_aware' }
+        ]
+    },
+
+    blade_records: {
+        scene: 'lab',
+        characters: [{ id: 'bladeRunner', position: 'left' }],
+        dialogues: [
+            { speaker: 'narrator', text: '原型档案室里有两份互相矛盾的记录。公司称 X-0 是所有复制人的模板；手写的附页却只写着一件事：她替一个无编号的人承担了追踪。' },
+            { speaker: 'bladeRunner', text: '官方记录想告诉你她是什么。手写记录只告诉你她做过什么。你要相信哪一种？', showChoices: true }
+        ],
+        choices: [
+            { text: '打开手写的责任记录', next: 'blade_x_record', trait: 'witness' },
+            { text: '检查自己的编号', next: 'blade_self_record', trait: 'self_aware' }
+        ]
+    },
+
+    blade_x_record: {
+        scene: 'lab',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            { speaker: 'narrator', text: '附页没有实验数据，只有一段由 X-0 亲手写下的责任记录：我删除自己的身份，把追踪引到我身上。玛拉没有欠我任何证明。她只需要一个能继续活下去的明天。' },
+            { speaker: 'x', text: '如果你看到这页，不要替我证明我是人。证明会让他们继续决定谁配拥有名字。去决定你愿意保护谁，以及你愿意承担什么。', showChoices: true }
+        ],
+        choices: [
+            { text: '把记录交给 X，让她决定下一步', next: 'blade_personhood_choice', clue: 'blade_runner', trait: 'witness' },
+            { text: '先检查自己的编号，再决定', next: 'blade_self_record', trait: 'self_aware' },
+            { text: '把记录带回公司系统，要求他们回应', next: 'blade_personhood_choice', clue: 'blade_runner', trait: 'compliance' }
+        ]
+    },
+
+    blade_self_record: {
+        scene: 'lab',
+        characters: [{ id: 'bladeRunner', position: 'left' }],
+        dialogues: [
+            { speaker: 'narrator', text: '你的档案从三个月前开始。出生地、童年、第一段记忆，全是空白。系统只留下一个任务：找到 X。' },
+            { speaker: 'bladeRunner', text: '你也没有被证明过。可你已经走到这里，做了几次选择，也让别人因为你的选择承担了后果。也许身份不是一份档案，而是一件你必须负责的事。', showChoices: true }
+        ],
+        choices: [
+            { text: '承认自己也没有被证明过', next: 'blade_identity_question', trait: 'self_aware' },
+            { text: '先找 X，不急着定义自己', next: 'blade_where_is_x', trait: 'seeker_of_truth' }
+        ]
+    },
+
+    blade_identity_question: {
+        scene: 'lab',
+        characters: [{ id: 'bladeRunner', position: 'left' }],
+        dialogues: [
+            { speaker: 'bladeRunner', text: '我不知道你是人类、复制人，还是一段正在运行的程序。可我知道，你刚才没有把“无法证明”当成“可以抹掉”的理由。' },
+            { speaker: 'bladeRunner', text: 'X 留了一条坐标。它不在服务器里，在城市最旧的档案室。她在那里等的不是一个能认出她的人，而是一个愿意替她做决定的人。', showChoices: true }
+        ],
+        choices: [
+            { text: '去档案室找 X', next: 'blade_where_is_x', clue: 'connection' }
+        ]
+    },
+
+    blade_where_is_x: {
+        scene: 'lab',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            { speaker: 'narrator', text: '档案室深处没有培养舱，只有一张桌子和一盏灯。X 坐在灯下，手边放着玛拉的名字。她没有像原型，也没有像程序；她只是一个正在等你回答的人。' },
+            { speaker: 'x', text: '他们想让你问我是不是人。我希望你问另一个问题：你会不会在没有人要求你负责时，仍然替别人承担后果？', showChoices: true }
+        ],
+        choices: [
+            { text: '留下责任记录，让她们被看见', next: 'blade_personhood_choice', trait: 'witness' },
+            { text: '删除自己的档案，替她们引开追踪', next: 'blade_personhood_choice', trait: 'sacrifice' }
+        ]
+    },
+
+    blade_personhood_choice: {
+        scene: 'lab',
+        characters: [{ id: 'x', position: 'center' }],
+        dialogues: [
+            { speaker: 'x', text: '你已经知道我的身份并不重要。现在，选择会留下什么。把记录交给公司，你可能换来承认；把记录交给玛拉，你们可能获得自由；删除自己的档案，你会替她们承担追踪。' },
+            { speaker: 'narrator', text: '三种选择都不能证明谁是人。它们只会改变谁需要为明天付出代价。', showChoices: true }
+        ],
+        choices: [
+            { text: '交出记录，要求公司承认玛拉', next: 'blade_personhood_proof', clue: 'blade_runner' },
+            { text: '保留名字，带玛拉和 X 一起逃走', next: 'blade_personhood_witness', clue: 'blade_runner' },
+            { text: '删除自己的档案，替她们承担追踪', next: 'blade_personhood_burden', clue: 'blade_runner' }
+        ]
+    },
+
+    blade_personhood_proof: {
+        scene: 'penthouse',
+        characters: [{ id: 'x', position: 'center' }],
+        ending: { title: '被承认', desc: '你用公司的语言为玛拉换来了身份。她获得了名字，但系统仍保留着决定谁值得被承认的权力。' },
+        dialogues: [
+            { speaker: 'narrator', text: '你把责任记录上传到公司的主档案。系统经过漫长的计算，终于给玛拉分配了一个合法编号。' },
+            { speaker: 'x', text: '她现在被承认了。但别忘了：你给她的是一扇门，不是自由。真正的问题是，下一次谁来替没有编号的人写名字？' }
+        ]
+    },
+
+    blade_personhood_witness: {
+        scene: 'cyberpunkCity',
+        characters: [{ id: 'x', position: 'center' }],
+        onEnter: () => {
+            if (typeof grantHiddenClue === 'function') grantHiddenClue('blade_runner');
+        },
+        ending: { title: '见证', desc: '你没有替玛拉请求系统批准。你保留了她的名字，也保留了她曾经被抹掉的记录。' },
+        dialogues: [
+            { speaker: 'narrator', text: '你没有提交测试结果。你把玛拉的名字写在纸上，把责任记录交给她，然后关掉了公司的追踪信号。' },
+            { speaker: 'x', text: '你没有证明我是人。你只是记住了我做过什么。很多时候，这已经是一个人能够得到的第一份自由。' },
+            { speaker: 'narrator', text: '雨还在下。玛拉第一次用自己的名字回应你。X 没有消失，她只是把决定留在了你手里。' }
+        ]
+    },
+
+    blade_personhood_burden: {
+        scene: 'cyberpunkCity',
+        characters: [{ id: 'x', position: 'center' }],
+        onEnter: () => {
+            if (typeof grantHiddenClue === 'function') grantHiddenClue('blade_runner');
+        },
+        ending: { title: '承担', desc: '你删除自己的身份档案，把追踪信号引到自己身上，让玛拉和 X 获得离开的时间。' },
+        dialogues: [
+            { speaker: 'narrator', text: '你按下删除键。你的档案从三个月前开始，也在这一刻结束。系统失去你的编号，追踪信号转向你留下的空白。' },
+            { speaker: 'x', text: '你不知道自己究竟是什么，却决定为别人承担后果。这不是证明。这是选择。' },
+            { speaker: 'narrator', text: '玛拉和 X 消失在雨里。你没有获得一个确定的身份，但你第一次知道，自己愿意成为怎样的人。' }
+        ]
+    }
+});
+
 // 银翼杀手剧本由 chapters-compat.js 统一合并到主剧本
