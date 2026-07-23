@@ -27,18 +27,18 @@ function safeOverride(sceneId, overrides) {
 
 // 世界注册表 - 所有可通过阿莱夫进入的世界
 const ALEPH_WORLDS = [
-    { id: 'blade_runner', name: '银翼杀手', entry: 'blade_runner_entrance', traits: ['analytical', 'contemplative', 'self_aware'], clue: 'blade_runner', hiddenClue: 'blade_runner_hidden' },
-    { id: 'cthulhu', name: '疯狂之城', entry: 'cthulhu_entrance', traits: ['awakened', 'seeker_of_truth', 'truth_seeker'], clue: 'cthulhu', hiddenClue: 'cthulhu_hidden' },
-    { id: 'alice', name: '梦境世界', entry: 'alice_entrance', traits: ['curious', 'playful', 'mad'], clue: 'alice', hiddenClue: 'alice_hidden' },
-    { id: 'middle_earth', name: '中土世界', entry: 'middleearth_entrance', traits: ['heroic', 'noble', 'brave'], clue: 'middle_earth', hiddenClue: 'middle_earth_hidden' },
-    { id: 'wuxia', name: '江湖世界', entry: 'wuxia_entrance', traits: ['xia', 'free_spirit', 'zen'], clue: 'wuxia', hiddenClue: 'wuxia_hidden' },
-    { id: 'cowboy_bebop', name: '太空边境', entry: 'bebop_entrance', traits: ['drifter', 'lone_wolf', 'free'], clue: 'cowboy_bebop', hiddenClue: 'cowboy_bebop_hidden' },
-    { id: 'matrix', name: '矩阵世界', entry: 'matrix_entrance', traits: ['awakening', 'hacker', 'rebellion'], clue: 'matrix', hiddenClue: 'matrix_hidden' },
-    { id: 'got', name: '权力游戏', entry: 'got_entrance', traits: ['honor', 'ambition', 'leadership'], clue: 'got', hiddenClue: 'got_hidden' },
-    { id: 'spirited', name: '神隐世界', entry: 'spirited_entrance', traits: ['growth', 'humility', 'compassion'], clue: 'spirited', hiddenClue: 'spirited_hidden', hidden: true, unlockHint: '至少完成4个世界后，更深层的世界将会显现' },
-    { id: 'wake', name: '守灵之夜', entry: 'wake_entrance', traits: ['wordplay', 'cyclical', 'dreamer'], clue: 'wake', hiddenClue: 'wake_hidden', hidden: true, unlockHint: '至少完成4个世界后，更深层的世界将会显现' },
-    { id: 'watchmen', name: '末日时钟', entry: 'watchmen_entrance', traits: ['moral', 'sacrificial', 'justice'], clue: 'watchmen', hiddenClue: 'watchmen_hidden', hidden: true, unlockHint: '至少完成4个世界后，更深层的世界将会显现' },
-    { id: 'maus', name: '记忆深渊', entry: 'maus_entrance', traits: ['memory', 'witness', 'empathy'], clue: 'maus', hiddenClue: 'maus_hidden', hidden: true, unlockHint: '至少完成4个世界后，更深层的世界将会显现' },
+    { id: 'blade_runner', name: '银翼杀手', entry: 'blade_runner_entrance', traits: ['analytical', 'contemplative', 'self_aware'], clue: 'blade_runner', hiddenClue: 'blade_runner_hidden', launchEnabled: true },
+    { id: 'cthulhu', name: '疯狂之城', entry: 'cthulhu_entrance', traits: ['awakened', 'seeker_of_truth', 'truth_seeker'], clue: 'cthulhu', hiddenClue: 'cthulhu_hidden', launchEnabled: true },
+    { id: 'alice', name: '梦境世界', entry: 'alice_entrance', traits: ['curious', 'playful', 'mad'], clue: 'alice', hiddenClue: 'alice_hidden', launchEnabled: true },
+    { id: 'middle_earth', name: '中土世界', entry: 'middleearth_entrance', traits: ['heroic', 'noble', 'brave'], clue: 'middle_earth', hiddenClue: 'middle_earth_hidden', launchEnabled: false },
+    { id: 'wuxia', name: '江湖世界', entry: 'wuxia_entrance', traits: ['xia', 'free_spirit', 'zen'], clue: 'wuxia', hiddenClue: 'wuxia_hidden', launchEnabled: true },
+    { id: 'cowboy_bebop', name: '太空边境', entry: 'bebop_entrance', traits: ['drifter', 'lone_wolf', 'free'], clue: 'cowboy_bebop', hiddenClue: 'cowboy_bebop_hidden', launchEnabled: true },
+    { id: 'matrix', name: '矩阵世界', entry: 'matrix_entrance', traits: ['awakening', 'hacker', 'rebellion'], clue: 'matrix', hiddenClue: 'matrix_hidden', launchEnabled: false },
+    { id: 'got', name: '权力游戏', entry: 'got_entrance', traits: ['honor', 'ambition', 'leadership'], clue: 'got', hiddenClue: 'got_hidden', launchEnabled: false },
+    { id: 'spirited', name: '神隐世界', entry: 'spirited_entrance', traits: ['growth', 'humility', 'compassion'], clue: 'spirited', hiddenClue: 'spirited_hidden', hidden: true, launchEnabled: false, unlockHint: '完成内容重写后再开放' },
+    { id: 'wake', name: '守灵之夜', entry: 'wake_entrance', traits: ['wordplay', 'cyclical', 'dreamer'], clue: 'wake', hiddenClue: 'wake_hidden', hidden: true, launchEnabled: false, unlockHint: '完成内容重写后再开放' },
+    { id: 'watchmen', name: '末日时钟', entry: 'watchmen_entrance', traits: ['moral', 'sacrificial', 'justice'], clue: 'watchmen', hiddenClue: 'watchmen_hidden', hidden: true, launchEnabled: false, unlockHint: '完成内容重写后再开放' },
+    { id: 'maus', name: '记忆深渊', entry: 'maus_entrance', traits: ['memory', 'witness', 'empathy'], clue: 'maus', hiddenClue: 'maus_hidden', hidden: true, launchEnabled: false, unlockHint: '完成敏感性审查和重写后再开放' },
     { id: 'x_hidden', name: '镜中之我', entry: 'x_hidden_entrance', traits: ['truth_seeker', 'self_aware', 'contemplative'], clue: 'x_hidden', hiddenClue: 'x_hidden_deep', hidden: true, unlockHint: '完成所有世界后，在NG+中揭示X的真相' }
 ];
 
@@ -46,8 +46,8 @@ const ALEPH_WORLDS = [
 const MAIN_WORLD_IDS = ['blade_runner', 'cthulhu', 'alice', 'middle_earth', 'wuxia', 'cowboy_bebop', 'matrix', 'got'];
 
 // 首轮体验完成 3 个世界后即可进入终章；隐藏碎片仍可让终章内容更深入。
-// 完整收集仍然需要全部 12 个世界，这只是首轮可完成性的节奏阈值。
-// 不改变世界注册表或 NG+ 解锁条件。
+// 首发版只开放标记为 launchEnabled 的世界；封存世界保留在注册表中，
+// 等内容重写后再恢复。首轮门槛只是可交付节奏，不代表全部内容完成。
 const FIRST_RUN_ENDING_THRESHOLD = 3;
 
 // 检查隐藏世界是否解锁
@@ -55,9 +55,12 @@ function isHiddenWorldUnlocked(worldId) {
     const world = ALEPH_WORLDS.find(w => w.id === worldId);
     if (!world || !world.hidden) return true; // 非隐藏世界始终可用
     
-    // 特殊：镜中之我 - 需要 NG+ 且完成全部12个世界
+    // 特殊：镜中之我 - 需要 NG+ 且完成当前版本开放的全部世界。
+    // 被暂时封存的世界不应阻塞首发版的终局奖励。
     if (worldId === 'x_hidden') {
-        const allCompleted = ALEPH_WORLDS.filter(w => w.id !== 'x_hidden').every(w => gameState.completedWorlds.includes(w.id));
+        const allCompleted = ALEPH_WORLDS
+            .filter(w => w.id !== 'x_hidden' && w.launchEnabled !== false)
+            .every(w => gameState.completedWorlds.includes(w.id));
         return allCompleted && gameState._ngPlus === true;
     }
     
@@ -75,7 +78,9 @@ function isHiddenWorldUnlocked(worldId) {
 // 获取未完成的世界（隐藏世界需要解锁条件）
 function getIncompleteWorlds() {
     return ALEPH_WORLDS.filter(world => 
-        !gameState.completedWorlds.includes(world.id) && isHiddenWorldUnlocked(world.id)
+        world.launchEnabled !== false
+        && !gameState.completedWorlds.includes(world.id)
+        && isHiddenWorldUnlocked(world.id)
     );
 }
 
@@ -149,8 +154,12 @@ function renderWorldGrid() {
         { id: 'x_hidden', name: '镜中', emoji: '🪞' }
     ];
     
+    const visibleWorldIds = new Set(ALEPH_WORLDS
+        .filter(world => world.launchEnabled !== false || completed.includes(world.id))
+        .map(world => world.id));
+
     let html = '';
-    allWorlds.forEach(w => {
+    allWorlds.filter(w => visibleWorldIds.has(w.id)).forEach(w => {
         const isComplete = completed.includes(w.id);
         const cls = isComplete ? 'world-dot complete' : 'world-dot incomplete';
         const title = `${w.name}世界${isComplete ? ' · 已完成' : ''}`;
@@ -737,18 +746,24 @@ SCRIPT.aleph_return = {
     getDialogues: () => {
         const completed = getCompletedWorlds();
         const totalClues = countValidFragments();
-        const remaining = 12 - completed.length;
+        const openWorlds = ALEPH_WORLDS.filter(w => w.id !== 'x_hidden' && w.launchEnabled !== false);
+        const remaining = openWorlds.filter(w => !gameState.completedWorlds.includes(w.id)).length;
+        const archivedRemaining = ALEPH_WORLDS.filter(w => w.launchEnabled === false && !gameState.completedWorlds.includes(w.id)).length;
         
         let text = '你穿过世界的边界，回到了阿莱夫。正如一个人从梦中醒来，却在醒来的瞬间发现——梦中的逻辑在醒来的世界中依然成立。';
         text += `\n\n${getEndingProgressText()}。`;
         text += `\n你已经穿过了 ${completed.length} 个世界的门扉，收集了 ${totalClues} 条关于X的碎片。`;
         
         // 检查还有多少隐藏世界未解锁
-        const lockedHidden = ALEPH_WORLDS.filter(w => w.hidden && !gameState.completedWorlds.includes(w.id) && !isHiddenWorldUnlocked(w.id));
+        const lockedHidden = ALEPH_WORLDS.filter(w => w.launchEnabled !== false && w.hidden && !gameState.completedWorlds.includes(w.id) && !isHiddenWorldUnlocked(w.id));
         const completedMain = MAIN_WORLD_IDS.filter(id => gameState.completedWorlds.includes(id)).length;
         
         if (remaining > 0) {
-            text += `\n\n还有 ${remaining} 个世界等待探索。在无限的图书馆中，${remaining} 是一个既精确又模糊的数字——它既是数量，也是方向。`;
+            text += `\n\n还有 ${remaining} 个当前开放的世界等待探索。在无限的图书馆中，${remaining} 是一个既精确又模糊的数字——它既是数量，也是方向。`;
+        }
+
+        if (archivedRemaining > 0) {
+            text += `\n\n阿莱夫更深处还有 ${archivedRemaining} 个世界暂时封存。它们不会出现在本轮门扉选择中，等内容完成重写后再重新开放。`;
         }
         
         if (lockedHidden.length > 0 && completedMain < 4) {

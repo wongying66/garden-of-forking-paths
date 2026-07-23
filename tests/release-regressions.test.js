@@ -97,6 +97,12 @@ assert.equal(evaluate('SCRIPT[\'cthulhu_next_world\'].choices[0].next'), 'aleph_
 assert.equal(evaluate('FIRST_RUN_ENDING_THRESHOLD'), 3);
 assert.equal(evaluate("Engine.resolveWorldForEnding('ending_upload_consciousness')"), 'blade_runner');
 assert.equal(evaluate("Engine.resolveWorldForEnding('unmapped_world_ending', 'cthulhu_next_world')"), 'cthulhu');
+evaluate("gameState.completedWorlds = []; gameState.traits = []; gameState._ngPlus = false;");
+assert.equal(
+    evaluate("getIncompleteWorlds().map(world => world.id).join(',')"),
+    'blade_runner,cthulhu,alice,wuxia,cowboy_bebop',
+    'launch pool should contain only the five polished worlds'
+);
 
 // A terminal world choice must write the settlement scene before showing the
 // ending screen. This makes the checkpoint and return-to-Aleph path deterministic
