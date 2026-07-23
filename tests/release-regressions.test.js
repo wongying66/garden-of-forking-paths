@@ -93,7 +93,16 @@ for (const sceneId of continuationScenes) {
 }
 
 assert.equal(evaluate("Engine.shouldShowEndingScreen(SCRIPT['cthulhu_next_world'])"), true);
-assert.equal(evaluate('FIRST_RUN_ENDING_THRESHOLD'), 5);
+assert.equal(evaluate('SCRIPT[\'cthulhu_next_world\'].choices[0].next'), 'aleph_return');
+assert.equal(evaluate('FIRST_RUN_ENDING_THRESHOLD'), 3);
+
+// Three completed worlds must be enough for a first-run player to reach the final chapter,
+// even when none of the optional hidden fragments were discovered.
+evaluate("gameState.clues = ['blade_runner', 'cthulhu', 'alice']; gameState.completedWorlds = ['blade_runner', 'cthulhu', 'alice']; gameState.traits = ['aleph_visited'];");
+assert.ok(
+  evaluate("SCRIPT['aleph_return'].choices().some(choice => choice.next === 'final_chapter')"),
+  'three completed worlds must unlock the first-run final chapter'
+);
 
 assert.match(html, /\.click-continue\s*\{[\s\S]*display:\s*block;/, 'click-to-continue affordance must be visible when enabled');
 assert.match(html, /id="clickContinue"[^>]*aria-live="polite"/, 'continue affordance must be announced accessibly');

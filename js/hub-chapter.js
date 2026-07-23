@@ -45,9 +45,10 @@ const ALEPH_WORLDS = [
 // 主世界ID列表
 const MAIN_WORLD_IDS = ['blade_runner', 'cthulhu', 'alice', 'middle_earth', 'wuxia', 'cowboy_bebop', 'matrix', 'got'];
 
-// 首轮体验先在 5 个世界后开放终章；完整收集仍然需要全部 12 个世界。
-// 这是产品节奏阈值，不改变世界注册表或 NG+ 解锁条件。
-const FIRST_RUN_ENDING_THRESHOLD = 5;
+// 首轮体验完成 3 个世界后即可进入终章；隐藏碎片仍可让终章内容更深入。
+// 完整收集仍然需要全部 12 个世界，这只是首轮可完成性的节奏阈值。
+// 不改变世界注册表或 NG+ 解锁条件。
+const FIRST_RUN_ENDING_THRESHOLD = 3;
 
 // 检查隐藏世界是否解锁
 function isHiddenWorldUnlocked(worldId) {
