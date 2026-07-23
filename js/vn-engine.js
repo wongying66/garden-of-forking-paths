@@ -332,9 +332,10 @@ const QUEST_SYSTEM = {
             } else {
                 return { title: '找到阿莱夫', desc: '你已经收集了足够的线索。回到无限图书馆，找到通往阿莱夫的路。' };
             }
-        } else if (countValidFragments() < 12) {
+        } else if (countValidFragments() < (typeof FIRST_RUN_ENDING_THRESHOLD === 'number' ? FIRST_RUN_ENDING_THRESHOLD : 12)) {
             const completed = gameState.completedWorlds.length;
-            return { title: '穿越世界', desc: `通过阿莱夫进入不同的世界，收集X的碎片。（${countValidFragments()}/12，已探索${completed}个世界）` };
+            const threshold = typeof FIRST_RUN_ENDING_THRESHOLD === 'number' ? FIRST_RUN_ENDING_THRESHOLD : 12;
+            return { title: '穿越世界', desc: `通过阿莱夫进入不同的世界，收集X的碎片。（${countValidFragments()}/${threshold}，已探索${completed}个世界）` };
         } else {
             return { title: '揭示真相', desc: '你已经收集了足够的碎片。回到阿莱夫，走向X所在之处。' };
         }
@@ -3977,6 +3978,13 @@ const Engine = {
         gameContainer.style.opacity = '0';
         gameContainer.style.pointerEvents = 'none';
         gameContainer.setAttribute('aria-hidden', 'true');
+
+        // Keep the title screen honest: the scene registry is the source of truth.
+        const endingCount = document.getElementById('endingCount');
+        if (endingCount) {
+            const count = Object.values(SCRIPT).filter(script => script && script.ending).length;
+            endingCount.textContent = `${count}个结局节点`;
+        }
         
         // 标题粒子
         this.startTitleParticles();
@@ -4347,6 +4355,11 @@ const Engine = {
             document.getElementById('questPanel').classList.remove('visible');
             this.panelOpen = false;
         });
+
+        // 由 GPT-5.6 根据已发生的旅程生成受控的个性化尾声。
+        document.getElementById('aiEpilogueBtn').addEventListener('click', () => {
+            this.generateAIEpilogue();
+        });
         
         // 返回阿莱夫继续探索
         document.getElementById('continueBtn').addEventListener('click', () => {
@@ -4399,6 +4412,12 @@ const Engine = {
         // 防止重复加载
         if (this.sceneLoading) return;
         this.sceneLoading = true;
+
+        // 转场开始时清理旧选项，避免旧按钮在新场景出现前残留。
+        if (this.elements.choicesContainer) {
+            this.elements.choicesContainer.classList.add('hidden');
+            this.elements.choicesContainer.innerHTML = '';
+        }
         
         const script = SCRIPT[sceneId];
         if (!script) {
@@ -4695,6 +4714,7 @@ const Engine = {
         const container = this.elements.choicesContainer;
         container.innerHTML = '';
         container.classList.remove('hidden');
+        container.setAttribute('aria-label', '剧情选择');
         
         choices.forEach((choice, index) => {
             const btn = document.createElement('button');
@@ -4725,19 +4745,49 @@ const Engine = {
                 };
                 costLabels += `<span class="cost-tag cost-trait">${TRAIT_NAMES[choice.trait] || choice.trait}</span>`;
             }
-            if (choice.clue) costLabels += `<span class="cost-tag cost-clue">${choice.clue}</span>`;
+            if (choice.clue) {
+                const clue = CLUE_DEFS[choice.clue];
+                costLabels += `<span class="cost-tag cost-clue">${clue ? clue.title : choice.clue}</span>`;
+            }
             if (costLabels) {
                 btnHTML += `<span class="choice-costs">${costLabels}</span>`;
             }
             btn.innerHTML = btnHTML;
+            btn.setAttribute('aria-label', choice.text);
             
             btn.style.animationDelay = `${index * 0.1}s`;
             btn.onclick = () => this.makeChoice(choice);
             container.appendChild(btn);
         });
+
+        // On small screens this makes the scroll affordance visible without adding
+        // another competing control to the dialogue box.
+        requestAnimationFrame(() => {
+            container.classList.toggle('scrollable', container.scrollHeight > container.clientHeight + 1);
+        });
+    },
+
+    getSceneChoices(script) {
+        if (!script || !script.choices) return [];
+        const choices = typeof script.choices === 'function' ? script.choices() : script.choices;
+        return Array.isArray(choices) ? choices : [];
+    },
+
+    shouldShowEndingScreen(script) {
+        if (!script || !script.ending) return false;
+        const choices = this.getSceneChoices(script);
+        // A world-summary ending may offer only the standard return-to-hub action.
+        // Any other outgoing edge is a narrative continuation and must be playable.
+        return choices.length === 0 || choices.every(choice => choice.next === 'aleph_return');
     },
     
     makeChoice(choice) {
+        // 点击后立即撤下旧选项，避免场景转场期间误点上一场景的按钮。
+        if (this.elements.choicesContainer) {
+            this.elements.choicesContainer.classList.add('hidden');
+            this.elements.choicesContainer.innerHTML = '';
+        }
+
         // 记录特质
         if (choice.trait && !gameState.traits.includes(choice.trait)) {
             gameState.traits.push(choice.trait);
@@ -4789,8 +4839,9 @@ const Engine = {
             return;
         }
         
-        // 检查是否是结局
-        if (nextScript.ending) {
+        // 只有真正终止、或仅提供“返回阿莱夫”的世界结算场景，才显示结局屏。
+        // 带有其它分支的 ending 节点仍是可玩的剧情场景。
+        if (this.shouldShowEndingScreen(nextScript)) {
             // 自动标记世界完成（如果是世界内的结局）
             const worldId = inferWorldFromScene(choice.next);
             if (worldId && typeof completeWorld === 'function') {
@@ -4823,23 +4874,33 @@ const Engine = {
         console.log(`自动存档已保存 (slot ${slot})`);
     },
 
-    loadAutoSave() {
-        // 加载最新的自动存档
+    getLatestAutoSave() {
         let latest = null;
         let latestTime = 0;
         for (let i = 0; i < 3; i++) {
             const data = localStorage.getItem(`vn_auto_save_${i}`);
-            if (data) {
-                try {
-                    const parsed = JSON.parse(data);
-                    if (parsed.timestamp > latestTime) { latest = parsed; latestTime = parsed.timestamp; }
-                } catch(e) {}
+            if (!data) continue;
+            try {
+                const parsed = JSON.parse(data);
+                if (parsed && parsed.timestamp > latestTime) {
+                    latest = parsed;
+                    latestTime = parsed.timestamp;
+                }
+            } catch (e) {
+                console.warn('自动存档损坏，已跳过:', `vn_auto_save_${i}`);
             }
         }
         if (!latest) {
             const oldData = localStorage.getItem('vn_save_0');
-            if (oldData) { try { latest = JSON.parse(oldData); } catch(e) {} }
+            if (oldData) {
+                try { latest = JSON.parse(oldData); } catch (e) { /* ignore legacy corruption */ }
+            }
         }
+        return latest;
+    },
+
+    loadAutoSave() {
+        const latest = this.getLatestAutoSave();
         if (latest) {
             this._applySaveData(latest);
             this.loadScene(gameState.currentScene);
@@ -4929,6 +4990,62 @@ const Engine = {
             this.clickInProgress = false;
         }
     },
+
+    getAISessionId() {
+        const key = 'vn_ai_session_id';
+        let sessionId = localStorage.getItem(key);
+        if (!sessionId) {
+            sessionId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+                ? crypto.randomUUID()
+                : `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            localStorage.setItem(key, sessionId);
+        }
+        return sessionId;
+    },
+
+    renderAIEpilogue(result, statusText) {
+        document.getElementById('aiEpilogueTitle').textContent = result.title;
+        document.getElementById('aiEpilogueLetter').textContent = result.letter;
+        document.getElementById('aiEpilogueSignature').textContent = `—— ${result.signature}`;
+        document.getElementById('aiEpilogueResult').classList.remove('hidden');
+        document.getElementById('aiEpilogueStatus').textContent = statusText || '';
+    },
+
+    async generateAIEpilogue() {
+        const button = document.getElementById('aiEpilogueBtn');
+        const status = document.getElementById('aiEpilogueStatus');
+        button.disabled = true;
+        button.textContent = 'X 正在回信……';
+        status.textContent = '正在根据你的线索、特质和选择生成专属尾声。';
+
+        const payload = {
+            sessionId: this.getAISessionId(),
+            ending: this.currentEnding || {},
+            journey: {
+                day: gameState.day,
+                clues: gameState.clues || [],
+                traits: gameState.traits || [],
+                completedWorlds: gameState.completedWorlds || [],
+                xMemories: gameState.xMemories || []
+            }
+        };
+
+        try {
+            if (typeof AIEpilogue === 'undefined') throw new Error('AI_EPILOGUE_CLIENT_MISSING');
+            const result = await AIEpilogue.generate(payload);
+            this.renderAIEpilogue(result, `由 ${result.model || 'GPT-5.6'} 根据本次旅程生成`);
+            button.textContent = '重新生成 X 的回信';
+        } catch (error) {
+            console.warn('AI 尾声暂不可用，使用离线备用文本：', error.message);
+            const fallback = (typeof AIEpilogue !== 'undefined')
+                ? AIEpilogue.offlineFallback(payload.journey)
+                : { title: '未寄出的回信', letter: '你已经走过足够多的分岔。真正留下来的并非答案，而是你选择记住什么。', signature: 'X' };
+            this.renderAIEpilogue(fallback, 'AI 服务暂不可用，当前显示离线备用尾声');
+            button.textContent = '重试 GPT-5.6 回信';
+        } finally {
+            button.disabled = false;
+        }
+    },
     
     showEnding(ending, sceneId) {
         // 兼容两种 ending 格式：对象 {title, desc} 和布尔值 true + endingTitle/endingDesc
@@ -4944,6 +5061,17 @@ const Engine = {
             title = ending.title || '结局';
             desc = ending.desc || '你到达了一个结局。';
         }
+
+        this.currentEnding = { sceneId: sceneId || gameState.currentScene, title, description: desc };
+        const aiButton = document.getElementById('aiEpilogueBtn');
+        if (aiButton) {
+            aiButton.disabled = false;
+            aiButton.textContent = '让 GPT-5.6 写下 X 的回信';
+        }
+        const aiStatus = document.getElementById('aiEpilogueStatus');
+        if (aiStatus) aiStatus.textContent = '';
+        const aiResult = document.getElementById('aiEpilogueResult');
+        if (aiResult) aiResult.classList.add('hidden');
         
         document.getElementById('endingTitle').textContent = title;
         document.getElementById('endingDesc').textContent = desc;
@@ -4955,12 +5083,6 @@ const Engine = {
         const loadSaveBtn = document.getElementById('loadSaveBtn');
         if (loadSaveBtn) loadSaveBtn.style.display = 'none';
         
-        // 检查是否有自动存档，显示"回到存档点"按钮
-        const hasAutoSave = localStorage.getItem('vn_save_0') !== null;
-        if (hasAutoSave && loadSaveBtn) {
-            loadSaveBtn.style.display = 'inline-block';
-        }
-        
         // 只有访问过阿莱夫后或在世界结局后显示"返回阿莱夫"按钮
         const continueBtn = document.getElementById('continueBtn');
         if (continueBtn) {
@@ -4968,7 +5090,9 @@ const Engine = {
             if (gameState.traits.includes('aleph_visited') || isInWorldEnding) {
                 continueBtn.style.display = 'inline-block';
                 // 更新按钮文本，显示线索进度
-                continueBtn.textContent = `返回阿莱夫（${countValidFragments()}/12碎片）`;
+                const endingThreshold = typeof FIRST_RUN_ENDING_THRESHOLD === 'number' ? FIRST_RUN_ENDING_THRESHOLD : 12;
+                const endingProgress = Math.min(countValidFragments(), endingThreshold);
+                continueBtn.textContent = `返回阿莱夫（终章进度 ${endingProgress}/${endingThreshold}）`;
                 // 如果还没访问过阿莱夫，自动标记
                 if (!gameState.traits.includes('aleph_visited')) {
                     gameState.traits.push('aleph_visited');
@@ -4980,6 +5104,11 @@ const Engine = {
         
         // 自动存档
         this.autoSave();
+
+        // 检查刚刚写入的自动存档，确保首次到达结局也能回退。
+        if (this.getLatestAutoSave() && loadSaveBtn) {
+            loadSaveBtn.style.display = 'inline-block';
+        }
         
         setTimeout(() => {
             const endingScreen = document.getElementById('endingScreen');
@@ -5014,7 +5143,7 @@ const Engine = {
             }
         }
         
-        const clueText = countValidFragments() > 0 ? ` · ${countValidFragments()}/12碎片` : '';
+        const clueText = countValidFragments() > 0 ? ` · ${countValidFragments()}碎片` : '';
         const worldText = gameState.completedWorlds.length > 0 ? ` · ${gameState.completedWorlds.length}世界` : '';
         const sanityText = (gameState.sanity && gameState.sanity < 100) ? ` · 理智${gameState.sanity}` : '';
         this.elements.dayStatus.textContent = `第${gameState.day}天${clueText}${worldText}${sanityText} · ${phase.name}`;

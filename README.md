@@ -1,85 +1,172 @@
-# 寻找X · 小径分岔的花园
+# Garden of Forking Paths / 寻找X
 
-> *"时间永远分岔，通向无数的将来。"* —— 博尔赫斯
+An interactive narrative game where the rules remember what the player chose, and GPT-5.6 writes a bounded, personalized letter from X at the end of a journey.
 
----
+> Current status: playable prototype. The repository contains a large authored story graph and a production-shaped AI epilogue path. A public demo URL and demo video still need to be added before the final Devpost submission.
 
-## 关于这款游戏
+## What the project does
 
-**《小径分岔的花园》** 是一款基于博尔赫斯文学的互动叙事 / 视觉小说游戏。灵感来自博尔赫斯的《阿莱夫》《小径分岔的花园》《巴别图书馆》《沙之书》等作品。
+The player travels through branching worlds while collecting clues, traits, memories, and consequences. The core story remains rule-driven so that important facts, endings, and progress cannot be rewritten by a model.
 
-你在一片雾气弥漫的花园中醒来，手中握着一张照片。照片背面写着一个大写的 **X**。
+At an ending, the player may ask GPT-5.6 to write a short private letter from X. The model receives only a bounded summary of the completed journey:
 
-你不记得自己是谁，但你知道你必须找到 X。
+- ending title and description;
+- elapsed days;
+- collected clue identifiers;
+- acquired traits;
+- completed worlds;
+- a limited set of memories about X.
 
-花园里有三位引路人：一位拿着扫帚的老人、一位站在花丛中的女人、一位蹲在沙地上画画的身影。每一个选择，都会带你进入一个截然不同的世界 —— 从赛博朋克的雨夜街头，到克苏鲁的疯狂深渊；从金庸的江湖，到中土世界的魔戒之路……
+GPT-5.6 does **not** choose the ending, mutate game state, invent new worlds, or overwrite authored scenes. If the API is unavailable, the game clearly labels and displays a deterministic offline fallback.
 
-所有的世界都通过 **阿莱夫**（Aleph）连接在一起。阿莱夫是博尔赫斯笔下的一个点，在这个点上，你可以同时看到宇宙的每一个角落。
+## Current scope
 
----
+The current runtime audit reports:
 
-## 游戏特色
+- 836 merged scene nodes;
+- 1,205 static scene transitions;
+- 98 unique runtime asset paths;
+- no missing static transition targets;
+- no missing mapped runtime assets;
+- 12 explorable worlds plus the Aleph hub and final chapter.
 
-- **12+ 个可探索的世界**：银翼杀手、克苏鲁神话、爱丽丝梦游仙境、中土世界、金庸武侠、星际牛仔、黑客帝国、权力的游戏、千与千寻、芬尼根守灵夜、守望者、鼠族，以及隐藏的"镜中之我"
-- **多分支叙事**：每个世界包含多条路线和多个结局，总计超过 90 个结局
-- **阿莱夫枢纽**：自由选择探索顺序，不必按固定路线前进
-- **理智系统**：你的选择会影响理智值，理智归零时会发生什么？
-- **特质系统**：通过选择获得特质，特质会解锁隐藏世界
-- **碎片收集**：在每个世界中寻找 X 留下的线索，拼凑真相
-- **NG+ 模式**：通关后解锁新对话和隐藏世界
-- **存档 / 读档**：支持手动存档和自动存档
+These figures describe the static story graph. They are not a substitute for a full manual playthrough on every route.
 
----
+## Architecture
 
-## 如何运行
+```text
+Player choice
+    ↓
+Rule-driven SCRIPT graph
+    ↓
+Persistent local game state
+    ├─ clues
+    ├─ traits
+    ├─ completed worlds
+    └─ memories of X
+    ↓
+Authored ending
+    ↓ (optional, one bounded call)
+/api/epilogue → OpenAI Responses API → GPT-5.6 Sol
+    ↓
+Structured JSON letter from X
+```
 
-1. 克隆本项目
-2. 用任意 HTTP 服务器打开 `vn.html`（例如 `python3 -m http.server 8000`）
-3. 在浏览器中访问 `http://localhost:8000/vn.html`
+The browser never receives the OpenAI API key. `api/epilogue.js` is a server-side Vercel function. It validates and limits the submitted state, hashes a local anonymous session identifier for `safety_identifier`, requests strict structured output, and returns only the final letter fields.
 
-> **注意**：游戏要求浏览器支持 `localStorage`（用于存档）。请勿使用无痕模式。
+## Run the game
 
----
+### Static/offline mode
 
-## 游戏截图
+Serve the repository with any static web server and open `/` or `/vn.html`. The authored game works without an API key. The GPT-5.6 button will use the clearly labelled offline fallback if `/api/epilogue` is unavailable.
 
-游戏启动后，你会看到标题画面，点击"新游戏"即可开始。
+For example:
 
----
+```bash
+python3 -m http.server 8080
+```
 
-## ⚠️ 当前状态
+Then open `http://localhost:8080`.
 
-**这是一个早期 Demo，游戏尚未完成。**
+### Full AI mode
 
-以下是你需要知道的事情：
+1. Copy the environment template:
 
-- 部分世界的剧情尚未完全实现，可能会在中途遇到断裂或跳转异常
-- 某些结局路径可能无法正常触发
-- 存在已知和未知的 Bug，包括但不限于：存档兼容性问题、UI 显示异常、文字排版错乱等
-- 部分场景缺少背景图或角色立绘
-- 对话日志和任务面板功能尚不完善
-- 移动端适配尚未完成，建议在桌面端浏览器中游玩
+   ```bash
+   cp .env.example .env.local
+   ```
 
-我会在后续逐步修复这些问题，完善剧情，并持续添加新内容。如果你发现了 Bug 或有任何建议，欢迎提 Issue 或 PR。
+2. Add a server-side OpenAI API key to `.env.local`:
 
----
+   ```text
+   OPENAI_API_KEY=...
+   OPENAI_MODEL=gpt-5.6-sol
+   ```
 
-## 技术栈
+3. Run with the Vercel development server or deploy the repository to Vercel.
 
-- 纯前端：HTML / CSS / JavaScript
-- 无框架依赖，无构建工具
-- 使用 `localStorage` 存储存档数据
-- Canvas 用于阿莱夫枢纽的粒子特效
+Never put the key in `vn.html`, browser JavaScript, Git history, screenshots, or the public repository. Codex credits and ChatGPT subscriptions are not OpenAI API credits.
 
----
+## Test and verify
 
-## 致谢
+Node.js 18 or newer is required for the local audit scripts.
 
-- 豪尔赫·路易斯·博尔赫斯 —— 所有灵感的源头
-- 所有被引用的文学、影视、游戏作品
+```bash
+npm test
+```
 
----
+The test command checks:
 
-## 许可
+- JavaScript syntax;
+- actual script files loaded by `vn.html`;
+- the final merged story graph;
+- static `next` targets;
+- mapped assets;
+- the root entry point;
+- the AI epilogue request/response contract;
+- the offline fallback contract.
 
-本项目仅用于学习和交流目的。
+The tests do not call the OpenAI API and therefore do not consume credits.
+
+## How Codex was used
+
+The first playable prototype was created in Trae. Codex was then used as a repository-aware engineering and review agent to make the submission verifiable. For the current P0 pass, Codex:
+
+- located and audited the actual Trae Git working directory;
+- loaded the final story scripts in their real browser order inside an isolated runtime;
+- counted scene nodes and transitions and checked missing targets/assets;
+- identified that `/index.html` still opened a legacy game while the current build lived at `/vn.html`;
+- replaced the public root with a deterministic redirect while preserving the old page as `legacy-index.html`;
+- designed and implemented the bounded GPT-5.6 epilogue flow;
+- kept the API key on the server and added input limits, structured output, an anonymous safety identifier, and an offline fallback;
+- removed hard-coded Trae session paths from tests;
+- added repeatable syntax, story-graph, asset, and AI-contract checks;
+- wrote and verified this README and the deployment configuration.
+
+Codex did not claim that every branch was manually played. Static/runtime checks and manual browser QA are reported separately.
+
+## How GPT-5.6 is used
+
+GPT-5.6 Sol runs inside the finished application only when the player asks for a personalized letter from X.
+
+Request characteristics:
+
+- endpoint: OpenAI Responses API;
+- model: `gpt-5.6-sol` by default;
+- reasoning effort: `low`;
+- storage: disabled for this request (`store: false`);
+- output: strict JSON schema with `title`, `letter`, and `signature`;
+- input: a size-limited, server-validated journey summary;
+- authority: text generation only; no ability to change game state or select endings;
+- failure behavior: explicit offline fallback, never a fake AI success message.
+
+This is intentionally a small, auditable model role. The authored rule engine controls causality; GPT-5.6 personalizes the emotional reflection.
+
+## Entry points
+
+- `index.html` — public root; redirects to the current game.
+- `vn.html` — current visual-novel interface.
+- `legacy-index.html` — preserved legacy interface; not the public default.
+- `js/vn-engine.js` — main state and rendering engine.
+- `js/*-chapter.js` — authored world chapters.
+- `js/ai-epilogue.js` — browser client and offline fallback.
+- `api/epilogue.js` — server-side GPT-5.6 endpoint.
+- `tests/` — repeatable structural and AI-contract checks.
+
+## Known limitations and next steps
+
+- A current full browser playthrough and mobile-device pass are still required.
+- The title-screen ending count should be generated from one canonical ending registry.
+- Trait labels need a complete reader-facing translation registry.
+- Unused and oversized image variants should be reviewed and compressed.
+- Several worlds currently reference well-known fictional settings; these should be rewritten into original settings before a public commercial release.
+- Public rate limiting should be configured for the AI endpoint before broad distribution.
+- Add the final live-demo URL, screenshots, and a 60–90 second video before Devpost submission.
+
+## 中文快速说明
+
+直接运行静态网页即可游玩人工编写的完整分支。配置服务端 `OPENAI_API_KEY` 并通过 Vercel 运行后，结局页的“让 GPT-5.6 写下 X 的回信”按钮会根据本次旅程生成个性化尾声。API 不可用时会明确显示离线备用文本，不会冒充模型结果。
+
+## License and content notice
+
+No open-source license is granted by this repository at this stage. Third-party names, inspirations, and visual assets must be reviewed before public commercial use.

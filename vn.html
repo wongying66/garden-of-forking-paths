@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>寻找X | 小径分叉的花园 - 视觉小说版</title>
+    <link rel="icon" href="bg-garden.jpg" type="image/jpeg">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -203,6 +204,13 @@
             overflow-y: auto;
             padding-right: 4px;
             flex-shrink: 0;
+            scrollbar-gutter: stable;
+            overscroll-behavior: contain;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .choices-container.scrollable {
+            box-shadow: inset 0 -16px 18px -18px rgba(232,220,200,0.9);
         }
 
         .choices-container::-webkit-scrollbar {
@@ -467,6 +475,46 @@
         }
         .restart-btn:hover {
             background: rgba(212,197,181,0.1);
+        }
+
+        .ai-epilogue {
+            margin: 0 auto 24px;
+            padding: 18px 20px;
+            max-width: 520px;
+            border: 1px solid rgba(196,160,96,0.25);
+            border-radius: 8px;
+            background: rgba(196,160,96,0.06);
+            text-align: left;
+        }
+        .ai-epilogue-title {
+            color: #e8dcc8;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+        .ai-epilogue-letter {
+            color: #c4b5a0;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .ai-epilogue-signature {
+            color: #9d8c75;
+            margin-top: 12px;
+            text-align: right;
+        }
+        .ai-epilogue-status {
+            min-height: 1.4em;
+            margin: 8px 0 14px;
+            color: #8a8072;
+            font-size: 0.78rem;
+        }
+        .restart-btn.ai {
+            border-color: rgba(196,160,96,0.55);
+            color: #d6bc82;
+            margin-bottom: 10px;
+        }
+        .restart-btn:disabled {
+            cursor: wait;
+            opacity: 0.55;
         }
 
         .hidden { display: none !important; }
@@ -745,23 +793,24 @@
         /* 响应式 */
         @media (max-width: 768px) {
             .game-container { max-width: 100vw; max-height: 100vh; }
-            .dialogue-box { height: 30%; padding: 6px 16px 8px; }
+            .dialogue-box { height: 36%; padding: 6px 16px 8px; }
             .character { height: 60%; }
             .status-bar-mini { flex-wrap: wrap; gap: 4px; }
             .status-bar-mini button { font-size: 0.7rem; padding: 4px 8px; }
             .panel-content { max-width: 90vw; }
-            .choices-container { max-height: 80px; gap: 2px; }
-            .choice-btn { font-size: 0.78rem; padding: 5px 10px; }
+            .choices-container { max-height: min(24vh, 220px); gap: 5px; }
+            .choice-btn { font-size: 0.84rem; line-height: 1.35; padding: 8px 10px; }
             .dialogue-content { font-size: 0.95rem; line-height: 1.6; }
         }
 
         @media (max-width: 480px) {
-            .dialogue-box { height: 30%; padding: 5px 10px 8px; }
+            .dialogue-box { height: 38%; padding: 5px 10px 8px; }
             .dialogue-content { font-size: 0.85rem; line-height: 1.5; }
             .character { height: 50%; }
             .status-bar-mini button { font-size: 0.65rem; padding: 3px 6px; }
-            .choices-container { max-height: 70px; gap: 1px; }
-            .choice-btn { font-size: 0.7rem; padding: 4px 8px; }
+            .choices-container { max-height: min(25vh, 180px); min-height: 88px; gap: 5px; padding-right: 8px; }
+            .choice-btn { font-size: 0.78rem; line-height: 1.4; padding: 8px 9px; }
+            .choice-costs, .cost-tag { font-size: 0.64rem; }
             .ending-content { max-width: 95vw; padding: 16px; }
         }
     </style>
@@ -779,7 +828,7 @@
                 <button class="title-btn" id="btnSettings">设置</button>
             </div>
         </div>
-        <div class="title-version">v1.1 · 12个世界 · 92个结局</div>
+        <div class="title-version">v1.1 · 12个世界 · <span id="endingCount">多重结局</span></div>
     </div>
 
     <div class="game-container">
@@ -885,6 +934,13 @@
                     <div class="stat-label">遇见</div>
                 </div>
             </div>
+            <button class="restart-btn ai" id="aiEpilogueBtn">让 GPT-5.6 写下 X 的回信</button>
+            <div class="ai-epilogue-status" id="aiEpilogueStatus" aria-live="polite"></div>
+            <div class="ai-epilogue hidden" id="aiEpilogueResult" aria-live="polite">
+                <div class="ai-epilogue-title" id="aiEpilogueTitle"></div>
+                <div class="ai-epilogue-letter" id="aiEpilogueLetter"></div>
+                <div class="ai-epilogue-signature" id="aiEpilogueSignature"></div>
+            </div>
             <button class="restart-btn" id="loadSaveBtn" style="margin-right: 10px; display: none;">📷 回到存档点</button>
             <button class="restart-btn" id="continueBtn" style="margin-right: 10px;">返回阿莱夫</button>
             <button class="restart-btn" id="restartBtn">重新开始</button>
@@ -945,7 +1001,8 @@
         <div class="credits-skip" id="creditsSkip">点击跳过</div>
     </div>
 
-    <script src="js/vn-engine.js?v=2"></script>
+    <script src="js/ai-epilogue.js"></script>
+    <script src="js/vn-engine.js?v=3"></script>
     <script src="js/music-engine.js"></script>
     <script src="js/effects-engine.js"></script>
     <script src="js/hub-chapter.js"></script>
