@@ -146,6 +146,8 @@ const ASSETS = {
 // ================================================================
 // 游戏状态
 // ================================================================
+const SAVE_SCHEMA_VERSION = 2;
+
 const gameState = {
     currentScene: 'start',
     currentDialogue: 0,
@@ -159,7 +161,12 @@ const gameState = {
     dialogueComplete: false,
     currentObjective: '寻找X的线索',
     completedWorlds: [],
+    // 当前正在游玩的世界；用于世界结算场景没有世界前缀时的兜底识别。
+    _activeWorld: null,
+    _endingWorldId: null,
     dialogueHistory: [],
+    choiceHistory: [],
+    saveVersion: SAVE_SCHEMA_VERSION,
     settings: { typingEffect: true, typingSpeed: 50, musicVolume: 0.5, sfxVolume: 0.5 }
 };
 
@@ -177,7 +184,11 @@ const _defaultGameState = () => ({
     dialogueComplete: false,
     currentObjective: '寻找X的线索',
     completedWorlds: [],
+    _activeWorld: null,
+    _endingWorldId: null,
     dialogueHistory: [],
+    choiceHistory: [],
+    saveVersion: SAVE_SCHEMA_VERSION,
     settings: { typingEffect: true, typingSpeed: 50, musicVolume: 0.5, sfxVolume: 0.5 }
 });
 
@@ -447,6 +458,22 @@ const SHARED_SPEAKER_NAMES = {
     vladek: '弗拉德克',
     artie: '阿蒂',
     anja: '安雅'
+};
+
+const TRAIT_NAMES = {
+    methodical: '有条不紊',
+    intuitive: '直觉',
+    instinctive: '本能',
+    contemplative: '沉思',
+    self_aware: '自我觉察',
+    obsessive: '执着',
+    reckless: '鲁莽',
+    curious: '好奇',
+    cautious: '谨慎',
+    compassionate: '同情',
+    ruthless: '冷酷',
+    hopeful: '希望',
+    despairing: '绝望'
 };
 
 const SCRIPT = {
@@ -3979,11 +4006,10 @@ const Engine = {
         gameContainer.style.pointerEvents = 'none';
         gameContainer.setAttribute('aria-hidden', 'true');
 
-        // Keep the title screen honest: the scene registry is the source of truth.
+        // 不把内部脚本节点数伪装成玩家可体验的独立结局数量。
         const endingCount = document.getElementById('endingCount');
         if (endingCount) {
-            const count = Object.values(SCRIPT).filter(script => script && script.ending).length;
-            endingCount.textContent = `${count}个结局节点`;
+            endingCount.textContent = '多重结局';
         }
         
         // 标题粒子
@@ -4073,7 +4099,7 @@ const Engine = {
             }
             if (latest) {
                 this._applySaveData(latest);
-                this.loadScene(gameState.currentScene);
+                this.resumeSavedScene();
             } else {
                 this.loadScene('start');
             }
@@ -4368,8 +4394,12 @@ const Engine = {
             if (!gameState.traits.includes('world_traveler')) {
                 gameState.traits.push('world_traveler');
             }
-            // 终章结局 → 触发片尾字幕
-            if (gameState.currentScene && (gameState.currentScene.startsWith('final_') || gameState.currentScene.startsWith('ending_'))) {
+            // 只有无法解析到世界的 final/ending 场景才是终章结局。
+            // 世界结算也可能使用 ending_* ID，必须返回阿莱夫继续记录进度。
+            const sceneId = gameState.currentScene || '';
+            const worldId = this.resolveWorldForEnding(sceneId, gameState._lastScene);
+            const isFinalEnding = !worldId && (sceneId.startsWith('final_') || sceneId.startsWith('ending_'));
+            if (isFinalEnding) {
                 this._achievements.truth_seeker = true;
                 this.showAchievement(this._achievementDefinitions.truth_seeker);
                 this.rollCredits();
@@ -4389,13 +4419,17 @@ const Engine = {
         
         // 重新开始
         document.getElementById('restartBtn').addEventListener('click', () => {
+            const confirmed = typeof window.confirm === 'function'
+                ? window.confirm('重新开始会清除本次旅程的自动存档，但保留手动存档和 NG+。确定要重新开始吗？')
+                : true;
+            if (!confirmed) return;
             const endingScreen = document.getElementById('endingScreen');
             endingScreen.classList.remove('visible');
             endingScreen.style.removeProperty('opacity');
             endingScreen.style.removeProperty('pointer-events');
             endingScreen.style.removeProperty('display');
-            // 清除自动存档
-            localStorage.removeItem('vn_save_0');
+            // 清除本次旅程的自动存档；手动存档和 NG+ 进度保留。
+            for (let i = 0; i < 3; i++) localStorage.removeItem(`vn_auto_save_${i}`);
             // 重置按钮显示
             const loadSaveBtn = document.getElementById('loadSaveBtn');
             if (loadSaveBtn) loadSaveBtn.style.display = 'none';
@@ -4403,6 +4437,8 @@ const Engine = {
             Object.assign(gameState, _defaultGameState());
             delete gameState._autoSaveSlot;
             delete gameState._lastScene;
+            delete gameState._activeWorld;
+            delete gameState._endingWorldId;
             delete gameState._ngPlus;
             this.loadScene('start');
         });
@@ -4412,6 +4448,11 @@ const Engine = {
         // 防止重复加载
         if (this.sceneLoading) return;
         this.sceneLoading = true;
+
+        // 场景切换时先隐藏旧场景的“点击继续”提示。
+        if (this.elements.clickContinue) {
+            this.elements.clickContinue.classList.add('hidden');
+        }
 
         // 转场开始时清理旧选项，避免旧按钮在新场景出现前残留。
         if (this.elements.choicesContainer) {
@@ -4447,6 +4488,14 @@ const Engine = {
             // 追踪上一个场景（用于 aleph_return 自动完成世界）
             gameState._lastScene = gameState.currentScene;
             gameState.currentScene = sceneId;
+            const sceneWorld = typeof inferWorldFromScene === 'function'
+                ? inferWorldFromScene(sceneId)
+                : null;
+            if (sceneWorld) {
+                gameState._activeWorld = sceneWorld;
+                // 一旦重新进入任意世界，旧世界结算上下文不再适用。
+                delete gameState._endingWorldId;
+            }
             gameState.currentDialogue = 0;
             gameState.dialogueComplete = false;
             
@@ -4572,6 +4621,7 @@ const Engine = {
         }
         
         const script = SCRIPT[gameState.currentScene];
+        const dialogues = script && (script.getDialogues ? script.getDialogues() : script.dialogues) || [];
         
         // 更新说话者
         const speakerEl = this.elements.speakerName;
@@ -4617,7 +4667,12 @@ const Engine = {
             
             // 显示选择或继续提示
             if (dialogue.showChoices) {
+                this.elements.clickContinue.classList.add('hidden');
                 this.showChoices();
+            } else if (gameState.currentDialogue < dialogues.length - 1) {
+                this.elements.clickContinue.classList.remove('hidden');
+            } else {
+                this.elements.clickContinue.classList.add('hidden');
             }
         });
     },
@@ -4728,21 +4783,6 @@ const Engine = {
                 if (choice.cost.day) costLabels += `<span class="cost-tag cost-day">时间+${choice.cost.day}</span>`;
             }
             if (choice.trait) {
-                const TRAIT_NAMES = {
-                    methodical: '有条不紊',
-                    intuitive: '直觉',
-                    instinctive: '本能',
-                    contemplative: '沉思',
-                    self_aware: '自我觉察',
-                    obsessive: '执着',
-                    reckless: '鲁莽',
-                    curious: '好奇',
-                    cautious: '谨慎',
-                    compassionate: '同情',
-                    ruthless: '冷酷',
-                    hopeful: '希望',
-                    despairing: '绝望'
-                };
                 costLabels += `<span class="cost-tag cost-trait">${TRAIT_NAMES[choice.trait] || choice.trait}</span>`;
             }
             if (choice.clue) {
@@ -4773,6 +4813,77 @@ const Engine = {
         return Array.isArray(choices) ? choices : [];
     },
 
+    // 统一解析世界结算归属。优先使用结算场景，其次使用上一个场景，
+    // 最后使用进入世界时记录的活动世界，覆盖所有旧章节和兼容格式。
+    resolveWorldForEnding(sceneId = '', fallbackSceneId = '') {
+        return inferWorldFromScene(sceneId)
+            || inferWorldFromScene(fallbackSceneId)
+            || gameState._endingWorldId
+            || gameState._activeWorld
+            || null;
+    },
+
+    markWorldCompleteForEnding(sceneId = '', fallbackSceneId = '') {
+        const worldId = this.resolveWorldForEnding(sceneId, fallbackSceneId);
+        if (worldId && typeof completeWorld === 'function') {
+            const newlyCompleted = completeWorld(worldId);
+            this.checkAchievements();
+            return { worldId, newlyCompleted };
+        }
+        return { worldId: null, newlyCompleted: false };
+    },
+
+    recordChoice(choice) {
+        if (!Array.isArray(gameState.choiceHistory)) gameState.choiceHistory = [];
+        gameState.choiceHistory.push({
+            scene: gameState.currentScene,
+            choice: choice.text || '',
+            next: choice.next || '',
+            day: gameState.day,
+            timestamp: Date.now()
+        });
+        // Keep the memory useful without allowing old runs to inflate saves.
+        if (gameState.choiceHistory.length > 100) gameState.choiceHistory.shift();
+    },
+
+    showChoiceEcho(choice, effects = []) {
+        const previous = document.querySelector('.choice-echo');
+        if (previous && typeof previous.remove === 'function') previous.remove();
+        if (this._choiceEchoTimer) clearTimeout(this._choiceEchoTimer);
+
+        const echo = document.createElement('div');
+        echo.className = 'choice-echo';
+        echo.setAttribute('role', 'status');
+        echo.setAttribute('aria-live', 'polite');
+
+        const kicker = document.createElement('div');
+        kicker.className = 'choice-echo-kicker';
+        kicker.textContent = '选择已被记住';
+        echo.appendChild(kicker);
+
+        const selected = document.createElement('div');
+        selected.className = 'choice-echo-text';
+        selected.textContent = `「${choice.text || '未命名的选择'}」`;
+        echo.appendChild(selected);
+
+        const effectsWrap = document.createElement('div');
+        effectsWrap.className = 'choice-echo-effects';
+        const visibleEffects = effects.length > 0 ? effects : ['后续剧情可能回应这项决定'];
+        visibleEffects.forEach(effect => {
+            const tag = document.createElement('span');
+            tag.className = 'choice-echo-effect';
+            tag.textContent = effect;
+            effectsWrap.appendChild(tag);
+        });
+        echo.appendChild(effectsWrap);
+
+        document.body.appendChild(echo);
+        this._choiceEchoTimer = setTimeout(() => {
+            echo.classList.add('leaving');
+            setTimeout(() => echo.remove(), 300);
+        }, 2800);
+    },
+
     shouldShowEndingScreen(script) {
         if (!script || !script.ending) return false;
         const choices = this.getSceneChoices(script);
@@ -4788,9 +4899,13 @@ const Engine = {
             this.elements.choicesContainer.innerHTML = '';
         }
 
+        this.recordChoice(choice);
+        const choiceEffects = [];
+
         // 记录特质
         if (choice.trait && !gameState.traits.includes(choice.trait)) {
             gameState.traits.push(choice.trait);
+            choiceEffects.push(`倾向：${TRAIT_NAMES[choice.trait] || choice.trait}`);
         }
         
         // 收集线索
@@ -4798,6 +4913,8 @@ const Engine = {
         if (choice.clue && !gameState.clues.includes(choice.clue)) {
             gameState.clues.push(choice.clue);
             clueGained = true;
+            const clue = CLUE_DEFS[choice.clue];
+            choiceEffects.push(`获得线索：${clue ? clue.title : choice.clue}`);
             
             // 获得线索时的视觉反馈
             if (typeof effectsEngine !== 'undefined') {
@@ -4812,9 +4929,11 @@ const Engine = {
         if (choice.cost) {
             if (choice.cost.day) {
                 gameState.day += choice.cost.day;
+                choiceEffects.push(`时间 +${choice.cost.day}天`);
             }
             if (choice.cost.sanity) {
                 gameState.sanity = Math.max(0, (gameState.sanity ?? 100) - choice.cost.sanity);
+                choiceEffects.push(`理智 -${choice.cost.sanity}`);
                 // 理智值过低时的视觉反馈
                 if (gameState.sanity <= 30 && typeof effectsEngine !== 'undefined') {
                     effectsEngine.flash('#ff0000', 500);
@@ -4830,6 +4949,12 @@ const Engine = {
                 }
             }
         }
+
+        if (clueGained) {
+            setTimeout(() => this.showClueNotification(choice.clue, choice.text, choiceEffects), 450);
+        } else {
+            setTimeout(() => this.showChoiceEcho(choice, choiceEffects), 300);
+        }
         
         // 检查场景是否存在
         const nextScript = SCRIPT[choice.next];
@@ -4842,11 +4967,17 @@ const Engine = {
         // 只有真正终止、或仅提供“返回阿莱夫”的世界结算场景，才显示结局屏。
         // 带有其它分支的 ending 节点仍是可玩的剧情场景。
         if (this.shouldShowEndingScreen(nextScript)) {
-            // 自动标记世界完成（如果是世界内的结局）
-            const worldId = inferWorldFromScene(choice.next);
-            if (worldId && typeof completeWorld === 'function') {
-                completeWorld(worldId);
-                this.checkAchievements();
+            // 结算场景必须成为当前场景，确保自动存档、继续按钮和阿莱夫
+            // 都能读取同一个结算上下文。旧章节的世界结局可能没有世界前缀，
+            // 因此通过当前世界和上一场景共同兜底。
+            const previousScene = gameState.currentScene;
+            const completion = this.markWorldCompleteForEnding(choice.next, previousScene);
+            gameState._lastScene = choice.next;
+            gameState.currentScene = choice.next;
+            if (completion.worldId) {
+                gameState._endingWorldId = completion.worldId;
+            } else {
+                delete gameState._endingWorldId;
             }
             this.showEnding(nextScript.ending, choice.next);
             return;
@@ -4855,16 +4986,13 @@ const Engine = {
         // 加载下一个场景
         this.loadScene(choice.next);
         
-        // 显示线索获得提示
-        if (clueGained) {
-            setTimeout(() => this.showClueNotification(choice.clue), 600);
-        }
     },
     
     autoSave() {
         // 自动存档（保留最近3个）
         const saveData = {
             ...gameState,
+            saveVersion: SAVE_SCHEMA_VERSION,
             timestamp: Date.now(),
             autoSave: true
         };
@@ -4903,11 +5031,25 @@ const Engine = {
         const latest = this.getLatestAutoSave();
         if (latest) {
             this._applySaveData(latest);
-            this.loadScene(gameState.currentScene);
+            this.resumeSavedScene();
             console.log('自动存档已加载，回到：', gameState.currentScene);
             return true;
         }
         return false;
+    },
+
+    // 结算画面本身也是可恢复的存档点。若存档停在终止世界场景，
+    // 直接重现结算画面，而不是把玩家送回一个无法继续的旧对话节点。
+    resumeSavedScene() {
+        const sceneId = gameState.currentScene || 'start';
+        const script = SCRIPT[sceneId];
+        if (script && this.shouldShowEndingScreen(script)) {
+            const completion = this.markWorldCompleteForEnding(sceneId, gameState._lastScene);
+            if (completion.worldId) gameState._endingWorldId = completion.worldId;
+            this.showEnding(script.ending, sceneId);
+            return;
+        }
+        this.loadScene(sceneId);
     },
 
     _applySaveData(parsed) {
@@ -4916,13 +5058,18 @@ const Engine = {
         if (!parsed.clues) parsed.clues = [];
         if (!parsed.encountered) parsed.encountered = [];
         if (!parsed.xMemories) parsed.xMemories = [];
+        if (!Array.isArray(parsed.dialogueHistory)) parsed.dialogueHistory = [];
+        if (!Array.isArray(parsed.choiceHistory)) parsed.choiceHistory = [];
         if (!parsed.day) parsed.day = 1;
         if (!parsed.currentScene) parsed.currentScene = 'start';
         if (!parsed.currentObjective) parsed.currentObjective = '寻找X的线索';
         if (!parsed.currentDialogue) parsed.currentDialogue = 0;
         if (parsed.dialogueComplete === undefined) parsed.dialogueComplete = false;
         if (parsed.isTyping === undefined) parsed.isTyping = false;
+        if (parsed._activeWorld === undefined) parsed._activeWorld = null;
+        if (parsed._endingWorldId === undefined) parsed._endingWorldId = null;
         if (!parsed.settings) parsed.settings = { typingEffect: true, typingSpeed: 50, musicVolume: 0.5, sfxVolume: 0.5 };
+        parsed.saveVersion = SAVE_SCHEMA_VERSION;
         Object.assign(gameState, parsed);
         const es = document.getElementById('endingScreen');
         if (es) { es.classList.remove('visible'); es.style.removeProperty('opacity'); es.style.removeProperty('pointer-events'); }
@@ -4930,7 +5077,7 @@ const Engine = {
         if (lb) lb.style.display = 'none';
     },
     
-    showClueNotification(clueId) {
+    showClueNotification(clueId, choiceText = '', effects = []) {
         const clue = CLUE_DEFS[clueId] || { title: '新线索', desc: '你获得了新的信息。' };
         
         const notif = document.createElement('div');
@@ -4953,6 +5100,19 @@ const Engine = {
             <div style="color: #8a7f72; font-size: 0.85rem; margin-top: 4px;">${clue.desc}</div>
             <div style="color: #6a6058; font-size: 0.75rem; margin-top: 8px;">当前线索：${gameState.clues.length} 条</div>
         `;
+
+        if (choiceText) {
+            const recorded = document.createElement('div');
+            recorded.style.cssText = 'color:#c4a060;font-size:0.75rem;margin-top:10px;line-height:1.5;';
+            recorded.textContent = `已记录选择：「${choiceText}」`;
+            notif.appendChild(recorded);
+        }
+        if (effects.length > 1) {
+            const effectText = document.createElement('div');
+            effectText.style.cssText = 'color:#9fc5ad;font-size:0.72rem;margin-top:5px;line-height:1.5;';
+            effectText.textContent = effects.filter(effect => !effect.startsWith('获得线索：')).join(' · ');
+            if (effectText.textContent) notif.appendChild(effectText);
+        }
         
         document.body.appendChild(notif);
         
@@ -5076,8 +5236,16 @@ const Engine = {
         document.getElementById('endingTitle').textContent = title;
         document.getElementById('endingDesc').textContent = desc;
         document.getElementById('statDays').textContent = gameState.day || 0;
-        document.getElementById('statClues').textContent = (gameState.clues && gameState.clues.length) || 0;
+        document.getElementById('statClues').textContent = typeof countValidFragments === 'function'
+            ? countValidFragments()
+            : ((gameState.clues && gameState.clues.length) || 0);
         document.getElementById('statMet').textContent = (gameState.encountered && gameState.encountered.length) || 0;
+        const progressEl = document.getElementById('endingProgress');
+        if (progressEl) {
+            progressEl.textContent = typeof getEndingProgressText === 'function'
+                ? getEndingProgressText()
+                : '终章进度将在返回阿莱夫后更新';
+        }
         
         // 始终先重置"回到存档点"按钮状态
         const loadSaveBtn = document.getElementById('loadSaveBtn');
@@ -5086,7 +5254,7 @@ const Engine = {
         // 只有访问过阿莱夫后或在世界结局后显示"返回阿莱夫"按钮
         const continueBtn = document.getElementById('continueBtn');
         if (continueBtn) {
-            const isInWorldEnding = inferWorldFromScene(sceneId) !== null;
+            const isInWorldEnding = this.resolveWorldForEnding(sceneId, gameState._lastScene) !== null;
             if (gameState.traits.includes('aleph_visited') || isInWorldEnding) {
                 continueBtn.style.display = 'inline-block';
                 // 更新按钮文本，显示线索进度
@@ -5204,6 +5372,7 @@ const Engine = {
                 if (mode === 'save') {
                     localStorage.setItem(`vn_save_${i}`, JSON.stringify({
                         ...gameState,
+                        saveVersion: SAVE_SCHEMA_VERSION,
                         timestamp: Date.now()
                     }));
                     this.showSavePanel('save');
@@ -5213,7 +5382,7 @@ const Engine = {
                         this._applySaveData(parsed);
                         document.getElementById('savePanel').classList.remove('visible');
                         this.panelOpen = false;
-                        this.loadScene(gameState.currentScene);
+                        this.resumeSavedScene();
                     } catch(e) {
                         console.error('存档数据损坏:', e.message);
                         alert('存档数据损坏，无法加载');
