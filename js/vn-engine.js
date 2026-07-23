@@ -4001,11 +4001,10 @@ const Engine = {
         gameContainer.style.pointerEvents = 'none';
         gameContainer.setAttribute('aria-hidden', 'true');
 
-        // Keep the title screen honest: the scene registry is the source of truth.
+        // 不把内部脚本节点数伪装成玩家可体验的独立结局数量。
         const endingCount = document.getElementById('endingCount');
         if (endingCount) {
-            const count = Object.values(SCRIPT).filter(script => script && script.ending).length;
-            endingCount.textContent = `${count}个结局节点`;
+            endingCount.textContent = '多重结局';
         }
         
         // 标题粒子

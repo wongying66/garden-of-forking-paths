@@ -118,5 +118,7 @@ assert.ok(evaluate('Engine.getLatestAutoSave()'), 'auto-save helper should find 
 
 assert.doesNotMatch(html, /92个结局/, 'the title must not advertise the stale hard-coded ending count');
 assert.match(html, /id="endingCount"/, 'title must expose a dynamic ending-count target');
+assert.match(engineSource, /endingCount\.textContent\s*=\s*'多重结局'/, 'the title should use a player-facing ending summary');
+assert.doesNotMatch(engineSource, /endingCount\.textContent\s*=\s*`\$\{count\}个结局节点`/, 'the title must not expose internal ending-node counts');
 
 console.log('Release regressions: OK');
