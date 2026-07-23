@@ -95,6 +95,50 @@ for (const sceneId of continuationScenes) {
 assert.equal(evaluate("Engine.shouldShowEndingScreen(SCRIPT['cthulhu_next_world'])"), true);
 assert.equal(evaluate('SCRIPT[\'cthulhu_next_world\'].choices[0].next'), 'aleph_return');
 assert.equal(evaluate('FIRST_RUN_ENDING_THRESHOLD'), 3);
+assert.equal(evaluate("Engine.resolveWorldForEnding('ending_upload_consciousness')"), 'blade_runner');
+assert.equal(evaluate("Engine.resolveWorldForEnding('unmapped_world_ending', 'cthulhu_next_world')"), 'cthulhu');
+
+// A terminal world choice must write the settlement scene before showing the
+// ending screen. This makes the checkpoint and return-to-Aleph path deterministic
+// even for legacy scenes without a world-prefixed ending ID.
+evaluate(`
+    gameState.currentScene = 'alice_entrance';
+    gameState._activeWorld = 'alice';
+    gameState.completedWorlds = [];
+    gameState.clues = [];
+    const terminalScene = Object.keys(SCRIPT).find(sceneId => {
+        const choices = Array.isArray(SCRIPT[sceneId].choices) ? SCRIPT[sceneId].choices : [];
+        return choices.some(choice => SCRIPT[choice.next]
+            && Engine.shouldShowEndingScreen(SCRIPT[choice.next])
+            && Engine.resolveWorldForEnding(choice.next, sceneId) === 'alice');
+    });
+    const terminalChoice = SCRIPT[terminalScene].choices.find(choice =>
+        SCRIPT[choice.next] && Engine.shouldShowEndingScreen(SCRIPT[choice.next])
+    );
+    const originalShowEnding = Engine.showEnding;
+    Engine.showEnding = (ending, sceneId) => {
+        gameState.__endingObservation = {
+            currentScene: gameState.currentScene,
+            lastScene: gameState._lastScene,
+            sceneId
+        };
+    };
+    Engine.showChoiceEcho = () => {};
+    Engine.makeChoice(terminalChoice);
+    Engine.showEnding = originalShowEnding;
+    // Keep the echo stub for the remainder of this VM run; the delayed UI
+    // callback fires after the synchronous assertions below.
+`);
+assert.equal(evaluate('gameState.__endingObservation.currentScene'), evaluate('gameState.__endingObservation.sceneId'));
+assert.equal(evaluate('gameState.__endingObservation.lastScene'), evaluate('gameState.__endingObservation.sceneId'));
+assert.ok(evaluate("gameState.completedWorlds.includes('alice')"), 'terminal world choices must record completion immediately');
+
+// Direct world -> aleph_return paths must also persist completion and clear the
+// active-world marker so a later final ending is not misclassified.
+evaluate("gameState.completedWorlds = []; gameState.clues = []; delete gameState._endingWorldId; gameState._activeWorld = 'cthulhu'; gameState._lastScene = 'cthulhu_next_world'; SCRIPT['aleph_return'].onEnter();");
+assert.ok(evaluate("gameState.completedWorlds.includes('cthulhu')"));
+assert.equal(evaluate('gameState._activeWorld'), undefined);
+assert.match(html, /id="endingProgress"/, 'ending screen must expose explicit finale progress');
 
 // Three completed worlds must be enough for a first-run player to reach the final chapter,
 // even when none of the optional hidden fragments were discovered.

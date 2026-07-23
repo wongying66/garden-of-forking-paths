@@ -98,14 +98,22 @@ function getRandomIncompleteWorlds(count = 3) {
 
 // 标记世界完成并给予线索奖励
 function completeWorld(worldId) {
-    if (!gameState.completedWorlds.includes(worldId)) {
-        gameState.completedWorlds.push(worldId);
-        const world = ALEPH_WORLDS.find(w => w.id === worldId);
-        if (world && world.clue && !gameState.clues.includes(world.clue)) {
-            gameState.clues.push(world.clue);
-            console.log(`世界「${world.name}」完成！获得线索: ${world.clue}`);
-        }
+    if (!worldId || gameState.completedWorlds.includes(worldId)) return false;
+    gameState.completedWorlds.push(worldId);
+    const world = ALEPH_WORLDS.find(w => w.id === worldId);
+    if (world && world.clue && !gameState.clues.includes(world.clue)) {
+        gameState.clues.push(world.clue);
+        console.log(`世界「${world.name}」完成！获得线索: ${world.clue}`);
     }
+    return true;
+}
+
+// 统一的玩家可见终章进度文案，避免只显示“线索数量”而不清楚门槛。
+function getEndingProgressText() {
+    const threshold = typeof FIRST_RUN_ENDING_THRESHOLD === 'number' ? FIRST_RUN_ENDING_THRESHOLD : 12;
+    const fragments = Math.min(countValidFragments(), threshold);
+    const completed = gameState.completedWorlds.length;
+    return `终章进度：${fragments}/${threshold} 碎片 · 已完成 ${completed} 个世界`;
 }
 
 // 给予隐藏线索
@@ -712,12 +720,19 @@ SCRIPT.aleph_return = {
     characters: [],
     onEnter: () => {
         // 自动完成世界：从隐藏世界（无 ending 对象）返回时，检测并标记世界完成
-        if (gameState._lastScene && typeof inferWorldFromScene === 'function') {
-            const worldId = inferWorldFromScene(gameState._lastScene);
-            if (worldId && !gameState.completedWorlds.includes(worldId) && typeof completeWorld === 'function') {
-                completeWorld(worldId);
+        const worldId = gameState._endingWorldId
+            || (gameState._lastScene && typeof inferWorldFromScene === 'function'
+                ? inferWorldFromScene(gameState._lastScene)
+                : null)
+            || gameState._activeWorld;
+        if (worldId && typeof completeWorld === 'function') {
+            const newlyCompleted = completeWorld(worldId);
+            if (newlyCompleted && typeof Engine !== 'undefined' && typeof Engine.autoSave === 'function') {
+                Engine.autoSave();
             }
         }
+        delete gameState._endingWorldId;
+        delete gameState._activeWorld;
     },
     getDialogues: () => {
         const completed = getCompletedWorlds();
@@ -725,7 +740,8 @@ SCRIPT.aleph_return = {
         const remaining = 12 - completed.length;
         
         let text = '你穿过世界的边界，回到了阿莱夫。正如一个人从梦中醒来，却在醒来的瞬间发现——梦中的逻辑在醒来的世界中依然成立。';
-        text += `\n\n你已经穿过了 ${completed.length} 个世界的门扉，收集了 ${totalClues} 条关于X的碎片。`;
+        text += `\n\n${getEndingProgressText()}。`;
+        text += `\n你已经穿过了 ${completed.length} 个世界的门扉，收集了 ${totalClues} 条关于X的碎片。`;
         
         // 检查还有多少隐藏世界未解锁
         const lockedHidden = ALEPH_WORLDS.filter(w => w.hidden && !gameState.completedWorlds.includes(w.id) && !isHiddenWorldUnlocked(w.id));
