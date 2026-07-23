@@ -45,6 +45,10 @@ const ALEPH_WORLDS = [
 // 主世界ID列表
 const MAIN_WORLD_IDS = ['blade_runner', 'cthulhu', 'alice', 'middle_earth', 'wuxia', 'cowboy_bebop', 'matrix', 'got'];
 
+// 首轮体验先在 5 个世界后开放终章；完整收集仍然需要全部 12 个世界。
+// 这是产品节奏阈值，不改变世界注册表或 NG+ 解锁条件。
+const FIRST_RUN_ENDING_THRESHOLD = 5;
+
 // 检查隐藏世界是否解锁
 function isHiddenWorldUnlocked(worldId) {
     const world = ALEPH_WORLDS.find(w => w.id === worldId);
@@ -586,7 +590,7 @@ SCRIPT.aleph_choice = {
             text += '\n\n在阿莱夫的中心，一面镜子缓缓浮现。它散发着金色的光芒——不同于任何一扇门，那是自我注视自我的光。';
         } else if (incomplete.length > 0) {
             text += '\n\n三扇新的门从虚空中浮现，散发着各自的光芒。每一扇门都是一段尚未被讲述的历史。';
-        } else if (totalClues >= 12) {
+        } else if (totalClues >= FIRST_RUN_ENDING_THRESHOLD) {
             text += '\n\n所有的门都已完成。是时候面对X了——或者说，是时候面对那个在每一扇门后等待着的自己了。';
         } else {
             text += '\n\n所有世界都已探索完毕，但碎片似乎还不够。这悖论本身也许就是一条线索。';
@@ -640,7 +644,7 @@ SCRIPT.aleph_choice = {
         }
         
         // 线索足够时，终章解锁
-        if (totalClues >= 12) {
+        if (totalClues >= FIRST_RUN_ENDING_THRESHOLD) {
             choices.push({
                 text: '★ 碎片已足够——走向X所在之处',
                 next: 'final_chapter'
@@ -739,7 +743,7 @@ SCRIPT.aleph_return = {
             text += '\n\n银翼杀手世界的深处，似乎还有一种你尚未触及的视角——关于X的视角。不是从外面看，而是从里面看。也许你该重新进入那个世界，走一条不同的路。正如特隆的哲学家所说：同一条路，第二次走，就不再是同一条路。';
         }
         
-        if (totalClues >= 12) {
+        if (totalClues >= FIRST_RUN_ENDING_THRESHOLD) {
             text += '\n\n阿莱夫中央的光芒突然变得耀眼——不是变亮，而是变深。碎片已经足够了。一道新的门正在形成，那扇门后面……是X。或者说，是那个一直在寻找X的自己。';
         }
         
@@ -778,7 +782,7 @@ SCRIPT.aleph_return = {
         }
         
         // 终章
-        if (totalClues >= 12) {
+        if (totalClues >= FIRST_RUN_ENDING_THRESHOLD) {
             choices.push({
                 text: '★ 碎片已足够——走向X所在之处',
                 next: 'final_chapter'
